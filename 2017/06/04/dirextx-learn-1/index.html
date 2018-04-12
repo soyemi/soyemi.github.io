@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang=de>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="​    图形API对往游戏引擎和渲染方向发展的Programmer来说是非常重要的一部分。大部分的情况下，对于实际的游戏开发来说，游戏引擎handle了大部分图像API的内容。但是如果单纯从游戏引擎hight-level去学习，会有一直停留在表面的学习，而不太了解底层核心的东西。目前流行的图形API有DirectX，OpenGL，Vulkan还有随着移动平台流行起来的OpenGL ES。对于图形">
+<meta name="keywords" content="DirectX,C++">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DirectX-Notes">
+<meta property="og:url" content="http://yemi.me/2017/06/04/dirextx-learn-1/index.html">
+<meta property="og:site_name" content="Yemi&#39;s Blog">
+<meta property="og:description" content="​    图形API对往游戏引擎和渲染方向发展的Programmer来说是非常重要的一部分。大部分的情况下，对于实际的游戏开发来说，游戏引擎handle了大部分图像API的内容。但是如果单纯从游戏引擎hight-level去学习，会有一直停留在表面的学习，而不太了解底层核心的东西。目前流行的图形API有DirectX，OpenGL，Vulkan还有随着移动平台流行起来的OpenGL ES。对于图形">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2017-10-14T15:44:57.935Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="DirectX-Notes">
+<meta name="twitter:description" content="​    图形API对往游戏引擎和渲染方向发展的Programmer来说是非常重要的一部分。大部分的情况下，对于实际的游戏开发来说，游戏引擎handle了大部分图像API的内容。但是如果单纯从游戏引擎hight-level去学习，会有一直停留在表面的学习，而不太了解底层核心的东西。目前流行的图形API有DirectX，OpenGL，Vulkan还有随着移动平台流行起来的OpenGL ES。对于图形">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.png">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+          
+        
+    
+    <!-- title -->
+    <title>DirectX-Notes</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss -->
+    
+    
+</head>
+
+<body class="max-width mx-auto px3">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2017/07/01/csharp_attribute_constraint/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2017/03/26/hello-lua/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yemi.me/2017/06/04/dirextx-learn-1/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://yemi.me/2017/06/04/dirextx-learn-1/&text=DirectX-Notes"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yemi.me/2017/06/04/dirextx-learn-1/&title=DirectX-Notes"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yemi.me/2017/06/04/dirextx-learn-1/&is_video=false&description=DirectX-Notes"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=DirectX-Notes&body=Check out this article: http://yemi.me/2017/06/04/dirextx-learn-1/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://yemi.me/2017/06/04/dirextx-learn-1/&title=DirectX-Notes"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://yemi.me/2017/06/04/dirextx-learn-1/&title=DirectX-Notes"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yemi.me/2017/06/04/dirextx-learn-1/&title=DirectX-Notes"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://yemi.me/2017/06/04/dirextx-learn-1/&title=DirectX-Notes"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yemi.me/2017/06/04/dirextx-learn-1/&name=DirectX-Notes&description=&lt;p&gt;​    图形API对往游戏引擎和渲染方向发展的Programmer来说是非常重要的一部分。大部分的情况下，对于实际的游戏开发来说，游戏引擎handle了大部分图像API的内容。但是如果单纯从游戏引擎hight-level去学习，会有一直停留在表面的学习，而不太了解底层核心的东西。目前流行的图形API有DirectX，OpenGL，Vulkan还有随着移动平台流行起来的OpenGL ES。对于图形API的选择当然是很重要的一部分。DX和OGL的pros cons有很多人在讨论了，初学选择哪个API，这个并不不是很重要。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#HLSL中的CBuffer使用"><span class="toc-number">1.</span> <span class="toc-text">HLSL中的CBuffer使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#EFFECT11-Shader-Framework"><span class="toc-number">2.</span> <span class="toc-text">EFFECT11 Shader Framework</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Defferred-Context-与Command-List"><span class="toc-number">3.</span> <span class="toc-text">Defferred Context 与Command List</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Material对象"><span class="toc-number">4.</span> <span class="toc-text">Material对象</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index my4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        DirectX-Notes
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Yemi's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2017-06-04T03:59:25.000Z" itemprop="datePublished">2017-06-04</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/C/">C++</a>, <a class="tag-link" href="/tags/DirectX/">DirectX</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>​    图形API对往游戏引擎和渲染方向发展的Programmer来说是非常重要的一部分。大部分的情况下，对于实际的游戏开发来说，游戏引擎handle了大部分图像API的内容。但是如果单纯从游戏引擎hight-level去学习，会有一直停留在表面的学习，而不太了解底层核心的东西。目前流行的图形API有DirectX，OpenGL，Vulkan还有随着移动平台流行起来的OpenGL ES。对于图形API的选择当然是很重要的一部分。DX和OGL的pros cons有很多人在讨论了，初学选择哪个API，这个并不不是很重要。</p>
+<a id="more"></a>
+<p>​    在RasterTek <a href="http://www.rastertek.com/" target="_blank" rel="noopener">http://www.rastertek.com/</a> 上按照教程学习了几章DX11的教程，自己实现了一个小型的DX框架。封装了模型与贴图加载，Shader编译，Shader Reflect。类似于Unity的组件模型来管理场景，基础的光照等。由于不是太熟悉C++，同时也遇到了一些问题。下面总结一些理解和疑问。</p>
+<h3 id="HLSL中的CBuffer使用"><a href="#HLSL中的CBuffer使用" class="headerlink" title="HLSL中的CBuffer使用"></a>HLSL中的CBuffer使用</h3><p>​    HLSL是directx的Shader脚本语言，和Cg的语法很像。VertexShader PixelShader 和一些SV的Semantic都类似。在写了几个不同的Shader之后，一些每个Shader会有一些都需要的参数和变量 如MVP的Matrix 光源信息等等。这些参数的值通过CBuffer传入GPU中进行运算。在MSDN的文档中写到根据参数更新的频率将需要的参数分散在不同的CBuffer中这样可以减少更新的次数。由于渲染管线的状态是不会清除的只会在下一次设置的时候覆盖。对于不更新的参数我们就可以减少调用设置状态的频率，从而提升帧率。那么这些参数要怎么划分就是一个结构设计的问题。</p>
+<p>​    这里我们只考虑光照和Camera的信息。Matrix信息有World Matrix，View Matrix，Projection Matrix，这个World Matrix是模型坐标转世界坐标的矩阵 和物体相关，View Matrix与Projection Matrix只与Camera相关。那么对于一帧的渲染。Camera的Matrix只要设置一次而 每渲染每个物体调用DrawCall的时候都要重新设置WorldMatrix。而通常我们在顶点着色器中使用的是Matrix_MVP 三个矩阵相乘。那么是不是把WorldMatrix 与Camera的两个Matrix分开在两个Const Buffer就可以略微提升性能呢？还是说给Buffer设置值的开销大部分在指令的数量而小量数据的copy性能开销可以基本忽略不计呢？<br>​    还有一个问题就是对于这三个矩阵 我们可能在Shader中可能需要MV,VP MVP复合的矩阵进行特殊的计算，这部分矩阵运算是交给CPU预计算好传入shader中还是纯在GPU中进行计算呢？个人的感觉是应该留在GPU中进行计算 可以通过一些宏来简化调用，类似于Unity中cginc的使用。<br>​    对于光源信息来说可以单独使用一个buffer来进行光源信息的更新，包括LightMatrix LightColor LightRange等等，每一帧的渲染也只需要map一次ConstBuffer。而不是每次DrawCall都需要调用。</p>
+<h3 id="EFFECT11-Shader-Framework"><a href="#EFFECT11-Shader-Framework" class="headerlink" title="EFFECT11 Shader Framework"></a>EFFECT11 Shader Framework</h3><p>​    HLSL可以使用#include “xxx” 来包含其他的hlsl文件。我们可以把一些公用的struct定义在这些文件中类似于Unity的.cginc文件。而如果在运行时编译就需要实现一个ID3DInclude 来处理Include的文件的加载和编译。</p>
+<p>​    DirextX提供了Shader Reflector来获取编译后shader的参数信息和状态，这样我们就可以在运行时动态获取到这些信息来设置shader的参数和生产对应的CBuffer。DX11以前的版本提供了Effect 框架 而DX11中被移出变成扩展库了。Effect框架带有一些特定的语法来使用简化shader的编写和调用及状态设置。比如对于一个特定效果的渲染。我们需要设置ZBuffer的状态为ZWrite关闭，而这需要单独设置DepthStencilBufferState，是不能从shader中直接设置的。而Effect框架就可以在hlsl中定义这些信息然后可以自动设置这些渲染管线的状态。<br>​    类比于Unity中的ShaderLab语法。ShaderLab中的Blend Src Dst，ZWrite，Cull 等都是在shader中设置Pipeline的状态。Shader Lab可以说是也是一个Effect框架，不过它支持多平台可以同时编译成HLSL与GLSL。每个引擎一般都是实现自己的Shader Framework，定义自己的shader语法和一些semantic。毕竟要处理多平台的兼容性，同时要简化shader的编写，提升开发效率。</p>
+<h3 id="Defferred-Context-与Command-List"><a href="#Defferred-Context-与Command-List" class="headerlink" title="Defferred Context 与Command List"></a>Defferred Context 与Command List</h3><p>​    DX11中的Deferred Context可以把绘制的指令和设置pipeline状态的指令记录在Command List中，然后进行回放。这样可以减少CPU的overhead。对于一个在场景中要渲染的物体 如果他的位置坐标参数等都不发生变化，那么他可以使用上一帧的Command List进行渲染，从而减少了这部分状态参数重设的CPU开销。我们可以类比Unity中的CommandBuffer，在Unity中CommandBuffer只是用来扩展RenderPipeline的，底层的原理应该也是使用Command List。</p>
+<h3 id="Material对象"><a href="#Material对象" class="headerlink" title="Material对象"></a>Material对象</h3><p>​    DX11中其实是没有Material的对象的，而引擎中常有材质的概念。Material可以理解为shader加上管线的状态以及传入管线的参数与贴图数据等等。这个概念可以和effect框架中的effect等价。Material通常是引擎自己实现的。</p>
+<p>关于图形API 个人的感觉是API用法等都是简单的，重要的是怎样去架构一整个复杂的3D程序 CPU和GPU协同，最大幅度提升渲染效率。多线程渲染，各类资源的管理 互相作用。GPU指令如何调用能够最优，这些都是设计上的问题需要很多的实际开发经验才能总结出来。所以最好的方式应该是参考一个开源的框架或者是小型的引擎来学习它们是如何架构的。</p>
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#HLSL中的CBuffer使用"><span class="toc-number">1.</span> <span class="toc-text">HLSL中的CBuffer使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#EFFECT11-Shader-Framework"><span class="toc-number">2.</span> <span class="toc-text">EFFECT11 Shader Framework</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Defferred-Context-与Command-List"><span class="toc-number">3.</span> <span class="toc-text">Defferred Context 与Command List</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Material对象"><span class="toc-number">4.</span> <span class="toc-text">Material对象</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yemi.me/2017/06/04/dirextx-learn-1/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://yemi.me/2017/06/04/dirextx-learn-1/&text=DirectX-Notes"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yemi.me/2017/06/04/dirextx-learn-1/&title=DirectX-Notes"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yemi.me/2017/06/04/dirextx-learn-1/&is_video=false&description=DirectX-Notes"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=DirectX-Notes&body=Check out this article: http://yemi.me/2017/06/04/dirextx-learn-1/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://yemi.me/2017/06/04/dirextx-learn-1/&title=DirectX-Notes"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://yemi.me/2017/06/04/dirextx-learn-1/&title=DirectX-Notes"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yemi.me/2017/06/04/dirextx-learn-1/&title=DirectX-Notes"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://yemi.me/2017/06/04/dirextx-learn-1/&title=DirectX-Notes"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yemi.me/2017/06/04/dirextx-learn-1/&name=DirectX-Notes&description=&lt;p&gt;​    图形API对往游戏引擎和渲染方向发展的Programmer来说是非常重要的一部分。大部分的情况下，对于实际的游戏开发来说，游戏引擎handle了大部分图像API的内容。但是如果单纯从游戏引擎hight-level去学习，会有一直停留在表面的学习，而不太了解底层核心的东西。目前流行的图形API有DirectX，OpenGL，Vulkan还有随着移动平台流行起来的OpenGL ES。对于图形API的选择当然是很重要的一部分。DX和OGL的pros cons有很多人在讨论了，初学选择哪个API，这个并不不是很重要。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2018 yemi
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/fontawesome-all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'yemiblog';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+

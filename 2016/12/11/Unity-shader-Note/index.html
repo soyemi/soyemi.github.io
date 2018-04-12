@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang=de>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="光照基础辐照度irradiance 散射scattering 吸收 absorption散射只改变光的方向 吸收只改变光线的密度和颜色 光线进入如物体会发生折射refraction和投射transmission 以及被散射到外部的反射reflection区别不同的散射方向 高光反射 specular 漫反射diffuse 出射度 exitance 辐照度和出射度满足线性关系 比值就是漫反射和高光反">
+<meta name="keywords" content="Unity,Shader">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unity shader Note">
+<meta property="og:url" content="http://yemi.me/2016/12/11/Unity-shader-Note/index.html">
+<meta property="og:site_name" content="Yemi&#39;s Blog">
+<meta property="og:description" content="光照基础辐照度irradiance 散射scattering 吸收 absorption散射只改变光的方向 吸收只改变光线的密度和颜色 光线进入如物体会发生折射refraction和投射transmission 以及被散射到外部的反射reflection区别不同的散射方向 高光反射 specular 漫反射diffuse 出射度 exitance 辐照度和出射度满足线性关系 比值就是漫反射和高光反">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2017-10-14T15:44:57.893Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Unity shader Note">
+<meta name="twitter:description" content="光照基础辐照度irradiance 散射scattering 吸收 absorption散射只改变光的方向 吸收只改变光线的密度和颜色 光线进入如物体会发生折射refraction和投射transmission 以及被散射到外部的反射reflection区别不同的散射方向 高光反射 specular 漫反射diffuse 出射度 exitance 辐照度和出射度满足线性关系 比值就是漫反射和高光反">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.png">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+          
+        
+    
+    <!-- title -->
+    <title>Unity shader Note</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss -->
+    
+    
+</head>
+
+<body class="max-width mx-auto px3">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2017/03/26/hello-lua/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2016/12/04/post-process-volumetric-lighting/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yemi.me/2016/12/11/Unity-shader-Note/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://yemi.me/2016/12/11/Unity-shader-Note/&text=Unity shader Note"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yemi.me/2016/12/11/Unity-shader-Note/&title=Unity shader Note"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yemi.me/2016/12/11/Unity-shader-Note/&is_video=false&description=Unity shader Note"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Unity shader Note&body=Check out this article: http://yemi.me/2016/12/11/Unity-shader-Note/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://yemi.me/2016/12/11/Unity-shader-Note/&title=Unity shader Note"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://yemi.me/2016/12/11/Unity-shader-Note/&title=Unity shader Note"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yemi.me/2016/12/11/Unity-shader-Note/&title=Unity shader Note"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://yemi.me/2016/12/11/Unity-shader-Note/&title=Unity shader Note"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yemi.me/2016/12/11/Unity-shader-Note/&name=Unity shader Note&description=&lt;h3 id=&#34;光照基础&#34;&gt;&lt;a href=&#34;#光照基础&#34; class=&#34;headerlink&#34; title=&#34;光照基础&#34;&gt;&lt;/a&gt;光照基础&lt;/h3&gt;&lt;p&gt;辐照度irradiance&lt;/p&gt;
+&lt;p&gt;散射scattering 吸收 absorption&lt;br&gt;散射只改变光的方向 吸收只改变光线的密度和颜色&lt;/p&gt;
+&lt;p&gt;光线进入如物体会发生折射refraction和投射transmission 以及被散射到外部的反射reflection&lt;br&gt;区别不同的散射方向 高光反射 specular 漫反射diffuse&lt;/p&gt;
+&lt;p&gt;出射度 exitance 辐照度和出射度满足线性关系 比值就是漫反射和高光反射的属性&lt;/p&gt;
+&lt;p&gt;BRDF (Bidirectional Reflection Distribution Function)&lt;/p&gt;
+&lt;p&gt;标准光照模型 direct light&lt;br&gt;自发光 emissive 高光specular 漫反射diffuse 环境光ambient&lt;/p&gt;
+&lt;p&gt;diffuse Lambert’s Law&lt;br&gt;$$&lt;br&gt;c_{diffuse} = (c_{light} &lt;em&gt; m_{diffuse})max(0,n&lt;/em&gt;l)&lt;br&gt;$$&lt;/p&gt;
+&lt;p&gt;光源颜色&lt;em&gt;漫反射材质颜色&lt;/em&gt;亮度值&lt;br&gt;Phong光照模型&lt;br&gt;$$&lt;br&gt;C_{specular} = (c_{light} &lt;em&gt; m_{specular})max(0,v&lt;/em&gt;r)^{m_{gloss}}&lt;br&gt;$$&lt;/p&gt;
+&lt;p&gt;Blinn-Phong&lt;br&gt;$$&lt;br&gt;h = \frac{v+l}{|v+l|}&lt;br&gt;C_{specular} = (c_{light} &lt;em&gt; m_{specular})max(0,n&lt;/em&gt;h)^{m_{gloss}}&lt;br&gt;$$&lt;br&gt;Phong shading 逐像素光照 Gouraud shading 逐顶点光照&lt;br&gt;各向同性isotropic  各向异性anisotropic&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#光照基础"><span class="toc-number">1.</span> <span class="toc-text">光照基础</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#坐标转换"><span class="toc-number">2.</span> <span class="toc-text">坐标转换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#屏幕坐标"><span class="toc-number">3.</span> <span class="toc-text">屏幕坐标</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#采样Depth-Texture-World"><span class="toc-number">3.1.</span> <span class="toc-text">采样Depth Texture World</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index my4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Unity shader Note
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Yemi's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2016-12-11T05:21:40.000Z" itemprop="datePublished">2016-12-11</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/Shader/">Shader</a>, <a class="tag-link" href="/tags/Unity/">Unity</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h3 id="光照基础"><a href="#光照基础" class="headerlink" title="光照基础"></a>光照基础</h3><p>辐照度irradiance</p>
+<p>散射scattering 吸收 absorption<br>散射只改变光的方向 吸收只改变光线的密度和颜色</p>
+<p>光线进入如物体会发生折射refraction和投射transmission 以及被散射到外部的反射reflection<br>区别不同的散射方向 高光反射 specular 漫反射diffuse</p>
+<p>出射度 exitance 辐照度和出射度满足线性关系 比值就是漫反射和高光反射的属性</p>
+<p>BRDF (Bidirectional Reflection Distribution Function)</p>
+<p>标准光照模型 direct light<br>自发光 emissive 高光specular 漫反射diffuse 环境光ambient</p>
+<p>diffuse Lambert’s Law<br>$$<br>c_{diffuse} = (c_{light} <em> m_{diffuse})max(0,n</em>l)<br>$$</p>
+<p>光源颜色<em>漫反射材质颜色</em>亮度值<br>Phong光照模型<br>$$<br>C_{specular} = (c_{light} <em> m_{specular})max(0,v</em>r)^{m_{gloss}}<br>$$</p>
+<p>Blinn-Phong<br>$$<br>h = \frac{v+l}{|v+l|}<br>C_{specular} = (c_{light} <em> m_{specular})max(0,n</em>h)^{m_{gloss}}<br>$$<br>Phong shading 逐像素光照 Gouraud shading 逐顶点光照<br>各向同性isotropic  各向异性anisotropic</p>
+<a id="more"></a>
+<h3 id="坐标转换"><a href="#坐标转换" class="headerlink" title="坐标转换"></a>坐标转换</h3><p>投影矩阵</p>
+<p>N = near plane<br>F = far plane<br>A = aspect ratio<br>FOV =field of view<br>S = size</p>
+<p><code>UNITY_UV_STARTS_AT_TOP</code> DX平台和OpenGL差别<br><code>_MainTex_TexelSize.y &lt; 0</code> 判定是否开启抗锯齿<br>DX9/11不支持在vertex shader中采样纹理 使用<code>tex2D()</code> 使用 <code>tex2DLOD(texture2d tex,float4 uv)</code>替代</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>精度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>float</td>
+<td>32bit 浮点</td>
+</tr>
+<tr>
+<td>half</td>
+<td>16bit 浮点 -60000 ~ +60000</td>
+</tr>
+<tr>
+<td>fixed</td>
+<td>11bit -2.0~+2.0</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>指令</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>#pragma target 2.0</td>
+<td>DX9 SM2.0 不支持对顶点纹理采样，不支持显示LOD纹理采样</td>
+</tr>
+<tr>
+<td>#pragma target 3.0</td>
+<td>DX9 SM3.0支持顶点纹理采样</td>
+</tr>
+<tr>
+<td>#pragma target 4.0</td>
+<td>DX10 SM4,0 支持几何着色器</td>
+</tr>
+<tr>
+<td>#pragma target 5.0</td>
+<td>DX11 SM5.0</td>
+</tr>
+</tbody>
+</table>
+<p>对向量进行转换<br><code>mul(v,(float3x3)_World2Object)</code> == <code>mul(_Object2World,v)</code></p>
+<h3 id="屏幕坐标"><a href="#屏幕坐标" class="headerlink" title="屏幕坐标"></a>屏幕坐标</h3><p>计算屏幕位置<code>ComputeScreenPos(float4 projectionPos)</code></p>
+<p><code>ObjSpaceViewDir(float4 objectpos)</code></p>
+<h4 id="采样Depth-Texture-World"><a href="#采样Depth-Texture-World" class="headerlink" title="采样Depth Texture World"></a>采样Depth Texture World</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">v2f</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	...</span><br><span class="line">    float4 pos ：SV_POSITION;</span><br><span class="line">	float3 ray : TEXCOORD1;</span><br><span class="line">  	float4 screenUV : TEXCOORD0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">v2f <span class="title">vert</span><span class="params">(appdata v)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	v2f o;</span><br><span class="line">  	o.pos = mul(UNITY_MATRIX_MVP,float4(v.pos,<span class="number">1</span>));</span><br><span class="line">  	o.screenUV = ComputeScreenPos(o.pos);</span><br><span class="line"> 	o.ray = mul(UNITY_MATRIX_MV,float4(v.pos,<span class="number">1</span>).xyz * float3(<span class="number">-1</span>,<span class="number">-1</span>,<span class="number">1</span>));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">sampler2D_float _CameraDepthTexture;</span><br><span class="line"></span><br><span class="line">fixed4 frag(v2f i): SV_Target</span><br><span class="line">&#123;</span><br><span class="line">  	<span class="keyword">float</span> depth = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,i.screenUV.xy/i.screenUV.w);</span><br><span class="line">  	depth = Linear01Depth(depth); <span class="comment">//sample depth texture</span></span><br><span class="line">	i.ray = i.ray *(_ProjectionParams.z / i.ray.z);</span><br><span class="line">	float4 vpos = float4(i.ray* depth,<span class="number">1</span>); <span class="comment">//view pos</span></span><br><span class="line">  	float3 wpos = mul(unity_CameraToWorld,vpos).xyz; <span class="comment">//world pos</span></span><br><span class="line">  	float3 opos = mul(unity_WorldToObject,float4(wpos,<span class="number">1</span>)).xyz;<span class="comment">//object pos </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#光照基础"><span class="toc-number">1.</span> <span class="toc-text">光照基础</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#坐标转换"><span class="toc-number">2.</span> <span class="toc-text">坐标转换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#屏幕坐标"><span class="toc-number">3.</span> <span class="toc-text">屏幕坐标</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#采样Depth-Texture-World"><span class="toc-number">3.1.</span> <span class="toc-text">采样Depth Texture World</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yemi.me/2016/12/11/Unity-shader-Note/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://yemi.me/2016/12/11/Unity-shader-Note/&text=Unity shader Note"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yemi.me/2016/12/11/Unity-shader-Note/&title=Unity shader Note"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yemi.me/2016/12/11/Unity-shader-Note/&is_video=false&description=Unity shader Note"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Unity shader Note&body=Check out this article: http://yemi.me/2016/12/11/Unity-shader-Note/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://yemi.me/2016/12/11/Unity-shader-Note/&title=Unity shader Note"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://yemi.me/2016/12/11/Unity-shader-Note/&title=Unity shader Note"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yemi.me/2016/12/11/Unity-shader-Note/&title=Unity shader Note"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://yemi.me/2016/12/11/Unity-shader-Note/&title=Unity shader Note"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yemi.me/2016/12/11/Unity-shader-Note/&name=Unity shader Note&description=&lt;h3 id=&#34;光照基础&#34;&gt;&lt;a href=&#34;#光照基础&#34; class=&#34;headerlink&#34; title=&#34;光照基础&#34;&gt;&lt;/a&gt;光照基础&lt;/h3&gt;&lt;p&gt;辐照度irradiance&lt;/p&gt;
+&lt;p&gt;散射scattering 吸收 absorption&lt;br&gt;散射只改变光的方向 吸收只改变光线的密度和颜色&lt;/p&gt;
+&lt;p&gt;光线进入如物体会发生折射refraction和投射transmission 以及被散射到外部的反射reflection&lt;br&gt;区别不同的散射方向 高光反射 specular 漫反射diffuse&lt;/p&gt;
+&lt;p&gt;出射度 exitance 辐照度和出射度满足线性关系 比值就是漫反射和高光反射的属性&lt;/p&gt;
+&lt;p&gt;BRDF (Bidirectional Reflection Distribution Function)&lt;/p&gt;
+&lt;p&gt;标准光照模型 direct light&lt;br&gt;自发光 emissive 高光specular 漫反射diffuse 环境光ambient&lt;/p&gt;
+&lt;p&gt;diffuse Lambert’s Law&lt;br&gt;$$&lt;br&gt;c_{diffuse} = (c_{light} &lt;em&gt; m_{diffuse})max(0,n&lt;/em&gt;l)&lt;br&gt;$$&lt;/p&gt;
+&lt;p&gt;光源颜色&lt;em&gt;漫反射材质颜色&lt;/em&gt;亮度值&lt;br&gt;Phong光照模型&lt;br&gt;$$&lt;br&gt;C_{specular} = (c_{light} &lt;em&gt; m_{specular})max(0,v&lt;/em&gt;r)^{m_{gloss}}&lt;br&gt;$$&lt;/p&gt;
+&lt;p&gt;Blinn-Phong&lt;br&gt;$$&lt;br&gt;h = \frac{v+l}{|v+l|}&lt;br&gt;C_{specular} = (c_{light} &lt;em&gt; m_{specular})max(0,n&lt;/em&gt;h)^{m_{gloss}}&lt;br&gt;$$&lt;br&gt;Phong shading 逐像素光照 Gouraud shading 逐顶点光照&lt;br&gt;各向同性isotropic  各向异性anisotropic&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2018 yemi
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/fontawesome-all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'yemiblog';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+

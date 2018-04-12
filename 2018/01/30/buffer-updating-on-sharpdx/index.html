@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang=de>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="最近在用C#写一个基于图形API的UI库，底层用的是Managed的DX库SharpDX。由于UI绘制会在每一个UI事件重绘，更新Buffer变得十分的频繁。在调试的过程中时不时会遇到一个C#的System.AccessViolationException。这个异常是用了Intptr指针在非托管层调用时越界导致的，搜索了很久最后还是自己思考下想通了。 调用的接口是DeviceContext.Upd">
+<meta name="keywords" content="C#,DirectX,SharpDX">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SharpDX中的Buffer更新">
+<meta property="og:url" content="http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/index.html">
+<meta property="og:site_name" content="Yemi&#39;s Blog">
+<meta property="og:description" content="最近在用C#写一个基于图形API的UI库，底层用的是Managed的DX库SharpDX。由于UI绘制会在每一个UI事件重绘，更新Buffer变得十分的频繁。在调试的过程中时不时会遇到一个C#的System.AccessViolationException。这个异常是用了Intptr指针在非托管层调用时越界导致的，搜索了很久最后还是自己思考下想通了。 调用的接口是DeviceContext.Upd">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-01-29T18:07:34.352Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SharpDX中的Buffer更新">
+<meta name="twitter:description" content="最近在用C#写一个基于图形API的UI库，底层用的是Managed的DX库SharpDX。由于UI绘制会在每一个UI事件重绘，更新Buffer变得十分的频繁。在调试的过程中时不时会遇到一个C#的System.AccessViolationException。这个异常是用了Intptr指针在非托管层调用时越界导致的，搜索了很久最后还是自己思考下想通了。 调用的接口是DeviceContext.Upd">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.png">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+          
+        
+    
+    <!-- title -->
+    <title>SharpDX中的Buffer更新</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss -->
+    
+    
+</head>
+
+<body class="max-width mx-auto px3">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2018/03/11/shader-npr-oilpaint/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2017/11/18/csharp-independent-partial-class-hack/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&text=SharpDX中的Buffer更新"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&title=SharpDX中的Buffer更新"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&is_video=false&description=SharpDX中的Buffer更新"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=SharpDX中的Buffer更新&body=Check out this article: http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&title=SharpDX中的Buffer更新"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&title=SharpDX中的Buffer更新"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&title=SharpDX中的Buffer更新"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&title=SharpDX中的Buffer更新"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&name=SharpDX中的Buffer更新&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index my4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        SharpDX中的Buffer更新
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Yemi's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2018-01-29T18:04:00.000Z" itemprop="datePublished">2018-01-30</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/C/">C#</a>, <a class="tag-link" href="/tags/DirectX/">DirectX</a>, <a class="tag-link" href="/tags/SharpDX/">SharpDX</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>最近在用C#写一个基于图形API的UI库，底层用的是Managed的DX库SharpDX。由于UI绘制会在每一个UI事件重绘，更新Buffer变得十分的频繁。在调试的过程中时不时会遇到一个C#的<code>System.AccessViolationException</code>。这个异常是用了<code>Intptr</code>指针在非托管层调用时越界导致的，搜索了很久最后还是自己思考下想通了。</p>
+<p>调用的接口是<code>DeviceContext.UpdateSubresources</code>，在SharpDX中的代码如下。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> rawbuffer = buffer.GetRawObject() <span class="keyword">as</span> Buffer;</span><br><span class="line"><span class="keyword">if</span> (rawbuffer == <span class="literal">null</span>) <span class="keyword">throw</span> <span class="keyword">new</span> Exception();</span><br><span class="line"><span class="keyword">var</span> pinnedptr = GCHandle.Alloc(data, GCHandleType.Pinned);</span><br><span class="line">m_obj.UpdateSubresourceSafe(<span class="keyword">new</span> DataBox()</span><br><span class="line">&#123;</span><br><span class="line">  DataPointer = pinnedptr.AddrOfPinnedObject()</span><br><span class="line">&#125;,rawbuffer,subresources);</span><br><span class="line">pinnedptr.Free();</span><br></pre></td></tr></table></figure>
+<p>其中<code>data</code>是一个数组，<code>rawbuffer</code>是一个vertexBuffer。我们先使用<code>GCHandler</code>把数组的内存位置固定住，然后将指针传递给DX,从指针位置拷贝数据到VertexBuffer中，最后释放Pin住的数组。之前在写代码的时候并没有考虑太多，忽略了这里的更新Buffer并没有传递拷贝的地址长度的参数。也就是说拷贝数据的时候是按照DX中Buffer的大小来进行复制的，而不是这个data对象的大小。这样由于data在托管内存中，当Buffer的大小大于data的大小时，拷贝的指针就会越界，从而抛出异常。</p>
+<p>回头来看DirectX 11中的Buffer在创建Buffer的时候，有一个参数是Usage，这里我们只讨论<code>D3D11_USAGE_DEFAULT</code>和<code>D3D11_USAGE_DYNAMIC</code>。在Default的Buffer可使用<code>UpdateSubresources</code>的接口来更新Buffer数据，同时这个更新只能是一次性更新整个Buffer，就是上面说到的情况，不能只更新部分。而对于需要频繁动态更新的Buffer设置为<code>D3D11_USAGE_DYNAMIC</code>，图形API会进行性能优化，同时可以使用<code>Map</code>和<code>UnMap</code>来更新Buffer数据。 </p>
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&text=SharpDX中的Buffer更新"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&title=SharpDX中的Buffer更新"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&is_video=false&description=SharpDX中的Buffer更新"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=SharpDX中的Buffer更新&body=Check out this article: http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&title=SharpDX中的Buffer更新"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&title=SharpDX中的Buffer更新"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&title=SharpDX中的Buffer更新"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&title=SharpDX中的Buffer更新"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&name=SharpDX中的Buffer更新&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2018 yemi
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/fontawesome-all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'yemiblog';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+

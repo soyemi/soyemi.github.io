@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang=de>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="今天想要分享的是的是一个关于C#的hack，其实题目也想了好久并不知道如何描述这样一个东西。大致的描述就是我们需要一个partial的类，这个类被定义在两个.cs文件中，当两个文件同时编译或者是单个编译时不会有compile error。同时这两个文件有相同的完全的capabilities(大概可以用这个词来描述)。 其实这个需求不是十分直观的，只有在特定的环境下才会有这种需求。我们在Unity的">
+<meta name="keywords" content="C#,Unity,hack">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C# 中实现一个独立的partial class">
+<meta property="og:url" content="http://yemi.me/2017/11/18/csharp-independent-partial-class-hack/index.html">
+<meta property="og:site_name" content="Yemi&#39;s Blog">
+<meta property="og:description" content="今天想要分享的是的是一个关于C#的hack，其实题目也想了好久并不知道如何描述这样一个东西。大致的描述就是我们需要一个partial的类，这个类被定义在两个.cs文件中，当两个文件同时编译或者是单个编译时不会有compile error。同时这两个文件有相同的完全的capabilities(大概可以用这个词来描述)。 其实这个需求不是十分直观的，只有在特定的环境下才会有这种需求。我们在Unity的">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2017-11-18T13:41:37.438Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="C# 中实现一个独立的partial class">
+<meta name="twitter:description" content="今天想要分享的是的是一个关于C#的hack，其实题目也想了好久并不知道如何描述这样一个东西。大致的描述就是我们需要一个partial的类，这个类被定义在两个.cs文件中，当两个文件同时编译或者是单个编译时不会有compile error。同时这两个文件有相同的完全的capabilities(大概可以用这个词来描述)。 其实这个需求不是十分直观的，只有在特定的环境下才会有这种需求。我们在Unity的">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.png">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+          
+        
+    
+    <!-- title -->
+    <title>C# 中实现一个独立的partial class</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss -->
+    
+    
+</head>
+
+<body class="max-width mx-auto px3">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2018/01/30/buffer-updating-on-sharpdx/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2017/10/04/cmake-notes/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yemi.me/2017/11/18/csharp-independent-partial-class-hack/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://yemi.me/2017/11/18/csharp-independent-partial-class-hack/&text=C# 中实现一个独立的partial class"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yemi.me/2017/11/18/csharp-independent-partial-class-hack/&title=C# 中实现一个独立的partial class"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yemi.me/2017/11/18/csharp-independent-partial-class-hack/&is_video=false&description=C# 中实现一个独立的partial class"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=C# 中实现一个独立的partial class&body=Check out this article: http://yemi.me/2017/11/18/csharp-independent-partial-class-hack/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://yemi.me/2017/11/18/csharp-independent-partial-class-hack/&title=C# 中实现一个独立的partial class"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://yemi.me/2017/11/18/csharp-independent-partial-class-hack/&title=C# 中实现一个独立的partial class"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yemi.me/2017/11/18/csharp-independent-partial-class-hack/&title=C# 中实现一个独立的partial class"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://yemi.me/2017/11/18/csharp-independent-partial-class-hack/&title=C# 中实现一个独立的partial class"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yemi.me/2017/11/18/csharp-independent-partial-class-hack/&name=C# 中实现一个独立的partial class&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#尝试Partial"><span class="toc-number">1.</span> <span class="toc-text">尝试Partial</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用interface"><span class="toc-number">2.</span> <span class="toc-text">使用interface</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#创建两个互补的-partial-interface"><span class="toc-number">3.</span> <span class="toc-text">创建两个互补的 partial interface</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index my4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        C# 中实现一个独立的partial class
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Yemi's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2017-11-18T13:04:44.000Z" itemprop="datePublished">2017-11-18</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/C/">C#</a>, <a class="tag-link" href="/tags/Unity/">Unity</a>, <a class="tag-link" href="/tags/hack/">hack</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>今天想要分享的是的是一个关于C#的hack，其实题目也想了好久并不知道如何描述这样一个东西。大致的描述就是我们需要一个partial的类，这个类被定义在两个.cs文件中，当两个文件同时编译或者是单个编译时不会有compile error。同时这两个文件有相同的完全的capabilities(大概可以用这个词来描述)。</p>
+<p>其实这个需求不是十分直观的，只有在特定的环境下才会有这种需求。我们在Unity的项目中，定义了一个类来处理版本号，暂且定为ClassVersion。同时我们还有一个模块A，这个模块也需要依赖ClassVersion来定义一个版本号。所以当只有模块A时我们也需要ClassVersion的定义。但是如果当模块A导入到Unity项目中时，同样的定义就会出现SymbolRedefinded。在这种环境下，最终使用了一个十分hack的方式，在不使用反射的情况下满足了需求。</p>
+<h2 id="尝试Partial"><a href="#尝试Partial" class="headerlink" title="尝试Partial"></a>尝试Partial</h2><p>很显然一来想到的是C#中的Partial。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//Unity classVersion_unity.cs</span></span><br><span class="line"><span class="keyword">partial</span> <span class="keyword">class</span> <span class="title">ClassVersion</span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">GetMajor</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//ModuleA classVersion_moduleA.cs</span></span><br><span class="line"><span class="keyword">partial</span> <span class="keyword">class</span> <span class="title">ClassVersion</span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">GetMajor</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样ClassVersion在各自独立的时候是正常的工作的，但是在合并时还是有<code>GetMajor()</code>这个方法的重定义。如果在不用反射，不使用不同函数名的情况下，始终是会有编译错误的。同时partial method 在这里也没有办法，partial method只能实现一次，所以一定有一边缺少实现。</p>
+<h2 id="使用interface"><a href="#使用interface" class="headerlink" title="使用interface"></a>使用interface</h2><p>尝试把class 改成interface，两个partial的Interface在去掉是现实还是会有相同method的编译报错。不过最后发现了一个常常被忽略的特性。如果有两个接口，他们有相同的方法声明，那么一个实现这两个接口的类只要实现一次这样的方法，并且也不会有编译错误，具体的代码如下。<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">IVersionA</span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">GetMajor</span>(<span class="params"></span>)</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">IVersionB</span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">GetMajor</span>(<span class="params"></span>)</span>;</span><br><span class="line">&#125;</span><br><span class="line">public class ClassVersion: IVersionA,IVersionB&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">GetMajor</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这样我们就可以避开method重定义的Compile Error了。</p>
+<h2 id="创建两个互补的-partial-interface"><a href="#创建两个互补的-partial-interface" class="headerlink" title="创建两个互补的 partial interface"></a>创建两个互补的 partial interface</h2><p><strong>Unity classVersion_unity.cs</strong><br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">partial</span> <span class="keyword">interface</span> <span class="title">IVersionA</span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">partial</span> <span class="keyword">interface</span> <span class="title">IVersionB</span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">GetMajor</span>(<span class="params"></span>)</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public partial class ClassVersionUnity :IVersionA,IVersionB&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">GetMajor</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>ModuleA classVersion_moduleA.cs</strong><br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">partial</span> <span class="keyword">interface</span> <span class="title">IVersionA</span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">GetMajor</span>(<span class="params"></span>)</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">partial</span> <span class="keyword">interface</span> <span class="title">IVersionB</span>&#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public partial class ClassVersionModuleA :IVersionA,IVersionB&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">GetMajor</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这样这两个.cs文件在独立编译与同时编译的情况下都不会有编译报错<br>在各自的环境中，只要转换为当前环境中带有实现的那个接口对象就可以直接调用方法了。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这种实现方式看起来并不优雅，代码的实现还是两份，这个是无法避免的。但是避免了使用反射和强制类型转换，使用接口限定了实现，总之一个比较hack的实现方式。</p>
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#尝试Partial"><span class="toc-number">1.</span> <span class="toc-text">尝试Partial</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用interface"><span class="toc-number">2.</span> <span class="toc-text">使用interface</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#创建两个互补的-partial-interface"><span class="toc-number">3.</span> <span class="toc-text">创建两个互补的 partial interface</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yemi.me/2017/11/18/csharp-independent-partial-class-hack/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://yemi.me/2017/11/18/csharp-independent-partial-class-hack/&text=C# 中实现一个独立的partial class"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yemi.me/2017/11/18/csharp-independent-partial-class-hack/&title=C# 中实现一个独立的partial class"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yemi.me/2017/11/18/csharp-independent-partial-class-hack/&is_video=false&description=C# 中实现一个独立的partial class"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=C# 中实现一个独立的partial class&body=Check out this article: http://yemi.me/2017/11/18/csharp-independent-partial-class-hack/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://yemi.me/2017/11/18/csharp-independent-partial-class-hack/&title=C# 中实现一个独立的partial class"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://yemi.me/2017/11/18/csharp-independent-partial-class-hack/&title=C# 中实现一个独立的partial class"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yemi.me/2017/11/18/csharp-independent-partial-class-hack/&title=C# 中实现一个独立的partial class"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://yemi.me/2017/11/18/csharp-independent-partial-class-hack/&title=C# 中实现一个独立的partial class"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yemi.me/2017/11/18/csharp-independent-partial-class-hack/&name=C# 中实现一个独立的partial class&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2018 yemi
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/fontawesome-all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'yemiblog';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+

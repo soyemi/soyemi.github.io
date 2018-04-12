@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang=de>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="Attribute是C#中一个广泛使用的特性，通过使用Attribute对程序集中的类型进行标记，并通过Reflection实现一些特殊的需求，同时Attribute也可以在编译时储存一些静态信息。但是在使用Attribute时也有一些限制。 问题的提出目前工作中主要是编写与维护一套在Unity中使用的Continuous Integration 框架。在这套框架中大量使用了Attribute来对">
+<meta name="keywords" content="C#,Unity,hack">
+<meta property="og:type" content="article">
+<meta property="og:title" content="c# Attribute 使用约束">
+<meta property="og:url" content="http://yemi.me/2017/07/01/csharp_attribute_constraint/index.html">
+<meta property="og:site_name" content="Yemi&#39;s Blog">
+<meta property="og:description" content="Attribute是C#中一个广泛使用的特性，通过使用Attribute对程序集中的类型进行标记，并通过Reflection实现一些特殊的需求，同时Attribute也可以在编译时储存一些静态信息。但是在使用Attribute时也有一些限制。 问题的提出目前工作中主要是编写与维护一套在Unity中使用的Continuous Integration 框架。在这套框架中大量使用了Attribute来对">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2017-11-18T13:05:36.223Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="c# Attribute 使用约束">
+<meta name="twitter:description" content="Attribute是C#中一个广泛使用的特性，通过使用Attribute对程序集中的类型进行标记，并通过Reflection实现一些特殊的需求，同时Attribute也可以在编译时储存一些静态信息。但是在使用Attribute时也有一些限制。 问题的提出目前工作中主要是编写与维护一套在Unity中使用的Continuous Integration 框架。在这套框架中大量使用了Attribute来对">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.png">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+          
+        
+    
+    <!-- title -->
+    <title>c# Attribute 使用约束</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss -->
+    
+    
+</head>
+
+<body class="max-width mx-auto px3">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2017/07/17/effective-cpp-note/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2017/06/04/dirextx-learn-1/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yemi.me/2017/07/01/csharp_attribute_constraint/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://yemi.me/2017/07/01/csharp_attribute_constraint/&text=c# Attribute 使用约束"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yemi.me/2017/07/01/csharp_attribute_constraint/&title=c# Attribute 使用约束"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yemi.me/2017/07/01/csharp_attribute_constraint/&is_video=false&description=c# Attribute 使用约束"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=c# Attribute 使用约束&body=Check out this article: http://yemi.me/2017/07/01/csharp_attribute_constraint/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://yemi.me/2017/07/01/csharp_attribute_constraint/&title=c# Attribute 使用约束"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://yemi.me/2017/07/01/csharp_attribute_constraint/&title=c# Attribute 使用约束"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yemi.me/2017/07/01/csharp_attribute_constraint/&title=c# Attribute 使用约束"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://yemi.me/2017/07/01/csharp_attribute_constraint/&title=c# Attribute 使用约束"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yemi.me/2017/07/01/csharp_attribute_constraint/&name=c# Attribute 使用约束&description=&lt;p&gt;Attribute是C#中一个广泛使用的特性，通过使用Attribute对程序集中的类型进行标记，并通过Reflection实现一些特殊的需求，同时Attribute也可以在编译时储存一些静态信息。但是在使用Attribute时也有一些限制。&lt;/p&gt;
+&lt;h2 id=&#34;问题的提出&#34;&gt;&lt;a href=&#34;#问题的提出&#34; class=&#34;headerlink&#34; title=&#34;问题的提出&#34;&gt;&lt;/a&gt;问题的提出&lt;/h2&gt;&lt;p&gt;目前工作中主要是编写与维护一套在Unity中使用的Continuous Integration 框架。在这套框架中大量使用了Attribute来对集成的第三方SDK进行标记，来进行一些处理。最初的做法是一些SDK，通过约定静态方法，在CI的其他阶段进行调用&lt;/p&gt;
+&lt;figure class=&#34;highlight csharp&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;8&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;keyword&#34;&gt;public&lt;/span&gt; &lt;span class=&#34;keyword&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;title&#34;&gt;SDKA&lt;/span&gt; :&lt;span class=&#34;title&#34;&gt;SDKBase&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;    &lt;span class=&#34;function&#34;&gt;&lt;span class=&#34;keyword&#34;&gt;public&lt;/span&gt; &lt;span class=&#34;keyword&#34;&gt;static&lt;/span&gt; &lt;span class=&#34;keyword&#34;&gt;void&lt;/span&gt; &lt;span class=&#34;title&#34;&gt;ModifyConfig&lt;/span&gt;(&lt;span class=&#34;params&#34;&gt;&lt;span class=&#34;keyword&#34;&gt;ref&lt;/span&gt; Hashtable config&lt;/span&gt;)&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;function&#34;&gt;    &lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;        &lt;span class=&#34;comment&#34;&gt;//SDK do modify&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;    &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;  	....&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;通过反射调用该方法的代码如下&lt;/p&gt;
+&lt;figure class=&#34;highlight csharp&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;13&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;function&#34;&gt;&lt;span class=&#34;keyword&#34;&gt;public&lt;/span&gt; &lt;span class=&#34;keyword&#34;&gt;void&lt;/span&gt; &lt;span class=&#34;title&#34;&gt;SDKsModifyConfig&lt;/span&gt;(&lt;span class=&#34;params&#34;&gt;&lt;/span&gt;)&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;function&#34;&gt;&lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;  	Type[] sdktypes = assembly.GetTypes();&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;  	&lt;span class=&#34;comment&#34;&gt;//过滤所有的的SDK类型&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;  	...&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;    &lt;span class=&#34;keyword&#34;&gt;foreach&lt;/span&gt;(&lt;span class=&#34;keyword&#34;&gt;var&lt;/span&gt; tsdk &lt;span class=&#34;keyword&#34;&gt;in&lt;/span&gt; sdktypes)&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;    &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;        MethodInfo method = tsdk.GetMethod(&lt;span class=&#34;string&#34;&gt;&#34;ModifyConfig&#34;&lt;/span&gt;, BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic);&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;        method.Invoke(&lt;span class=&#34;literal&#34;&gt;null&lt;/span&gt;, config);&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;    &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;  	...&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;对于这种调用方式，不太好的地方是参与开发SDK的人员必须约定用于反射的方法名，以及该方法的参数。每次接入SDK编写一个SDK的类型都需重新编写，容易造成错误（error-prone）。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#问题的提出"><span class="toc-number">1.</span> <span class="toc-text">问题的提出</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用Attribute"><span class="toc-number">2.</span> <span class="toc-text">使用Attribute</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Attribute的约束"><span class="toc-number">3.</span> <span class="toc-text">Attribute的约束</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index my4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        c# Attribute 使用约束
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Yemi's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2017-07-01T08:18:29.000Z" itemprop="datePublished">2017-07-01</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/C/">C#</a>, <a class="tag-link" href="/tags/Unity/">Unity</a>, <a class="tag-link" href="/tags/hack/">hack</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>Attribute是C#中一个广泛使用的特性，通过使用Attribute对程序集中的类型进行标记，并通过Reflection实现一些特殊的需求，同时Attribute也可以在编译时储存一些静态信息。但是在使用Attribute时也有一些限制。</p>
+<h2 id="问题的提出"><a href="#问题的提出" class="headerlink" title="问题的提出"></a>问题的提出</h2><p>目前工作中主要是编写与维护一套在Unity中使用的Continuous Integration 框架。在这套框架中大量使用了Attribute来对集成的第三方SDK进行标记，来进行一些处理。最初的做法是一些SDK，通过约定静态方法，在CI的其他阶段进行调用</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">SDKA</span> :<span class="title">SDKBase</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ModifyConfig</span>(<span class="params"><span class="keyword">ref</span> Hashtable config</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="comment">//SDK do modify</span></span><br><span class="line">    &#125;</span><br><span class="line">  	....</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过反射调用该方法的代码如下</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SDKsModifyConfig</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  	Type[] sdktypes = assembly.GetTypes();</span><br><span class="line">  	<span class="comment">//过滤所有的的SDK类型</span></span><br><span class="line">  	...</span><br><span class="line">    <span class="keyword">foreach</span>(<span class="keyword">var</span> tsdk <span class="keyword">in</span> sdktypes)</span><br><span class="line">    &#123;</span><br><span class="line">        MethodInfo method = tsdk.GetMethod(<span class="string">"ModifyConfig"</span>, BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic);</span><br><span class="line"></span><br><span class="line">        method.Invoke(<span class="literal">null</span>, config);</span><br><span class="line">    &#125;</span><br><span class="line">  	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于这种调用方式，不太好的地方是参与开发SDK的人员必须约定用于反射的方法名，以及该方法的参数。每次接入SDK编写一个SDK的类型都需重新编写，容易造成错误（error-prone）。</p>
+<a id="more"></a>
+<p>如果我们使用在基类定义方法，在子类覆盖的形式，这样可以避免发生错误，同时IDE的自动完成可以帮助我们完成代码。但是这样在反射的时候就需要有类的对象，而其实我们所需要的方法是针对与类的静态方法。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">SDKBase</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">ModifyConfig</span>(<span class="params"><span class="keyword">ref</span> Hashtable config</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">SDKA</span> :<span class="title">SDKBase</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">ModifyConfig</span>(<span class="params"><span class="keyword">ref</span> Hashtable config</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="使用Attribute"><a href="#使用Attribute" class="headerlink" title="使用Attribute"></a>使用Attribute</h2><p>另一中解决方式是将这些方法定义在Attribute中。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">CustomSDKAttribute</span> :<span class="title">Attribute</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">ModifyConfig</span>(<span class="params"><span class="keyword">ref</span> Hashtable config</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">[<span class="meta">CustomSDK</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">SDKA</span> :<span class="title">SDKBase</span></span><br><span class="line">&#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">		<span class="keyword">foreach</span>(<span class="keyword">var</span> type <span class="keyword">in</span> sdktypes)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span>(Attribute.IsDefined(type,<span class="keyword">typeof</span>(CustomSDKAttribute)))</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">var</span> attrs = type.GetCustomAttributes(<span class="keyword">typeof</span>(CustomSDKAttribute), <span class="literal">true</span>);</span><br><span class="line">                CustomSDKAttribute sdkattr = attrs[<span class="number">0</span>] <span class="keyword">as</span> CustomSDKAttribute;</span><br><span class="line">                sdkattr.ModifyConfig(<span class="keyword">ref</span> config);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+<p>将需要反射的方法放在Attribute的定义中后我们在反射了类获得Attribute之后可以直接调用该方法，不需要再反射方法了。</p>
+<p>对于不同的SDK的类型需要不同的实现，我们可以定义一个Attribute的基类，通过Attribute的子类来实现</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">CustomSDK</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">SDKA</span> :<span class="title">SDKBase</span></span><br><span class="line">&#123;</span><br><span class="line">&#125;</span><br><span class="line">[<span class="meta">CustomSDK_Impl</span>]</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">SDKB</span>:<span class="title">SDKBase</span></span><br><span class="line">&#123;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">CustomSDKAttribute</span> :<span class="title">Attribute</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">ModifyConfig</span>(<span class="params"><span class="keyword">ref</span> Hashtable config</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">CustomSDK_Impl</span> :<span class="title">CustomSDKAttribute</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">override</span> <span class="keyword">void</span> <span class="title">ModifyConfig</span>(<span class="params"><span class="keyword">ref</span> Hashtable config</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="comment">//覆盖基类的实现</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Attribute的约束"><a href="#Attribute的约束" class="headerlink" title="Attribute的约束"></a>Attribute的约束</h2><p>我们知道在定义Attribute的时候可以给Attribute添加约束<code>AttributeUsage</code></p>
+<p><code>[AttributeUsage(AttributeTargets.Class,AllowMultiple =false)]</code></p>
+<p>但是只能通过AttributeUsage约束Attribute添加到程序集对象的类型，并不能约束Attribute修饰的对象的继承链等其他特性。也就是不能使用泛型和where关键字。这样就会导致我们给SDK定义的Attribute可以被任意使用其他类型的对象上，这是我们不愿意看到的。</p>
+<p>由于我们是使用反射来查找所有标记为该Attribute的类型，缺少了类型的继承链约束后，无疑会造成一些隐患。但是由于C#语言本身不提供Attribute的类型约束，在google之后通过一个非常trick的方式解决了Attribute的约束问题。</p>
+<p>我们将Attribute的定义声明在需要约束的基类中，并且使用<code>protected</code>修饰符</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">SDKBase</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ModifyConfig</span>(<span class="params"><span class="keyword">ref</span> Hashtable config</span>)</span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [<span class="meta">AttributeUsage(AttributeTargets.Class, AllowMultiple = false)</span>]</span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">class</span> <span class="title">CustomSDKAttribute</span> : <span class="title">Attribute</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">ModifyConfig</span>(<span class="params"><span class="keyword">ref</span> Hashtable config</span>)</span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样CustomSDKAttribute就只能在SDKBase的子类进行访问，下面的代码便会产生编译错误。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">CustomSDK</span>]				<span class="comment">//Error:未找到类型</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">TestClassA</span></span><br><span class="line">&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样就我们就相当与声明了<code>where T:SDKBASE</code>，对Attribute的使用进行了约束。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>使用Attribute定义的修饰符将Attribute修饰的对象加上约束。</p>
+<p>对于将需要反射调用的方法存放在Attribute中还有一个好处是。在Unity开发中，如果我们只在Editor层面进行对这些方法的反射和调用，可以将该Attribute限定在编辑器环境，防止这部分代码污染最后编译的版本。</p>
+<p><code>[System.Diagnostics.Conditional(&quot;UNITY_EDITOR&quot;)]</code></p>
+<p>但是如果使用最初的反射方法的方式，这需要给所有的反射方法加上宏的限定，同时不一定可以使用<code>System.Diagnostics.Conditional</code>这个Attribute进行宏的约束。Conditional要求限定的方法必须是void的返回值。讲方法定义在Attribute中直接移除Attribute不受该约束限制</p>
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#问题的提出"><span class="toc-number">1.</span> <span class="toc-text">问题的提出</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用Attribute"><span class="toc-number">2.</span> <span class="toc-text">使用Attribute</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Attribute的约束"><span class="toc-number">3.</span> <span class="toc-text">Attribute的约束</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yemi.me/2017/07/01/csharp_attribute_constraint/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://yemi.me/2017/07/01/csharp_attribute_constraint/&text=c# Attribute 使用约束"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yemi.me/2017/07/01/csharp_attribute_constraint/&title=c# Attribute 使用约束"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yemi.me/2017/07/01/csharp_attribute_constraint/&is_video=false&description=c# Attribute 使用约束"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=c# Attribute 使用约束&body=Check out this article: http://yemi.me/2017/07/01/csharp_attribute_constraint/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://yemi.me/2017/07/01/csharp_attribute_constraint/&title=c# Attribute 使用约束"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://yemi.me/2017/07/01/csharp_attribute_constraint/&title=c# Attribute 使用约束"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yemi.me/2017/07/01/csharp_attribute_constraint/&title=c# Attribute 使用约束"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://yemi.me/2017/07/01/csharp_attribute_constraint/&title=c# Attribute 使用约束"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yemi.me/2017/07/01/csharp_attribute_constraint/&name=c# Attribute 使用约束&description=&lt;p&gt;Attribute是C#中一个广泛使用的特性，通过使用Attribute对程序集中的类型进行标记，并通过Reflection实现一些特殊的需求，同时Attribute也可以在编译时储存一些静态信息。但是在使用Attribute时也有一些限制。&lt;/p&gt;
+&lt;h2 id=&#34;问题的提出&#34;&gt;&lt;a href=&#34;#问题的提出&#34; class=&#34;headerlink&#34; title=&#34;问题的提出&#34;&gt;&lt;/a&gt;问题的提出&lt;/h2&gt;&lt;p&gt;目前工作中主要是编写与维护一套在Unity中使用的Continuous Integration 框架。在这套框架中大量使用了Attribute来对集成的第三方SDK进行标记，来进行一些处理。最初的做法是一些SDK，通过约定静态方法，在CI的其他阶段进行调用&lt;/p&gt;
+&lt;figure class=&#34;highlight csharp&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;8&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;keyword&#34;&gt;public&lt;/span&gt; &lt;span class=&#34;keyword&#34;&gt;class&lt;/span&gt; &lt;span class=&#34;title&#34;&gt;SDKA&lt;/span&gt; :&lt;span class=&#34;title&#34;&gt;SDKBase&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;    &lt;span class=&#34;function&#34;&gt;&lt;span class=&#34;keyword&#34;&gt;public&lt;/span&gt; &lt;span class=&#34;keyword&#34;&gt;static&lt;/span&gt; &lt;span class=&#34;keyword&#34;&gt;void&lt;/span&gt; &lt;span class=&#34;title&#34;&gt;ModifyConfig&lt;/span&gt;(&lt;span class=&#34;params&#34;&gt;&lt;span class=&#34;keyword&#34;&gt;ref&lt;/span&gt; Hashtable config&lt;/span&gt;)&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;function&#34;&gt;    &lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;        &lt;span class=&#34;comment&#34;&gt;//SDK do modify&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;    &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;  	....&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;通过反射调用该方法的代码如下&lt;/p&gt;
+&lt;figure class=&#34;highlight csharp&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;13&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;function&#34;&gt;&lt;span class=&#34;keyword&#34;&gt;public&lt;/span&gt; &lt;span class=&#34;keyword&#34;&gt;void&lt;/span&gt; &lt;span class=&#34;title&#34;&gt;SDKsModifyConfig&lt;/span&gt;(&lt;span class=&#34;params&#34;&gt;&lt;/span&gt;)&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;function&#34;&gt;&lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;  	Type[] sdktypes = assembly.GetTypes();&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;  	&lt;span class=&#34;comment&#34;&gt;//过滤所有的的SDK类型&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;  	...&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;    &lt;span class=&#34;keyword&#34;&gt;foreach&lt;/span&gt;(&lt;span class=&#34;keyword&#34;&gt;var&lt;/span&gt; tsdk &lt;span class=&#34;keyword&#34;&gt;in&lt;/span&gt; sdktypes)&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;    &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;        MethodInfo method = tsdk.GetMethod(&lt;span class=&#34;string&#34;&gt;&#34;ModifyConfig&#34;&lt;/span&gt;, BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic);&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;        method.Invoke(&lt;span class=&#34;literal&#34;&gt;null&lt;/span&gt;, config);&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;    &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;  	...&lt;/span&gt;&lt;br&gt;&lt;span class=&#34;line&#34;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;对于这种调用方式，不太好的地方是参与开发SDK的人员必须约定用于反射的方法名，以及该方法的参数。每次接入SDK编写一个SDK的类型都需重新编写，容易造成错误（error-prone）。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2018 yemi
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/fontawesome-all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'yemiblog';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+

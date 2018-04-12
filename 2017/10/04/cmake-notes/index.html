@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang=de>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="之前在写c++项目的时候，一直使用的是宇宙第一IDE Visual Studio，vs确实默默在后台做了许多事情，你只用管写代码其他的都不用操心。但是当项目引入大量的第三方库的时候，许多构建相关的配置就会比较麻烦。考虑到Rigel(一个巨大的轮子)这个项目后续需要支持多平台构建，所以打算试试使用cmake组织整个工程。 对于cmake使用其实没有太多经验的，主要是之前在编译一些第三方库的时候，li">
+<meta name="keywords" content="cmake,visual studio">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用cmake构建visual studio项目">
+<meta property="og:url" content="http://yemi.me/2017/10/04/cmake-notes/index.html">
+<meta property="og:site_name" content="Yemi&#39;s Blog">
+<meta property="og:description" content="之前在写c++项目的时候，一直使用的是宇宙第一IDE Visual Studio，vs确实默默在后台做了许多事情，你只用管写代码其他的都不用操心。但是当项目引入大量的第三方库的时候，许多构建相关的配置就会比较麻烦。考虑到Rigel(一个巨大的轮子)这个项目后续需要支持多平台构建，所以打算试试使用cmake组织整个工程。 对于cmake使用其实没有太多经验的，主要是之前在编译一些第三方库的时候，li">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yemi.me/images/cmake_source_group.png">
+<meta property="og:updated_time" content="2017-10-14T15:44:57.912Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用cmake构建visual studio项目">
+<meta name="twitter:description" content="之前在写c++项目的时候，一直使用的是宇宙第一IDE Visual Studio，vs确实默默在后台做了许多事情，你只用管写代码其他的都不用操心。但是当项目引入大量的第三方库的时候，许多构建相关的配置就会比较麻烦。考虑到Rigel(一个巨大的轮子)这个项目后续需要支持多平台构建，所以打算试试使用cmake组织整个工程。 对于cmake使用其实没有太多经验的，主要是之前在编译一些第三方库的时候，li">
+<meta name="twitter:image" content="http://yemi.me/images/cmake_source_group.png">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.png">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+          
+        
+    
+    <!-- title -->
+    <title>使用cmake构建visual studio项目</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss -->
+    
+    
+</head>
+
+<body class="max-width mx-auto px3">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2017/11/18/csharp-independent-partial-class-hack/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2017/09/14/vs-precompiled-header/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yemi.me/2017/10/04/cmake-notes/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://yemi.me/2017/10/04/cmake-notes/&text=使用cmake构建visual studio项目"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yemi.me/2017/10/04/cmake-notes/&title=使用cmake构建visual studio项目"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yemi.me/2017/10/04/cmake-notes/&is_video=false&description=使用cmake构建visual studio项目"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=使用cmake构建visual studio项目&body=Check out this article: http://yemi.me/2017/10/04/cmake-notes/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://yemi.me/2017/10/04/cmake-notes/&title=使用cmake构建visual studio项目"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://yemi.me/2017/10/04/cmake-notes/&title=使用cmake构建visual studio项目"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yemi.me/2017/10/04/cmake-notes/&title=使用cmake构建visual studio项目"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://yemi.me/2017/10/04/cmake-notes/&title=使用cmake构建visual studio项目"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yemi.me/2017/10/04/cmake-notes/&name=使用cmake构建visual studio项目&description=&lt;p&gt;之前在写c++项目的时候，一直使用的是宇宙第一IDE Visual Studio，vs确实默默在后台做了许多事情，你只用管写代码其他的都不用操心。但是当项目引入大量的第三方库的时候，许多构建相关的配置就会比较麻烦。考虑到Rigel(一个巨大的轮子)这个项目后续需要支持多平台构建，所以打算试试使用cmake组织整个工程。&lt;/p&gt;
+&lt;p&gt;对于cmake使用其实没有太多经验的，主要是之前在编译一些第三方库的时候，libpng freetype之类的。一行命令行脚本 &lt;code&gt;cmake ./&lt;/code&gt; 然后自动生成了sln项目，后面就是熟悉的visual studio了。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#cmake初体验"><span class="toc-number">1.</span> <span class="toc-text">cmake初体验</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#创建cmake工程"><span class="toc-number">1.1.</span> <span class="toc-text">创建cmake工程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置生成的项目"><span class="toc-number">1.2.</span> <span class="toc-text">配置生成的项目</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#多源文件的配置"><span class="toc-number">1.3.</span> <span class="toc-text">多源文件的配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#引用路径与库目录"><span class="toc-number">1.4.</span> <span class="toc-text">引用路径与库目录</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cmake其他配置"><span class="toc-number">2.</span> <span class="toc-text">cmake其他配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#源文件分组"><span class="toc-number">2.1.</span> <span class="toc-text">源文件分组</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#判定编译的Architecture"><span class="toc-number">2.2.</span> <span class="toc-text">判定编译的Architecture</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Configuration-Debug-Release的判定"><span class="toc-number">2.3.</span> <span class="toc-text">Configuration Debug/Release的判定</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#指定build输出目录"><span class="toc-number">2.4.</span> <span class="toc-text">指定build输出目录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#自定义命令处理post-build"><span class="toc-number">2.5.</span> <span class="toc-text">自定义命令处理post-build</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cmake杂项"><span class="toc-number">3.</span> <span class="toc-text">cmake杂项</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index my4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        使用cmake构建visual studio项目
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Yemi's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2017-10-04T01:04:21.000Z" itemprop="datePublished">2017-10-04</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/cmake/">cmake</a>, <a class="tag-link" href="/tags/visual-studio/">visual studio</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>之前在写c++项目的时候，一直使用的是宇宙第一IDE Visual Studio，vs确实默默在后台做了许多事情，你只用管写代码其他的都不用操心。但是当项目引入大量的第三方库的时候，许多构建相关的配置就会比较麻烦。考虑到Rigel(一个巨大的轮子)这个项目后续需要支持多平台构建，所以打算试试使用cmake组织整个工程。</p>
+<p>对于cmake使用其实没有太多经验的，主要是之前在编译一些第三方库的时候，libpng freetype之类的。一行命令行脚本 <code>cmake ./</code> 然后自动生成了sln项目，后面就是熟悉的visual studio了。</p>
+<a id="more"></a>
+<h2 id="cmake初体验"><a href="#cmake初体验" class="headerlink" title="cmake初体验"></a>cmake初体验</h2><h3 id="创建cmake工程"><a href="#创建cmake工程" class="headerlink" title="创建cmake工程"></a>创建cmake工程</h3><p>在项目目录下创建一个<code>CMakeLists.txt</code>创建好了一个cmake工程。</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#指定cmake的最小版本</span></span><br><span class="line"><span class="keyword">cmake_minimum_required</span>(VERSION <span class="number">3.2</span>)</span><br><span class="line"><span class="comment">#制定项目的名称</span></span><br><span class="line"><span class="keyword">project</span>(Rigel)</span><br></pre></td></tr></table></figure>
+<p>在一个大型的项目中可能会有很多子工程，就类似于vs中的解决方案和项目的关系。可以对每个子项目指定一个<code>CMakeLists.txt</code>文件，子项目可以是一个静态库动态库或者是可执行程序等等。</p>
+<p>在主的CMakeLists文件中添加<code>add_subdirectory([sub folder path])</code> 就可以引入子工程的配置。</p>
+<h3 id="配置生成的项目"><a href="#配置生成的项目" class="headerlink" title="配置生成的项目"></a>配置生成的项目</h3><p>接下来就要添加项目了<br><code>add_executable([target name] [source files...])</code> add_executable可以为项目添加一个可执行工程<br><code>add_library([target name] [source files...])</code> 对于项目中静态库和动态库可以使用add_library进行添加</p>
+<p>如果项目只有一个<code>main.cpp</code> 那么<code>add_executable(testproj main.cpp)</code>，生成的sln中就会把main.cpp添加到testproj这个项目的源文件下面。</p>
+<p>项目依赖配置<br>我们可以指定一个target依赖其他的库项目的target<br><code>add_dependencies(RigelEditor rgcore)</code></p>
+<h3 id="多源文件的配置"><a href="#多源文件的配置" class="headerlink" title="多源文件的配置"></a>多源文件的配置</h3><p>如果有多个源文件可以直接在source files里面添加<code>add_executable(testproj xxx1.cpp xxx2.cpp...)</code>。</p>
+<p>当然可以使用<code>aux_source_directory([Path] [Variable])</code>命令来获取一个目录下的的所有源文件 然后储存在变量<code>Variable</code>中</p>
+<p>还可以使用<code>FILE()</code> 方法来获取<br>几个简单的例子<br><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">FILE(GLOB HEAD_RIGEL_EDITOR ./<span class="keyword">include</span>/*.h)  <span class="comment">#GLOB 获取./include/目录下的*.h 储存在变量HEAD_RIGEL_EDITOR中</span></span><br><span class="line">FILE(GLOB_RECURSE SRCS_RIGEL_EDITOR ./source/*.cpp)<span class="comment">#GLOB 递归获取./include/目录和子目录下的*.cpp 储存在变量HEAD_RIGEL_EDITOR中</span></span><br></pre></td></tr></table></figure></p>
+<p><code>add_executable(testproj ${HEAD_RIGEL_EDITOR} ${SRCS_RIGEL_EDITOR})</code><br>这样我们就可以给项目添加多个源文件了</p>
+<p><strong>CMAKE生成的sln工程中不会把源文件拷贝到build的目录中，而是通过引用文件的方式</strong></p>
+<h3 id="引用路径与库目录"><a href="#引用路径与库目录" class="headerlink" title="引用路径与库目录"></a>引用路径与库目录</h3><p>我们添加了一个子项目后还需要设置include的路径，来添加对头文件的引用。<br><code>target_include_directories(RigelEditor PUBLIC ./include/rgeditor)</code><br>这样就给RigelEditor这target添加了一个include的路径<code>./include/rgeditor</code>。</p>
+<p>添加link的库文件<br><code>target_link_libraries(RigelEditor rgcore)</code><br>如果需要添加第三方的库文件,可以直接引用库文件的路径。</p>
+<p>需要注意的是使用CMAKE_SOURCE_DIR可以获取到源文件的目录而不是生成的目录。</p>
+<p><code>target_link_libraries(rgcore ${THIDPART_LIB_DIR}\\freetype\\libs\\x64\\freetype28.lib)</code></p>
+<h2 id="cmake其他配置"><a href="#cmake其他配置" class="headerlink" title="cmake其他配置"></a>cmake其他配置</h2><h3 id="源文件分组"><a href="#源文件分组" class="headerlink" title="源文件分组"></a>源文件分组</h3><p>在visual studio中我们可以添加筛选器给源文件进行分组。cmake提供了<code>source_group()</code>来支持这一特性。</p>
+<p><code>source_group</code>需要写在<code>add_library</code>或者<code>add_executable</code>之后<br>下面是使用的示例：<br><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">FILE(GLOB SRCS_RGGRAPHICS_CORE ./source/*.cpp)</span><br><span class="line">FILE(GLOB SRCS_RGGRAPHICS_DIRECTX11 ./source/directx11/*.cpp)</span><br><span class="line"></span><br><span class="line">FILE(GLOB HEAD_RGGRAPHICS_CORE ./<span class="keyword">include</span>/rggraphics/*.h)</span><br><span class="line">FILE(GLOB HEAD_RGGRAPHICS_DIRECTX11 ./<span class="keyword">include</span>/rggraphics/directx11/*.h)</span><br><span class="line"></span><br><span class="line"><span class="keyword">add_library</span>(rggraphics STATIC <span class="variable">$&#123;HEAD_RGGRAPHICS&#125;</span> <span class="variable">$&#123;SRCS_RGGRAPHICS&#125;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">source_group</span>(<span class="string">"source\\core"</span> FILES <span class="variable">$&#123;SRCS_RGGRAPHICS_CORE&#125;</span>)</span><br><span class="line"><span class="keyword">source_group</span>(<span class="string">"source\\directx11"</span> FILES <span class="variable">$&#123;SRCS_RGGRAPHICS_DIRECTX11&#125;</span>)</span><br><span class="line"><span class="keyword">source_group</span>(<span class="string">"header\\core"</span> FILES <span class="variable">$&#123;HEAD_RGGRAPHICS_CORE&#125;</span>)</span><br><span class="line"><span class="keyword">source_group</span>(<span class="string">"header\\directx11"</span> FILES <span class="variable">$&#123;HEAD_RGGRAPHICS_DIRECTX11&#125;</span>)</span><br></pre></td></tr></table></figure></p>
+<p><code>set_property(GLOBAL PROPERTY USE_FOLDERS ON)</code>打开USE_FOLDERS的配置</p>
+<p><img src="/images/cmake_source_group.png" alt="cmake source_group"></p>
+<h3 id="判定编译的Architecture"><a href="#判定编译的Architecture" class="headerlink" title="判定编译的Architecture"></a>判定编译的Architecture</h3><p>有时候我们的配置需要区别64位与32位，如一些静态库动态库的版本不同，就需要在cmake中判断当前配置是否是64位。<br>CMAKE提供了<code>CMAKE_CL_64</code>这个变量来判定<br><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(CMAKE_CL_64)</span><br><span class="line">    <span class="comment">#link 64位库文件</span></span><br><span class="line"><span class="keyword">else</span>()</span><br><span class="line">    <span class="comment">#link 32位库文件</span></span><br><span class="line"><span class="keyword">endif</span>()</span><br></pre></td></tr></table></figure></p>
+<h3 id="Configuration-Debug-Release的判定"><a href="#Configuration-Debug-Release的判定" class="headerlink" title="Configuration Debug/Release的判定"></a>Configuration Debug/Release的判定</h3><p>有时候我们需要区别Debug/Release build<br><code>$&lt;$&lt;CONFIG:DEBUG&gt;:${BUILD_DIR_RIGELEDITOR_DEBUG}&gt;$&lt;$&lt;CONFIG:RELEASE&gt;:${BUILD_DIR_RIGELEDITOR_RELEASE}&gt;</code><br>这个值在Debug的配置下输出${BUILD_DIR_RIGELEDITOR_DEBUG}在Release下则是<br>${BUILD_DIR_RIGELEDITOR_RELEASE}</p>
+<h3 id="指定build输出目录"><a href="#指定build输出目录" class="headerlink" title="指定build输出目录"></a>指定build输出目录</h3><p>生成sln会给每个子项目生成自己的输出路径一般情况下是<br><code>$(ProjectDir)$(PlatformTarget)$(Configuration)</code><br>如<code>TestProj/x64/Debug</code>这样的路径<br>在cmake中我们可以制定一个target生成的路径便于我们执行post-build的脚本来做一些处理</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set_target_properties</span>(RigelEditor PROPERTIES </span><br><span class="line">    RUNTIME_OUTPUT_DIRECTORY_DEBUG <span class="variable">$&#123;BUILD_DIR_RIGELEDITOR_DEBUG&#125;</span></span><br><span class="line">    RUNTIME_OUTPUT_DIRECTORY_RELEASE <span class="variable">$&#123;BUILD_DIR_RIGELEDITOR_RELEASE&#125;</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h3 id="自定义命令处理post-build"><a href="#自定义命令处理post-build" class="headerlink" title="自定义命令处理post-build"></a>自定义命令处理post-build</h3><p>项目生成之后如果有文件需要拷贝，在vs中可以使用生成事件-后期生成事件-命令行来添加命令。cmake中也可以指定这样的生成事件的配置。</p>
+<p><code>add_custom_command(TARGET RigelEditor POST_BUILD COMMAND xcopy ARGS ${CMD_COPY_DATA})</code><br>这样指定了RigelEditor在Post Build阶段执行 xcopy的命令行 参数为 ${CMD_COPY_DATA}</p>
+<p>生成sln之后再后期生成事件中就可以看到cmake添加的命令<br><figure class="highlight bat"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">setlocal</span></span><br><span class="line"><span class="built_in">xcopy</span> "F:/_Proj_RgEngine/ProjRigel/Rigel\resources\Data" "F:/_Proj_RgEngine/ProjRigel/Build/win64\Build\RigelEditor_Debug\Data\" /E /Y</span><br><span class="line"><span class="keyword">if</span> <span class="variable">%errorlevel%</span> <span class="keyword">neq</span> <span class="number">0</span> <span class="keyword">goto</span> :cmEnd</span><br><span class="line">:cmEnd</span><br><span class="line"><span class="built_in">endlocal</span> &amp; <span class="keyword">call</span> :cmErrorLevel <span class="variable">%errorlevel%</span> &amp; <span class="keyword">goto</span> :cmDone</span><br><span class="line">:cmErrorLevel</span><br><span class="line"><span class="keyword">exit</span> /b %<span class="number">1</span></span><br><span class="line">:cmDone</span><br><span class="line"><span class="keyword">if</span> <span class="variable">%errorlevel%</span> <span class="keyword">neq</span> <span class="number">0</span> <span class="keyword">goto</span> :VCEnd</span><br></pre></td></tr></table></figure></p>
+<h2 id="cmake杂项"><a href="#cmake杂项" class="headerlink" title="cmake杂项"></a>cmake杂项</h2><p>###VC++ Unicode支持<br>在vc++中定义<code>UNICODE</code>与<code>_UNICODE</code>这两个宏，字符串就自动使用了宽字节版本的。所以我们需要在cmake中设定宏，否则编译会报错，使用visual stuido直接创建项目时会直接帮我们设置的好(再一次赞美下VisualStudio)<br><code>add_definitions(-DUNICODE -D_UNICODE)</code></p>
+<p>###Visual Studio中配置预编译头<br>vs中通过配置预编译头文件加快项目的编译速度。可以通过设置Compile Flags /Yc /Yu添加预编译头的配置</p>
+<p>使用CMake进行构建时,<code>set_source_files_properties</code>命令可以对源文件添加编译器参数</p>
+<p>为了给多个子项目都配置预编译头文件，使用CMake的macro来批量处理。<br>定义两个macro <code>set_pch</code> <code>use_pch</code><br><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">macro</span>(set_pch VARCPP VARHEADER)</span><br><span class="line">    <span class="keyword">set_source_files_properties</span>(<span class="variable">$&#123;VARCPP&#125;</span> PROPERTIES COMPILE_FLAGS <span class="string">"/Yc$&#123;VARHEADER&#125;"</span>)</span><br><span class="line"><span class="keyword">endmacro</span>(set_pch)</span><br><span class="line"><span class="keyword">macro</span>(use_pch VARSOURCES VARHEADER)</span><br><span class="line">    <span class="keyword">foreach</span>( src_file <span class="variable">$&#123;VARSOURCES&#125;</span>)</span><br><span class="line">        <span class="keyword">set_source_files_properties</span>(<span class="variable">$&#123;src_file&#125;</span> PROPERTIES COMPILE_FLAGS <span class="string">"/Yu$&#123;VARHEADER&#125;"</span>)</span><br><span class="line">    <span class="keyword">endforeach</span>( src_file <span class="variable">$&#123;VARSOURCES&#125;</span>)</span><br><span class="line"><span class="keyword">endmacro</span>(use_pch VARHEADER VARSOURCES)</span><br></pre></td></tr></table></figure></p>
+<p>使用方式<br>假设预编译头文件为stdafx.h则所有的.cpp文件除了stdafx.cpp需要设置 /Yustdafx.h，使用预编译头。<br>stdafx.cpp设置 /Ycstdafx.h，生成预编译头。</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">use_pch(<span class="string">"$&#123;SRCS_RGCORE&#125;"</span> <span class="string">"rgcore.h"</span>)</span><br><span class="line">set_pch(./source/rgcore.cpp <span class="string">"rgcore.h"</span>)</span><br></pre></td></tr></table></figure>
+<p><strong>一个常见的错误 调用cmake中的方法与宏时 如果需要传入的参数为数组 正确的写法应该是<code>&quot;${VARNAME}&quot;</code> 而不是<code>${VARNAME}</code></strong></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>大概花了半天的时间将<a href="https://github.com/ProgRigel/ProjRigel" target="_blank" rel="noopener">Rigel</a> 从sln迁移到了cmake来构建。上文大概就是在配置过程中遇到的坑以及解决的方法的总结，提及到的cmake命令可以满足基本的项目构建了。<br>cmake使用起来感觉确实很方便，比起直接设置vs sln中的配置之类的，后续应该就会都用cmake了吧。</p>
+<hr>
+<p>更新记录</p>
+<ul>
+<li>2017-10-04 文章发布</li>
+<li>2017-10-13 添加了Visual Stdudio 预编译头配置</li>
+</ul>
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#cmake初体验"><span class="toc-number">1.</span> <span class="toc-text">cmake初体验</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#创建cmake工程"><span class="toc-number">1.1.</span> <span class="toc-text">创建cmake工程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置生成的项目"><span class="toc-number">1.2.</span> <span class="toc-text">配置生成的项目</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#多源文件的配置"><span class="toc-number">1.3.</span> <span class="toc-text">多源文件的配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#引用路径与库目录"><span class="toc-number">1.4.</span> <span class="toc-text">引用路径与库目录</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cmake其他配置"><span class="toc-number">2.</span> <span class="toc-text">cmake其他配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#源文件分组"><span class="toc-number">2.1.</span> <span class="toc-text">源文件分组</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#判定编译的Architecture"><span class="toc-number">2.2.</span> <span class="toc-text">判定编译的Architecture</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Configuration-Debug-Release的判定"><span class="toc-number">2.3.</span> <span class="toc-text">Configuration Debug/Release的判定</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#指定build输出目录"><span class="toc-number">2.4.</span> <span class="toc-text">指定build输出目录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#自定义命令处理post-build"><span class="toc-number">2.5.</span> <span class="toc-text">自定义命令处理post-build</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cmake杂项"><span class="toc-number">3.</span> <span class="toc-text">cmake杂项</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yemi.me/2017/10/04/cmake-notes/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://yemi.me/2017/10/04/cmake-notes/&text=使用cmake构建visual studio项目"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yemi.me/2017/10/04/cmake-notes/&title=使用cmake构建visual studio项目"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yemi.me/2017/10/04/cmake-notes/&is_video=false&description=使用cmake构建visual studio项目"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=使用cmake构建visual studio项目&body=Check out this article: http://yemi.me/2017/10/04/cmake-notes/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://yemi.me/2017/10/04/cmake-notes/&title=使用cmake构建visual studio项目"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://yemi.me/2017/10/04/cmake-notes/&title=使用cmake构建visual studio项目"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yemi.me/2017/10/04/cmake-notes/&title=使用cmake构建visual studio项目"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://yemi.me/2017/10/04/cmake-notes/&title=使用cmake构建visual studio项目"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yemi.me/2017/10/04/cmake-notes/&name=使用cmake构建visual studio项目&description=&lt;p&gt;之前在写c++项目的时候，一直使用的是宇宙第一IDE Visual Studio，vs确实默默在后台做了许多事情，你只用管写代码其他的都不用操心。但是当项目引入大量的第三方库的时候，许多构建相关的配置就会比较麻烦。考虑到Rigel(一个巨大的轮子)这个项目后续需要支持多平台构建，所以打算试试使用cmake组织整个工程。&lt;/p&gt;
+&lt;p&gt;对于cmake使用其实没有太多经验的，主要是之前在编译一些第三方库的时候，libpng freetype之类的。一行命令行脚本 &lt;code&gt;cmake ./&lt;/code&gt; 然后自动生成了sln项目，后面就是熟悉的visual studio了。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2018 yemi
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/fontawesome-all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'yemiblog';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+
