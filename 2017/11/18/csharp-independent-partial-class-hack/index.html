@@ -6,18 +6,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="description" content="今天想要分享的是的是一个关于C#的hack，其实题目也想了好久并不知道如何描述这样一个东西。大致的描述就是我们需要一个partial的类，这个类被定义在两个.cs文件中，当两个文件同时编译或者是单个编译时不会有compile error。同时这两个文件有相同的完全的capabilities(大概可以用这个词来描述)。 其实这个需求不是十分直观的，只有在特定的环境下才会有这种需求。我们在Unity的">
+    <meta name="description" content="&amp;#x4ECA;&amp;#x5929;&amp;#x60F3;&amp;#x8981;&amp;#x5206;&amp;#x4EAB;&amp;#x7684;&amp;#x662F;&amp;#x7684;&amp;#x662F;&amp;#x4E00;&amp;#x4E2A;&amp;#x5173;&amp;#x4E8E;C#&amp;#x7684;hack&amp;#xFF0C;&amp;#x5176;&amp;#x5B9E;&amp;#x9898;&amp;#x76EE;&amp;#x4E5F;&amp;#x60F3;&amp;#x4E86;&amp;#x597D;&amp;#">
 <meta name="keywords" content="Unity,C#,hack">
 <meta property="og:type" content="article">
 <meta property="og:title" content="C# 中实现一个独立的partial class">
 <meta property="og:url" content="http://yemi.me/2017/11/18/csharp-independent-partial-class-hack/index.html">
 <meta property="og:site_name" content="Yemi&#39;s Blog">
-<meta property="og:description" content="今天想要分享的是的是一个关于C#的hack，其实题目也想了好久并不知道如何描述这样一个东西。大致的描述就是我们需要一个partial的类，这个类被定义在两个.cs文件中，当两个文件同时编译或者是单个编译时不会有compile error。同时这两个文件有相同的完全的capabilities(大概可以用这个词来描述)。 其实这个需求不是十分直观的，只有在特定的环境下才会有这种需求。我们在Unity的">
+<meta property="og:description" content="&amp;#x4ECA;&amp;#x5929;&amp;#x60F3;&amp;#x8981;&amp;#x5206;&amp;#x4EAB;&amp;#x7684;&amp;#x662F;&amp;#x7684;&amp;#x662F;&amp;#x4E00;&amp;#x4E2A;&amp;#x5173;&amp;#x4E8E;C#&amp;#x7684;hack&amp;#xFF0C;&amp;#x5176;&amp;#x5B9E;&amp;#x9898;&amp;#x76EE;&amp;#x4E5F;&amp;#x60F3;&amp;#x4E86;&amp;#x597D;&amp;#">
 <meta property="og:locale" content="default">
 <meta property="og:updated_time" content="2017-11-18T13:41:37.438Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="C# 中实现一个独立的partial class">
-<meta name="twitter:description" content="今天想要分享的是的是一个关于C#的hack，其实题目也想了好久并不知道如何描述这样一个东西。大致的描述就是我们需要一个partial的类，这个类被定义在两个.cs文件中，当两个文件同时编译或者是单个编译时不会有compile error。同时这两个文件有相同的完全的capabilities(大概可以用这个词来描述)。 其实这个需求不是十分直观的，只有在特定的环境下才会有这种需求。我们在Unity的">
+<meta name="twitter:description" content="&amp;#x4ECA;&amp;#x5929;&amp;#x60F3;&amp;#x8981;&amp;#x5206;&amp;#x4EAB;&amp;#x7684;&amp;#x662F;&amp;#x7684;&amp;#x662F;&amp;#x4E00;&amp;#x4E2A;&amp;#x5173;&amp;#x4E8E;C#&amp;#x7684;hack&amp;#xFF0C;&amp;#x5176;&amp;#x5B9E;&amp;#x9898;&amp;#x76EE;&amp;#x4E5F;&amp;#x60F3;&amp;#x4E86;&amp;#x597D;&amp;#">
     
     
         
@@ -55,15 +55,15 @@
     <span id="nav">
       <ul>
          
-          <li><a href="/">Home</a></li>
+          <li><a href="/">Inicio</a></li>
          
-          <li><a href="/about/">About</a></li>
+          <li><a href="/about/">Acerca de</a></li>
          
-          <li><a href="/archives/">Writing</a></li>
+          <li><a href="/archives/">Articulos</a></li>
          
-          <li><a href="/projects/">Projects</a></li>
+          <li><a href="/projects/">Proyectos</a></li>
          
-          <li><a href="/Search/">Search</a></li>
+          <li><a href="/Search/">Buscar</a></li>
         
       </ul>
     </span>
@@ -79,10 +79,10 @@
         <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
         <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
       </ul>
-      <span id="i-prev" class="info" style="display:none;">Previous post</span>
-      <span id="i-next" class="info" style="display:none;">Next post</span>
-      <span id="i-top" class="info" style="display:none;">Back to top</span>
-      <span id="i-share" class="info" style="display:none;">Share post</span>
+      <span id="i-prev" class="info" style="display:none;">Post Anterior</span>
+      <span id="i-next" class="info" style="display:none;">Post Siguiente</span>
+      <span id="i-top" class="info" style="display:none;">Arriba</span>
+      <span id="i-share" class="info" style="display:none;">Compartir Post</span>
     </span>
     <br/>
     <div id="share" style="display: none">
@@ -101,7 +101,7 @@
 
     </div>
     <div id="toc">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#尝试Partial"><span class="toc-number">1.</span> <span class="toc-text">尝试Partial</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用interface"><span class="toc-number">2.</span> <span class="toc-text">使用interface</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#创建两个互补的-partial-interface"><span class="toc-number">3.</span> <span class="toc-text">创建两个互补的 partial interface</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#尝试partial"><span class="toc-number">1.</span> <span class="toc-text">尝试Partial</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用interface"><span class="toc-number">2.</span> <span class="toc-text">使用interface</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#创建两个互补的-partial-interface"><span class="toc-number">3.</span> <span class="toc-text">创建两个互补的 partial interface</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
     </div>
   </span>
 </div>
@@ -140,24 +140,28 @@
   
 
   <div class="content" itemprop="articleBody">
-    <p>今天想要分享的是的是一个关于C#的hack，其实题目也想了好久并不知道如何描述这样一个东西。大致的描述就是我们需要一个partial的类，这个类被定义在两个.cs文件中，当两个文件同时编译或者是单个编译时不会有compile error。同时这两个文件有相同的完全的capabilities(大概可以用这个词来描述)。</p>
-<p>其实这个需求不是十分直观的，只有在特定的环境下才会有这种需求。我们在Unity的项目中，定义了一个类来处理版本号，暂且定为ClassVersion。同时我们还有一个模块A，这个模块也需要依赖ClassVersion来定义一个版本号。所以当只有模块A时我们也需要ClassVersion的定义。但是如果当模块A导入到Unity项目中时，同样的定义就会出现SymbolRedefinded。在这种环境下，最终使用了一个十分hack的方式，在不使用反射的情况下满足了需求。</p>
-<h2 id="尝试Partial"><a href="#尝试Partial" class="headerlink" title="尝试Partial"></a>尝试Partial</h2><p>很显然一来想到的是C#中的Partial。</p>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//Unity classVersion_unity.cs</span></span><br><span class="line"><span class="keyword">partial</span> <span class="keyword">class</span> <span class="title">ClassVersion</span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">GetMajor</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//ModuleA classVersion_moduleA.cs</span></span><br><span class="line"><span class="keyword">partial</span> <span class="keyword">class</span> <span class="title">ClassVersion</span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">GetMajor</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这样ClassVersion在各自独立的时候是正常的工作的，但是在合并时还是有<code>GetMajor()</code>这个方法的重定义。如果在不用反射，不使用不同函数名的情况下，始终是会有编译错误的。同时partial method 在这里也没有办法，partial method只能实现一次，所以一定有一边缺少实现。</p>
-<h2 id="使用interface"><a href="#使用interface" class="headerlink" title="使用interface"></a>使用interface</h2><p>尝试把class 改成interface，两个partial的Interface在去掉是现实还是会有相同method的编译报错。不过最后发现了一个常常被忽略的特性。如果有两个接口，他们有相同的方法声明，那么一个实现这两个接口的类只要实现一次这样的方法，并且也不会有编译错误，具体的代码如下。<br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">IVersionA</span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">GetMajor</span>(<span class="params"></span>)</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">IVersionB</span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">GetMajor</span>(<span class="params"></span>)</span>;</span><br><span class="line">&#125;</span><br><span class="line">public class ClassVersion: IVersionA,IVersionB&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">GetMajor</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>这样我们就可以避开method重定义的Compile Error了。</p>
-<h2 id="创建两个互补的-partial-interface"><a href="#创建两个互补的-partial-interface" class="headerlink" title="创建两个互补的 partial interface"></a>创建两个互补的 partial interface</h2><p><strong>Unity classVersion_unity.cs</strong><br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">partial</span> <span class="keyword">interface</span> <span class="title">IVersionA</span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">partial</span> <span class="keyword">interface</span> <span class="title">IVersionB</span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">GetMajor</span>(<span class="params"></span>)</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public partial class ClassVersionUnity :IVersionA,IVersionB&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">GetMajor</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p><strong>ModuleA classVersion_moduleA.cs</strong><br><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">partial</span> <span class="keyword">interface</span> <span class="title">IVersionA</span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">GetMajor</span>(<span class="params"></span>)</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">partial</span> <span class="keyword">interface</span> <span class="title">IVersionB</span>&#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public partial class ClassVersionModuleA :IVersionA,IVersionB&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">GetMajor</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>这样这两个.cs文件在独立编译与同时编译的情况下都不会有编译报错<br>在各自的环境中，只要转换为当前环境中带有实现的那个接口对象就可以直接调用方法了。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这种实现方式看起来并不优雅，代码的实现还是两份，这个是无法避免的。但是避免了使用反射和强制类型转换，使用接口限定了实现，总之一个比较hack的实现方式。</p>
+    <p>&#x4ECA;&#x5929;&#x60F3;&#x8981;&#x5206;&#x4EAB;&#x7684;&#x662F;&#x7684;&#x662F;&#x4E00;&#x4E2A;&#x5173;&#x4E8E;C#&#x7684;hack&#xFF0C;&#x5176;&#x5B9E;&#x9898;&#x76EE;&#x4E5F;&#x60F3;&#x4E86;&#x597D;&#x4E45;&#x5E76;&#x4E0D;&#x77E5;&#x9053;&#x5982;&#x4F55;&#x63CF;&#x8FF0;&#x8FD9;&#x6837;&#x4E00;&#x4E2A;&#x4E1C;&#x897F;&#x3002;&#x5927;&#x81F4;&#x7684;&#x63CF;&#x8FF0;&#x5C31;&#x662F;&#x6211;&#x4EEC;&#x9700;&#x8981;&#x4E00;&#x4E2A;partial&#x7684;&#x7C7B;&#xFF0C;&#x8FD9;&#x4E2A;&#x7C7B;&#x88AB;&#x5B9A;&#x4E49;&#x5728;&#x4E24;&#x4E2A;.cs&#x6587;&#x4EF6;&#x4E2D;&#xFF0C;&#x5F53;&#x4E24;&#x4E2A;&#x6587;&#x4EF6;&#x540C;&#x65F6;&#x7F16;&#x8BD1;&#x6216;&#x8005;&#x662F;&#x5355;&#x4E2A;&#x7F16;&#x8BD1;&#x65F6;&#x4E0D;&#x4F1A;&#x6709;compile error&#x3002;&#x540C;&#x65F6;&#x8FD9;&#x4E24;&#x4E2A;&#x6587;&#x4EF6;&#x6709;&#x76F8;&#x540C;&#x7684;&#x5B8C;&#x5168;&#x7684;capabilities(&#x5927;&#x6982;&#x53EF;&#x4EE5;&#x7528;&#x8FD9;&#x4E2A;&#x8BCD;&#x6765;&#x63CF;&#x8FF0;)&#x3002;</p>
+<p>&#x5176;&#x5B9E;&#x8FD9;&#x4E2A;&#x9700;&#x6C42;&#x4E0D;&#x662F;&#x5341;&#x5206;&#x76F4;&#x89C2;&#x7684;&#xFF0C;&#x53EA;&#x6709;&#x5728;&#x7279;&#x5B9A;&#x7684;&#x73AF;&#x5883;&#x4E0B;&#x624D;&#x4F1A;&#x6709;&#x8FD9;&#x79CD;&#x9700;&#x6C42;&#x3002;&#x6211;&#x4EEC;&#x5728;Unity&#x7684;&#x9879;&#x76EE;&#x4E2D;&#xFF0C;&#x5B9A;&#x4E49;&#x4E86;&#x4E00;&#x4E2A;&#x7C7B;&#x6765;&#x5904;&#x7406;&#x7248;&#x672C;&#x53F7;&#xFF0C;&#x6682;&#x4E14;&#x5B9A;&#x4E3A;ClassVersion&#x3002;&#x540C;&#x65F6;&#x6211;&#x4EEC;&#x8FD8;&#x6709;&#x4E00;&#x4E2A;&#x6A21;&#x5757;A&#xFF0C;&#x8FD9;&#x4E2A;&#x6A21;&#x5757;&#x4E5F;&#x9700;&#x8981;&#x4F9D;&#x8D56;ClassVersion&#x6765;&#x5B9A;&#x4E49;&#x4E00;&#x4E2A;&#x7248;&#x672C;&#x53F7;&#x3002;&#x6240;&#x4EE5;&#x5F53;&#x53EA;&#x6709;&#x6A21;&#x5757;A&#x65F6;&#x6211;&#x4EEC;&#x4E5F;&#x9700;&#x8981;ClassVersion&#x7684;&#x5B9A;&#x4E49;&#x3002;&#x4F46;&#x662F;&#x5982;&#x679C;&#x5F53;&#x6A21;&#x5757;A&#x5BFC;&#x5165;&#x5230;Unity&#x9879;&#x76EE;&#x4E2D;&#x65F6;&#xFF0C;&#x540C;&#x6837;&#x7684;&#x5B9A;&#x4E49;&#x5C31;&#x4F1A;&#x51FA;&#x73B0;SymbolRedefinded&#x3002;&#x5728;&#x8FD9;&#x79CD;&#x73AF;&#x5883;&#x4E0B;&#xFF0C;&#x6700;&#x7EC8;&#x4F7F;&#x7528;&#x4E86;&#x4E00;&#x4E2A;&#x5341;&#x5206;hack&#x7684;&#x65B9;&#x5F0F;&#xFF0C;&#x5728;&#x4E0D;&#x4F7F;&#x7528;&#x53CD;&#x5C04;&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#x6EE1;&#x8DB3;&#x4E86;&#x9700;&#x6C42;&#x3002;</p>
+<h2 id="&#x5C1D;&#x8BD5;partial">&#x5C1D;&#x8BD5;Partial</h2>
+<p>&#x5F88;&#x663E;&#x7136;&#x4E00;&#x6765;&#x60F3;&#x5230;&#x7684;&#x662F;C#&#x4E2D;&#x7684;Partial&#x3002;</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">//Unity classVersion_unity.cs</span></span><br><span class="line"><span class="keyword">partial</span> <span class="keyword">class</span> <span class="title">ClassVersion</span>{</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">GetMajor</span>(<span class="params"></span>)</span>{</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//ModuleA classVersion_moduleA.cs</span></span><br><span class="line"><span class="keyword">partial</span> <span class="keyword">class</span> <span class="title">ClassVersion</span>{</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">GetMajor</span>(<span class="params"></span>)</span>{</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<p>&#x8FD9;&#x6837;ClassVersion&#x5728;&#x5404;&#x81EA;&#x72EC;&#x7ACB;&#x7684;&#x65F6;&#x5019;&#x662F;&#x6B63;&#x5E38;&#x7684;&#x5DE5;&#x4F5C;&#x7684;&#xFF0C;&#x4F46;&#x662F;&#x5728;&#x5408;&#x5E76;&#x65F6;&#x8FD8;&#x662F;&#x6709;<code>GetMajor()</code>&#x8FD9;&#x4E2A;&#x65B9;&#x6CD5;&#x7684;&#x91CD;&#x5B9A;&#x4E49;&#x3002;&#x5982;&#x679C;&#x5728;&#x4E0D;&#x7528;&#x53CD;&#x5C04;&#xFF0C;&#x4E0D;&#x4F7F;&#x7528;&#x4E0D;&#x540C;&#x51FD;&#x6570;&#x540D;&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x59CB;&#x7EC8;&#x662F;&#x4F1A;&#x6709;&#x7F16;&#x8BD1;&#x9519;&#x8BEF;&#x7684;&#x3002;&#x540C;&#x65F6;partial method &#x5728;&#x8FD9;&#x91CC;&#x4E5F;&#x6CA1;&#x6709;&#x529E;&#x6CD5;&#xFF0C;partial method&#x53EA;&#x80FD;&#x5B9E;&#x73B0;&#x4E00;&#x6B21;&#xFF0C;&#x6240;&#x4EE5;&#x4E00;&#x5B9A;&#x6709;&#x4E00;&#x8FB9;&#x7F3A;&#x5C11;&#x5B9E;&#x73B0;&#x3002;</p>
+<h2 id="&#x4F7F;&#x7528;interface">&#x4F7F;&#x7528;interface</h2>
+<p>&#x5C1D;&#x8BD5;&#x628A;class &#x6539;&#x6210;interface&#xFF0C;&#x4E24;&#x4E2A;partial&#x7684;Interface&#x5728;&#x53BB;&#x6389;&#x662F;&#x73B0;&#x5B9E;&#x8FD8;&#x662F;&#x4F1A;&#x6709;&#x76F8;&#x540C;method&#x7684;&#x7F16;&#x8BD1;&#x62A5;&#x9519;&#x3002;&#x4E0D;&#x8FC7;&#x6700;&#x540E;&#x53D1;&#x73B0;&#x4E86;&#x4E00;&#x4E2A;&#x5E38;&#x5E38;&#x88AB;&#x5FFD;&#x7565;&#x7684;&#x7279;&#x6027;&#x3002;&#x5982;&#x679C;&#x6709;&#x4E24;&#x4E2A;&#x63A5;&#x53E3;&#xFF0C;&#x4ED6;&#x4EEC;&#x6709;&#x76F8;&#x540C;&#x7684;&#x65B9;&#x6CD5;&#x58F0;&#x660E;&#xFF0C;&#x90A3;&#x4E48;&#x4E00;&#x4E2A;&#x5B9E;&#x73B0;&#x8FD9;&#x4E24;&#x4E2A;&#x63A5;&#x53E3;&#x7684;&#x7C7B;&#x53EA;&#x8981;&#x5B9E;&#x73B0;&#x4E00;&#x6B21;&#x8FD9;&#x6837;&#x7684;&#x65B9;&#x6CD5;&#xFF0C;&#x5E76;&#x4E14;&#x4E5F;&#x4E0D;&#x4F1A;&#x6709;&#x7F16;&#x8BD1;&#x9519;&#x8BEF;&#xFF0C;&#x5177;&#x4F53;&#x7684;&#x4EE3;&#x7801;&#x5982;&#x4E0B;&#x3002; <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">IVersionA</span>{</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">GetMajor</span>(<span class="params"></span>)</span>;</span><br><span class="line">}</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">IVersionB</span>{</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">GetMajor</span>(<span class="params"></span>)</span>;</span><br><span class="line">}</span><br><span class="line">public class ClassVersion: IVersionA,IVersionB{</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">GetMajor</span>(<span class="params"></span>)</span>{</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure></p>
+<p>&#x8FD9;&#x6837;&#x6211;&#x4EEC;&#x5C31;&#x53EF;&#x4EE5;&#x907F;&#x5F00;method&#x91CD;&#x5B9A;&#x4E49;&#x7684;Compile Error&#x4E86;&#x3002;</p>
+<h2 id="&#x521B;&#x5EFA;&#x4E24;&#x4E2A;&#x4E92;&#x8865;&#x7684;-partial-interface">&#x521B;&#x5EFA;&#x4E24;&#x4E2A;&#x4E92;&#x8865;&#x7684; partial interface</h2>
+<p><strong>Unity classVersion_unity.cs</strong> <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">partial</span> <span class="keyword">interface</span> <span class="title">IVersionA</span>{</span><br><span class="line"></span><br><span class="line">}</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">partial</span> <span class="keyword">interface</span> <span class="title">IVersionB</span>{</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">GetMajor</span>(<span class="params"></span>)</span>;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">public partial class ClassVersionUnity :IVersionA,IVersionB{</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">GetMajor</span>(<span class="params"></span>)</span>{</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure></p>
+<p><strong>ModuleA classVersion_moduleA.cs</strong> <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">partial</span> <span class="keyword">interface</span> <span class="title">IVersionA</span>{</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">GetMajor</span>(<span class="params"></span>)</span>;</span><br><span class="line">}</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">partial</span> <span class="keyword">interface</span> <span class="title">IVersionB</span>{</span><br><span class="line">    </span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">public partial class ClassVersionModuleA :IVersionA,IVersionB{</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">GetMajor</span>(<span class="params"></span>)</span>{</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure></p>
+<p>&#x8FD9;&#x6837;&#x8FD9;&#x4E24;&#x4E2A;.cs&#x6587;&#x4EF6;&#x5728;&#x72EC;&#x7ACB;&#x7F16;&#x8BD1;&#x4E0E;&#x540C;&#x65F6;&#x7F16;&#x8BD1;&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#x90FD;&#x4E0D;&#x4F1A;&#x6709;&#x7F16;&#x8BD1;&#x62A5;&#x9519; &#x5728;&#x5404;&#x81EA;&#x7684;&#x73AF;&#x5883;&#x4E2D;&#xFF0C;&#x53EA;&#x8981;&#x8F6C;&#x6362;&#x4E3A;&#x5F53;&#x524D;&#x73AF;&#x5883;&#x4E2D;&#x5E26;&#x6709;&#x5B9E;&#x73B0;&#x7684;&#x90A3;&#x4E2A;&#x63A5;&#x53E3;&#x5BF9;&#x8C61;&#x5C31;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x8C03;&#x7528;&#x65B9;&#x6CD5;&#x4E86;&#x3002;</p>
+<h2 id="&#x603B;&#x7ED3;">&#x603B;&#x7ED3;</h2>
+<p>&#x8FD9;&#x79CD;&#x5B9E;&#x73B0;&#x65B9;&#x5F0F;&#x770B;&#x8D77;&#x6765;&#x5E76;&#x4E0D;&#x4F18;&#x96C5;&#xFF0C;&#x4EE3;&#x7801;&#x7684;&#x5B9E;&#x73B0;&#x8FD8;&#x662F;&#x4E24;&#x4EFD;&#xFF0C;&#x8FD9;&#x4E2A;&#x662F;&#x65E0;&#x6CD5;&#x907F;&#x514D;&#x7684;&#x3002;&#x4F46;&#x662F;&#x907F;&#x514D;&#x4E86;&#x4F7F;&#x7528;&#x53CD;&#x5C04;&#x548C;&#x5F3A;&#x5236;&#x7C7B;&#x578B;&#x8F6C;&#x6362;&#xFF0C;&#x4F7F;&#x7528;&#x63A5;&#x53E3;&#x9650;&#x5B9A;&#x4E86;&#x5B9E;&#x73B0;&#xFF0C;&#x603B;&#x4E4B;&#x4E00;&#x4E2A;&#x6BD4;&#x8F83;hack&#x7684;&#x5B9E;&#x73B0;&#x65B9;&#x5F0F;&#x3002;</p>
 
   </div>
 </article>
 
     <div class="blog-post-comments">
         <div id="disqus_thread">
-            <noscript>Please enable JavaScript to view the comments.</noscript>
+            <noscript>Por favor activa JavaScript para ver el contenido.</noscript>
         </div>
     </div>
 
@@ -171,21 +175,21 @@
     <div id="nav-footer" style="display: none">
       <ul>
          
-          <li><a href="/">Home</a></li>
+          <li><a href="/">Inicio</a></li>
          
-          <li><a href="/about/">About</a></li>
+          <li><a href="/about/">Acerca de</a></li>
          
-          <li><a href="/archives/">Writing</a></li>
+          <li><a href="/archives/">Articulos</a></li>
          
-          <li><a href="/projects/">Projects</a></li>
+          <li><a href="/projects/">Proyectos</a></li>
          
-          <li><a href="/Search/">Search</a></li>
+          <li><a href="/Search/">Buscar</a></li>
         
       </ul>
     </div>
 
     <div id="toc-footer" style="display: none">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#尝试Partial"><span class="toc-number">1.</span> <span class="toc-text">尝试Partial</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用interface"><span class="toc-number">2.</span> <span class="toc-text">使用interface</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#创建两个互补的-partial-interface"><span class="toc-number">3.</span> <span class="toc-text">创建两个互补的 partial interface</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#尝试partial"><span class="toc-number">1.</span> <span class="toc-text">尝试Partial</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用interface"><span class="toc-number">2.</span> <span class="toc-text">使用interface</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#创建两个互补的-partial-interface"><span class="toc-number">3.</span> <span class="toc-text">创建两个互补的 partial interface</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">4.</span> <span class="toc-text">总结</span></a></li></ol>
     </div>
 
     <div id="share-footer" style="display: none">
@@ -207,7 +211,7 @@
     <div id="actions-footer">
         <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
         <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Compartir</a>
         <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
     </div>
 
@@ -223,15 +227,15 @@
     <nav>
       <ul>
          
-          <li><a href="/">Home</a></li>
+          <li><a href="/">Inicio</a></li>
          
-          <li><a href="/about/">About</a></li>
+          <li><a href="/about/">Acerca de</a></li>
          
-          <li><a href="/archives/">Writing</a></li>
+          <li><a href="/archives/">Articulos</a></li>
          
-          <li><a href="/projects/">Projects</a></li>
+          <li><a href="/projects/">Proyectos</a></li>
          
-          <li><a href="/Search/">Search</a></li>
+          <li><a href="/Search/">Buscar</a></li>
         
       </ul>
     </nav>

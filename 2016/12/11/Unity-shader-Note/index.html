@@ -6,18 +6,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="description" content="光照基础辐照度irradiance 散射scattering 吸收 absorption散射只改变光的方向 吸收只改变光线的密度和颜色 光线进入如物体会发生折射refraction和投射transmission 以及被散射到外部的反射reflection区别不同的散射方向 高光反射 specular 漫反射diffuse 出射度 exitance 辐照度和出射度满足线性关系 比值就是漫反射和高光反">
+    <meta name="description" content="光照基础 辐照度irradiance 散射scattering 吸收 absorption 散射只改变光的方向 吸收只改变光线的密度和颜色 光线进入如物体会发生折射refraction和投射transmission 以及被散射到外部的反射reflection 区别不同的散射方向 高光反射 specular 漫反射diffuse 出射度 exitance 辐照度和出射度满足线性关系 比值就是">
 <meta name="keywords" content="Unity,Shader">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Unity shader Note">
 <meta property="og:url" content="http://yemi.me/2016/12/11/Unity-shader-Note/index.html">
 <meta property="og:site_name" content="Yemi&#39;s Blog">
-<meta property="og:description" content="光照基础辐照度irradiance 散射scattering 吸收 absorption散射只改变光的方向 吸收只改变光线的密度和颜色 光线进入如物体会发生折射refraction和投射transmission 以及被散射到外部的反射reflection区别不同的散射方向 高光反射 specular 漫反射diffuse 出射度 exitance 辐照度和出射度满足线性关系 比值就是漫反射和高光反">
+<meta property="og:description" content="光照基础 辐照度irradiance 散射scattering 吸收 absorption 散射只改变光的方向 吸收只改变光线的密度和颜色 光线进入如物体会发生折射refraction和投射transmission 以及被散射到外部的反射reflection 区别不同的散射方向 高光反射 specular 漫反射diffuse 出射度 exitance 辐照度和出射度满足线性关系 比值就是">
 <meta property="og:locale" content="default">
 <meta property="og:updated_time" content="2017-10-14T15:44:57.893Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Unity shader Note">
-<meta name="twitter:description" content="光照基础辐照度irradiance 散射scattering 吸收 absorption散射只改变光的方向 吸收只改变光线的密度和颜色 光线进入如物体会发生折射refraction和投射transmission 以及被散射到外部的反射reflection区别不同的散射方向 高光反射 specular 漫反射diffuse 出射度 exitance 辐照度和出射度满足线性关系 比值就是漫反射和高光反">
+<meta name="twitter:description" content="光照基础 辐照度irradiance 散射scattering 吸收 absorption 散射只改变光的方向 吸收只改变光线的密度和颜色 光线进入如物体会发生折射refraction和投射transmission 以及被散射到外部的反射reflection 区别不同的散射方向 高光反射 specular 漫反射diffuse 出射度 exitance 辐照度和出射度满足线性关系 比值就是">
     
     
         
@@ -55,15 +55,15 @@
     <span id="nav">
       <ul>
          
-          <li><a href="/">Home</a></li>
+          <li><a href="/">Inicio</a></li>
          
-          <li><a href="/about/">About</a></li>
+          <li><a href="/about/">Acerca de</a></li>
          
-          <li><a href="/archives/">Writing</a></li>
+          <li><a href="/archives/">Articulos</a></li>
          
-          <li><a href="/projects/">Projects</a></li>
+          <li><a href="/projects/">Proyectos</a></li>
          
-          <li><a href="/Search/">Search</a></li>
+          <li><a href="/Search/">Buscar</a></li>
         
       </ul>
     </span>
@@ -79,10 +79,10 @@
         <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
         <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
       </ul>
-      <span id="i-prev" class="info" style="display:none;">Previous post</span>
-      <span id="i-next" class="info" style="display:none;">Next post</span>
-      <span id="i-top" class="info" style="display:none;">Back to top</span>
-      <span id="i-share" class="info" style="display:none;">Share post</span>
+      <span id="i-prev" class="info" style="display:none;">Post Anterior</span>
+      <span id="i-next" class="info" style="display:none;">Post Siguiente</span>
+      <span id="i-top" class="info" style="display:none;">Arriba</span>
+      <span id="i-share" class="info" style="display:none;">Compartir Post</span>
     </span>
     <br/>
     <div id="share" style="display: none">
@@ -96,20 +96,28 @@
   <li><a class="icon" href="http://reddit.com/submit?url=http://yemi.me/2016/12/11/Unity-shader-Note/&title=Unity shader Note"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
   <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yemi.me/2016/12/11/Unity-shader-Note/&title=Unity shader Note"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
   <li><a class="icon" href="http://digg.com/submit?url=http://yemi.me/2016/12/11/Unity-shader-Note/&title=Unity shader Note"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yemi.me/2016/12/11/Unity-shader-Note/&name=Unity shader Note&description=&lt;h3 id=&#34;光照基础&#34;&gt;&lt;a href=&#34;#光照基础&#34; class=&#34;headerlink&#34; title=&#34;光照基础&#34;&gt;&lt;/a&gt;光照基础&lt;/h3&gt;&lt;p&gt;辐照度irradiance&lt;/p&gt;
-&lt;p&gt;散射scattering 吸收 absorption&lt;br&gt;散射只改变光的方向 吸收只改变光线的密度和颜色&lt;/p&gt;
-&lt;p&gt;光线进入如物体会发生折射refraction和投射transmission 以及被散射到外部的反射reflection&lt;br&gt;区别不同的散射方向 高光反射 specular 漫反射diffuse&lt;/p&gt;
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yemi.me/2016/12/11/Unity-shader-Note/&name=Unity shader Note&description=&lt;h3 id=&#34;光照基础&#34;&gt;光照基础&lt;/h3&gt;
+&lt;p&gt;辐照度irradiance&lt;/p&gt;
+&lt;p&gt;散射scattering 吸收 absorption 散射只改变光的方向 吸收只改变光线的密度和颜色&lt;/p&gt;
+&lt;p&gt;光线进入如物体会发生折射refraction和投射transmission 以及被散射到外部的反射reflection 区别不同的散射方向 高光反射 specular 漫反射diffuse&lt;/p&gt;
 &lt;p&gt;出射度 exitance 辐照度和出射度满足线性关系 比值就是漫反射和高光反射的属性&lt;/p&gt;
 &lt;p&gt;BRDF (Bidirectional Reflection Distribution Function)&lt;/p&gt;
-&lt;p&gt;标准光照模型 direct light&lt;br&gt;自发光 emissive 高光specular 漫反射diffuse 环境光ambient&lt;/p&gt;
-&lt;p&gt;diffuse Lambert’s Law&lt;br&gt;$$&lt;br&gt;c_{diffuse} = (c_{light} &lt;em&gt; m_{diffuse})max(0,n&lt;/em&gt;l)&lt;br&gt;$$&lt;/p&gt;
-&lt;p&gt;光源颜色&lt;em&gt;漫反射材质颜色&lt;/em&gt;亮度值&lt;br&gt;Phong光照模型&lt;br&gt;$$&lt;br&gt;C_{specular} = (c_{light} &lt;em&gt; m_{specular})max(0,v&lt;/em&gt;r)^{m_{gloss}}&lt;br&gt;$$&lt;/p&gt;
-&lt;p&gt;Blinn-Phong&lt;br&gt;$$&lt;br&gt;h = \frac{v+l}{|v+l|}&lt;br&gt;C_{specular} = (c_{light} &lt;em&gt; m_{specular})max(0,n&lt;/em&gt;h)^{m_{gloss}}&lt;br&gt;$$&lt;br&gt;Phong shading 逐像素光照 Gouraud shading 逐顶点光照&lt;br&gt;各向同性isotropic  各向异性anisotropic&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+&lt;p&gt;标准光照模型 direct light 自发光 emissive 高光specular 漫反射diffuse 环境光ambient&lt;/p&gt;
+&lt;p&gt;diffuse Lambert&#39;s Law &lt;span class=&#34;math display&#34;&gt;\displaystyle 
+c_{diffuse} = (c_{light} * m_{diffuse})max(0,n*l)
+&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;光源颜色&lt;em&gt;漫反射材质颜色&lt;/em&gt;亮度值 Phong光照模型 &lt;span class=&#34;math display&#34;&gt;\displaystyle 
+C_{specular} = (c_{light} * m_{specular})max(0,v*r)^{m_{gloss}}
+&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Blinn-Phong &lt;span class=&#34;math display&#34;&gt;\displaystyle 
+h = \frac{v+l}{|v+l|}
+C_{specular} = (c_{light} * m_{specular})max(0,n*h)^{m_{gloss}}
+&lt;/span&gt; Phong shading 逐像素光照 Gouraud shading 逐顶点光照 各向同性isotropic 各向异性anisotropic&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
     <div id="toc">
-      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#光照基础"><span class="toc-number">1.</span> <span class="toc-text">光照基础</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#坐标转换"><span class="toc-number">2.</span> <span class="toc-text">坐标转换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#屏幕坐标"><span class="toc-number">3.</span> <span class="toc-text">屏幕坐标</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#采样Depth-Texture-World"><span class="toc-number">3.1.</span> <span class="toc-text">采样Depth Texture World</span></a></li></ol></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#光照基础"><span class="toc-number">1.</span> <span class="toc-text">光照基础</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#坐标转换"><span class="toc-number">2.</span> <span class="toc-text">坐标转换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#屏幕坐标"><span class="toc-number">3.</span> <span class="toc-text">屏幕坐标</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#采样depth-texture-world"><span class="toc-number">3.1.</span> <span class="toc-text">采样Depth Texture World</span></a></li></ol></li></ol>
     </div>
   </span>
 </div>
@@ -148,36 +156,45 @@
   
 
   <div class="content" itemprop="articleBody">
-    <h3 id="光照基础"><a href="#光照基础" class="headerlink" title="光照基础"></a>光照基础</h3><p>辐照度irradiance</p>
-<p>散射scattering 吸收 absorption<br>散射只改变光的方向 吸收只改变光线的密度和颜色</p>
-<p>光线进入如物体会发生折射refraction和投射transmission 以及被散射到外部的反射reflection<br>区别不同的散射方向 高光反射 specular 漫反射diffuse</p>
-<p>出射度 exitance 辐照度和出射度满足线性关系 比值就是漫反射和高光反射的属性</p>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.7.1/katex.min.css"><h3 id="&#x5149;&#x7167;&#x57FA;&#x7840;">&#x5149;&#x7167;&#x57FA;&#x7840;</h3>
+<p>&#x8F90;&#x7167;&#x5EA6;irradiance</p>
+<p>&#x6563;&#x5C04;scattering &#x5438;&#x6536; absorption &#x6563;&#x5C04;&#x53EA;&#x6539;&#x53D8;&#x5149;&#x7684;&#x65B9;&#x5411; &#x5438;&#x6536;&#x53EA;&#x6539;&#x53D8;&#x5149;&#x7EBF;&#x7684;&#x5BC6;&#x5EA6;&#x548C;&#x989C;&#x8272;</p>
+<p>&#x5149;&#x7EBF;&#x8FDB;&#x5165;&#x5982;&#x7269;&#x4F53;&#x4F1A;&#x53D1;&#x751F;&#x6298;&#x5C04;refraction&#x548C;&#x6295;&#x5C04;transmission &#x4EE5;&#x53CA;&#x88AB;&#x6563;&#x5C04;&#x5230;&#x5916;&#x90E8;&#x7684;&#x53CD;&#x5C04;reflection &#x533A;&#x522B;&#x4E0D;&#x540C;&#x7684;&#x6563;&#x5C04;&#x65B9;&#x5411; &#x9AD8;&#x5149;&#x53CD;&#x5C04; specular &#x6F2B;&#x53CD;&#x5C04;diffuse</p>
+<p>&#x51FA;&#x5C04;&#x5EA6; exitance &#x8F90;&#x7167;&#x5EA6;&#x548C;&#x51FA;&#x5C04;&#x5EA6;&#x6EE1;&#x8DB3;&#x7EBF;&#x6027;&#x5173;&#x7CFB; &#x6BD4;&#x503C;&#x5C31;&#x662F;&#x6F2B;&#x53CD;&#x5C04;&#x548C;&#x9AD8;&#x5149;&#x53CD;&#x5C04;&#x7684;&#x5C5E;&#x6027;</p>
 <p>BRDF (Bidirectional Reflection Distribution Function)</p>
-<p>标准光照模型 direct light<br>自发光 emissive 高光specular 漫反射diffuse 环境光ambient</p>
-<p>diffuse Lambert’s Law<br>$$<br>c_{diffuse} = (c_{light} <em> m_{diffuse})max(0,n</em>l)<br>$$</p>
-<p>光源颜色<em>漫反射材质颜色</em>亮度值<br>Phong光照模型<br>$$<br>C_{specular} = (c_{light} <em> m_{specular})max(0,v</em>r)^{m_{gloss}}<br>$$</p>
-<p>Blinn-Phong<br>$$<br>h = \frac{v+l}{|v+l|}<br>C_{specular} = (c_{light} <em> m_{specular})max(0,n</em>h)^{m_{gloss}}<br>$$<br>Phong shading 逐像素光照 Gouraud shading 逐顶点光照<br>各向同性isotropic  各向异性anisotropic</p>
+<p>&#x6807;&#x51C6;&#x5149;&#x7167;&#x6A21;&#x578B; direct light &#x81EA;&#x53D1;&#x5149; emissive &#x9AD8;&#x5149;specular &#x6F2B;&#x53CD;&#x5C04;diffuse &#x73AF;&#x5883;&#x5149;ambient</p>
+<p>diffuse Lambert&apos;s Law <span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mstyle scriptlevel="0" displaystyle="true"><msub><mi>c</mi><mrow><mi>d</mi><mi>i</mi><mi>f</mi><mi>f</mi><mi>u</mi><mi>s</mi><mi>e</mi></mrow></msub><mo>=</mo><mo>(</mo><msub><mi>c</mi><mrow><mi>l</mi><mi>i</mi><mi>g</mi><mi>h</mi><mi>t</mi></mrow></msub><mo>&#x2217;</mo><msub><mi>m</mi><mrow><mi>d</mi><mi>i</mi><mi>f</mi><mi>f</mi><mi>u</mi><mi>s</mi><mi>e</mi></mrow></msub><mo>)</mo><mi>m</mi><mi>a</mi><mi>x</mi><mo>(</mo><mn>0</mn><mo separator="true">,</mo><mi>n</mi><mo>&#x2217;</mo><mi>l</mi><mo>)</mo></mstyle></mrow><annotation encoding="application/x-tex">\displaystyle 
+c_{diffuse} = (c_{light} * m_{diffuse})max(0,n*l)
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1.036108em;vertical-align:-0.286108em;"></span><span class="base displaystyle textstyle uncramped"><span class="mord reset-textstyle displaystyle textstyle uncramped"><span class="mord mathit">c</span><span class="msupsub"><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle cramped mtight"><span class="mord scriptstyle cramped mtight"><span class="mord mathit mtight">d</span><span class="mord mathit mtight">i</span><span class="mord mathit mtight" style="margin-right:0.10764em;">f</span><span class="mord mathit mtight" style="margin-right:0.10764em;">f</span><span class="mord mathit mtight">u</span><span class="mord mathit mtight">s</span><span class="mord mathit mtight">e</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span><span class="mrel reset-textstyle displaystyle textstyle uncramped">=</span><span class="mopen reset-textstyle displaystyle textstyle uncramped">(</span><span class="mord reset-textstyle displaystyle textstyle uncramped"><span class="mord mathit">c</span><span class="msupsub"><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle cramped mtight"><span class="mord scriptstyle cramped mtight"><span class="mord mathit mtight" style="margin-right:0.01968em;">l</span><span class="mord mathit mtight">i</span><span class="mord mathit mtight" style="margin-right:0.03588em;">g</span><span class="mord mathit mtight">h</span><span class="mord mathit mtight">t</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span><span class="mbin reset-textstyle displaystyle textstyle uncramped">&#x2217;</span><span class="mord reset-textstyle displaystyle textstyle uncramped"><span class="mord mathit">m</span><span class="msupsub"><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle cramped mtight"><span class="mord scriptstyle cramped mtight"><span class="mord mathit mtight">d</span><span class="mord mathit mtight">i</span><span class="mord mathit mtight" style="margin-right:0.10764em;">f</span><span class="mord mathit mtight" style="margin-right:0.10764em;">f</span><span class="mord mathit mtight">u</span><span class="mord mathit mtight">s</span><span class="mord mathit mtight">e</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span><span class="mclose reset-textstyle displaystyle textstyle uncramped">)</span><span class="mord mathit reset-textstyle displaystyle textstyle uncramped">m</span><span class="mord mathit reset-textstyle displaystyle textstyle uncramped">a</span><span class="mord mathit reset-textstyle displaystyle textstyle uncramped">x</span><span class="mopen reset-textstyle displaystyle textstyle uncramped">(</span><span class="mord mathrm reset-textstyle displaystyle textstyle uncramped">0</span><span class="mpunct reset-textstyle displaystyle textstyle uncramped">,</span><span class="mord mathit reset-textstyle displaystyle textstyle uncramped">n</span><span class="mbin reset-textstyle displaystyle textstyle uncramped">&#x2217;</span><span class="mord mathit reset-textstyle displaystyle textstyle uncramped" style="margin-right:0.01968em;">l</span><span class="mclose reset-textstyle displaystyle textstyle uncramped">)</span></span></span></span></span></p>
+<p>&#x5149;&#x6E90;&#x989C;&#x8272;<em>&#x6F2B;&#x53CD;&#x5C04;&#x6750;&#x8D28;&#x989C;&#x8272;</em>&#x4EAE;&#x5EA6;&#x503C; Phong&#x5149;&#x7167;&#x6A21;&#x578B; <span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mstyle scriptlevel="0" displaystyle="true"><msub><mi>C</mi><mrow><mi>s</mi><mi>p</mi><mi>e</mi><mi>c</mi><mi>u</mi><mi>l</mi><mi>a</mi><mi>r</mi></mrow></msub><mo>=</mo><mo>(</mo><msub><mi>c</mi><mrow><mi>l</mi><mi>i</mi><mi>g</mi><mi>h</mi><mi>t</mi></mrow></msub><mo>&#x2217;</mo><msub><mi>m</mi><mrow><mi>s</mi><mi>p</mi><mi>e</mi><mi>c</mi><mi>u</mi><mi>l</mi><mi>a</mi><mi>r</mi></mrow></msub><mo>)</mo><mi>m</mi><mi>a</mi><mi>x</mi><mo>(</mo><mn>0</mn><mo separator="true">,</mo><mi>v</mi><mo>&#x2217;</mo><mi>r</mi><msup><mo>)</mo><mrow><msub><mi>m</mi><mrow><mi>g</mi><mi>l</mi><mi>o</mi><mi>s</mi><mi>s</mi></mrow></msub></mrow></msup></mstyle></mrow><annotation encoding="application/x-tex">\displaystyle 
+C_{specular} = (c_{light} * m_{specular})max(0,v*r)^{m_{gloss}}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:0.75em;"></span><span class="strut bottom" style="height:1.036108em;vertical-align:-0.286108em;"></span><span class="base displaystyle textstyle uncramped"><span class="mord reset-textstyle displaystyle textstyle uncramped"><span class="mord mathit" style="margin-right:0.07153em;">C</span><span class="msupsub"><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:-0.07153em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle cramped mtight"><span class="mord scriptstyle cramped mtight"><span class="mord mathit mtight">s</span><span class="mord mathit mtight">p</span><span class="mord mathit mtight">e</span><span class="mord mathit mtight">c</span><span class="mord mathit mtight">u</span><span class="mord mathit mtight" style="margin-right:0.01968em;">l</span><span class="mord mathit mtight">a</span><span class="mord mathit mtight" style="margin-right:0.02778em;">r</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span><span class="mrel reset-textstyle displaystyle textstyle uncramped">=</span><span class="mopen reset-textstyle displaystyle textstyle uncramped">(</span><span class="mord reset-textstyle displaystyle textstyle uncramped"><span class="mord mathit">c</span><span class="msupsub"><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle cramped mtight"><span class="mord scriptstyle cramped mtight"><span class="mord mathit mtight" style="margin-right:0.01968em;">l</span><span class="mord mathit mtight">i</span><span class="mord mathit mtight" style="margin-right:0.03588em;">g</span><span class="mord mathit mtight">h</span><span class="mord mathit mtight">t</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span><span class="mbin reset-textstyle displaystyle textstyle uncramped">&#x2217;</span><span class="mord reset-textstyle displaystyle textstyle uncramped"><span class="mord mathit">m</span><span class="msupsub"><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle cramped mtight"><span class="mord scriptstyle cramped mtight"><span class="mord mathit mtight">s</span><span class="mord mathit mtight">p</span><span class="mord mathit mtight">e</span><span class="mord mathit mtight">c</span><span class="mord mathit mtight">u</span><span class="mord mathit mtight" style="margin-right:0.01968em;">l</span><span class="mord mathit mtight">a</span><span class="mord mathit mtight" style="margin-right:0.02778em;">r</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span><span class="mclose reset-textstyle displaystyle textstyle uncramped">)</span><span class="mord mathit reset-textstyle displaystyle textstyle uncramped">m</span><span class="mord mathit reset-textstyle displaystyle textstyle uncramped">a</span><span class="mord mathit reset-textstyle displaystyle textstyle uncramped">x</span><span class="mopen reset-textstyle displaystyle textstyle uncramped">(</span><span class="mord mathrm reset-textstyle displaystyle textstyle uncramped">0</span><span class="mpunct reset-textstyle displaystyle textstyle uncramped">,</span><span class="mord mathit reset-textstyle displaystyle textstyle uncramped" style="margin-right:0.03588em;">v</span><span class="mbin reset-textstyle displaystyle textstyle uncramped">&#x2217;</span><span class="mord mathit reset-textstyle displaystyle textstyle uncramped" style="margin-right:0.02778em;">r</span><span class="mclose reset-textstyle displaystyle textstyle uncramped"><span class="mclose">)</span><span class="msupsub"><span class="vlist"><span style="top:-0.413em;margin-right:0.05em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle uncramped mtight"><span class="mord scriptstyle uncramped mtight"><span class="mord mtight"><span class="mord mathit mtight">m</span><span class="msupsub"><span class="vlist"><span style="top:0.15122857142857138em;margin-right:0.07142857142857144em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-scriptstyle scriptscriptstyle cramped mtight"><span class="mord scriptscriptstyle cramped mtight"><span class="mord mathit mtight" style="margin-right:0.03588em;">g</span><span class="mord mathit mtight" style="margin-right:0.01968em;">l</span><span class="mord mathit mtight">o</span><span class="mord mathit mtight">s</span><span class="mord mathit mtight">s</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span></span></span></span></span></p>
+<p>Blinn-Phong <span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mstyle scriptlevel="0" displaystyle="true"><mi>h</mi><mo>=</mo><mfrac><mrow><mi>v</mi><mo>+</mo><mi>l</mi></mrow><mrow><mi mathvariant="normal">&#x2223;</mi><mi>v</mi><mo>+</mo><mi>l</mi><mi mathvariant="normal">&#x2223;</mi></mrow></mfrac><msub><mi>C</mi><mrow><mi>s</mi><mi>p</mi><mi>e</mi><mi>c</mi><mi>u</mi><mi>l</mi><mi>a</mi><mi>r</mi></mrow></msub><mo>=</mo><mo>(</mo><msub><mi>c</mi><mrow><mi>l</mi><mi>i</mi><mi>g</mi><mi>h</mi><mi>t</mi></mrow></msub><mo>&#x2217;</mo><msub><mi>m</mi><mrow><mi>s</mi><mi>p</mi><mi>e</mi><mi>c</mi><mi>u</mi><mi>l</mi><mi>a</mi><mi>r</mi></mrow></msub><mo>)</mo><mi>m</mi><mi>a</mi><mi>x</mi><mo>(</mo><mn>0</mn><mo separator="true">,</mo><mi>n</mi><mo>&#x2217;</mo><mi>h</mi><msup><mo>)</mo><mrow><msub><mi>m</mi><mrow><mi>g</mi><mi>l</mi><mi>o</mi><mi>s</mi><mi>s</mi></mrow></msub></mrow></msup></mstyle></mrow><annotation encoding="application/x-tex">\displaystyle 
+h = \frac{v+l}{|v+l|}
+C_{specular} = (c_{light} * m_{specular})max(0,n*h)^{m_{gloss}}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="strut" style="height:1.37144em;"></span><span class="strut bottom" style="height:2.30744em;vertical-align:-0.936em;"></span><span class="base displaystyle textstyle uncramped"><span class="mord mathit reset-textstyle displaystyle textstyle uncramped">h</span><span class="mrel reset-textstyle displaystyle textstyle uncramped">=</span><span class="mord reset-textstyle displaystyle textstyle uncramped"><span class="mopen sizing reset-size5 size5 reset-textstyle textstyle uncramped nulldelimiter"></span><span class="mfrac"><span class="vlist"><span style="top:0.686em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle textstyle cramped"><span class="mord textstyle cramped"><span class="mord mathrm">&#x2223;</span><span class="mord mathit" style="margin-right:0.03588em;">v</span><span class="mbin">+</span><span class="mord mathit" style="margin-right:0.01968em;">l</span><span class="mord mathrm">&#x2223;</span></span></span></span><span style="top:-0.2300000000000001em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle textstyle uncramped frac-line"></span></span><span style="top:-0.677em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle textstyle uncramped"><span class="mord textstyle uncramped"><span class="mord mathit" style="margin-right:0.03588em;">v</span><span class="mbin">+</span><span class="mord mathit" style="margin-right:0.01968em;">l</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span><span class="mclose sizing reset-size5 size5 reset-textstyle textstyle uncramped nulldelimiter"></span></span><span class="mord reset-textstyle displaystyle textstyle uncramped"><span class="mord mathit" style="margin-right:0.07153em;">C</span><span class="msupsub"><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:-0.07153em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle cramped mtight"><span class="mord scriptstyle cramped mtight"><span class="mord mathit mtight">s</span><span class="mord mathit mtight">p</span><span class="mord mathit mtight">e</span><span class="mord mathit mtight">c</span><span class="mord mathit mtight">u</span><span class="mord mathit mtight" style="margin-right:0.01968em;">l</span><span class="mord mathit mtight">a</span><span class="mord mathit mtight" style="margin-right:0.02778em;">r</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span><span class="mrel reset-textstyle displaystyle textstyle uncramped">=</span><span class="mopen reset-textstyle displaystyle textstyle uncramped">(</span><span class="mord reset-textstyle displaystyle textstyle uncramped"><span class="mord mathit">c</span><span class="msupsub"><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle cramped mtight"><span class="mord scriptstyle cramped mtight"><span class="mord mathit mtight" style="margin-right:0.01968em;">l</span><span class="mord mathit mtight">i</span><span class="mord mathit mtight" style="margin-right:0.03588em;">g</span><span class="mord mathit mtight">h</span><span class="mord mathit mtight">t</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span><span class="mbin reset-textstyle displaystyle textstyle uncramped">&#x2217;</span><span class="mord reset-textstyle displaystyle textstyle uncramped"><span class="mord mathit">m</span><span class="msupsub"><span class="vlist"><span style="top:0.15em;margin-right:0.05em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle cramped mtight"><span class="mord scriptstyle cramped mtight"><span class="mord mathit mtight">s</span><span class="mord mathit mtight">p</span><span class="mord mathit mtight">e</span><span class="mord mathit mtight">c</span><span class="mord mathit mtight">u</span><span class="mord mathit mtight" style="margin-right:0.01968em;">l</span><span class="mord mathit mtight">a</span><span class="mord mathit mtight" style="margin-right:0.02778em;">r</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span><span class="mclose reset-textstyle displaystyle textstyle uncramped">)</span><span class="mord mathit reset-textstyle displaystyle textstyle uncramped">m</span><span class="mord mathit reset-textstyle displaystyle textstyle uncramped">a</span><span class="mord mathit reset-textstyle displaystyle textstyle uncramped">x</span><span class="mopen reset-textstyle displaystyle textstyle uncramped">(</span><span class="mord mathrm reset-textstyle displaystyle textstyle uncramped">0</span><span class="mpunct reset-textstyle displaystyle textstyle uncramped">,</span><span class="mord mathit reset-textstyle displaystyle textstyle uncramped">n</span><span class="mbin reset-textstyle displaystyle textstyle uncramped">&#x2217;</span><span class="mord mathit reset-textstyle displaystyle textstyle uncramped">h</span><span class="mclose reset-textstyle displaystyle textstyle uncramped"><span class="mclose">)</span><span class="msupsub"><span class="vlist"><span style="top:-0.413em;margin-right:0.05em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-textstyle scriptstyle uncramped mtight"><span class="mord scriptstyle uncramped mtight"><span class="mord mtight"><span class="mord mathit mtight">m</span><span class="msupsub"><span class="vlist"><span style="top:0.15122857142857138em;margin-right:0.07142857142857144em;margin-left:0em;"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span><span class="reset-scriptstyle scriptscriptstyle cramped mtight"><span class="mord scriptscriptstyle cramped mtight"><span class="mord mathit mtight" style="margin-right:0.03588em;">g</span><span class="mord mathit mtight" style="margin-right:0.01968em;">l</span><span class="mord mathit mtight">o</span><span class="mord mathit mtight">s</span><span class="mord mathit mtight">s</span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span></span></span></span><span class="baseline-fix"><span class="fontsize-ensurer reset-size5 size5"><span style="font-size:0em;">&#x200B;</span></span>&#x200B;</span></span></span></span></span></span></span></span> Phong shading &#x9010;&#x50CF;&#x7D20;&#x5149;&#x7167; Gouraud shading &#x9010;&#x9876;&#x70B9;&#x5149;&#x7167; &#x5404;&#x5411;&#x540C;&#x6027;isotropic &#x5404;&#x5411;&#x5F02;&#x6027;anisotropic</p>
 <a id="more"></a>
-<h3 id="坐标转换"><a href="#坐标转换" class="headerlink" title="坐标转换"></a>坐标转换</h3><p>投影矩阵</p>
-<p>N = near plane<br>F = far plane<br>A = aspect ratio<br>FOV =field of view<br>S = size</p>
-<p><code>UNITY_UV_STARTS_AT_TOP</code> DX平台和OpenGL差别<br><code>_MainTex_TexelSize.y &lt; 0</code> 判定是否开启抗锯齿<br>DX9/11不支持在vertex shader中采样纹理 使用<code>tex2D()</code> 使用 <code>tex2DLOD(texture2d tex,float4 uv)</code>替代</p>
+<h3 id="&#x5750;&#x6807;&#x8F6C;&#x6362;">&#x5750;&#x6807;&#x8F6C;&#x6362;</h3>
+<p>&#x6295;&#x5F71;&#x77E9;&#x9635;</p>
+<p>N = near plane F = far plane A = aspect ratio FOV =field of view S = size</p>
+<p><code>UNITY_UV_STARTS_AT_TOP</code> DX&#x5E73;&#x53F0;&#x548C;OpenGL&#x5DEE;&#x522B; <code>_MainTex_TexelSize.y &lt; 0</code> &#x5224;&#x5B9A;&#x662F;&#x5426;&#x5F00;&#x542F;&#x6297;&#x952F;&#x9F7F; DX9/11&#x4E0D;&#x652F;&#x6301;&#x5728;vertex shader&#x4E2D;&#x91C7;&#x6837;&#x7EB9;&#x7406; &#x4F7F;&#x7528;<code>tex2D()</code> &#x4F7F;&#x7528; <code>tex2DLOD(texture2d tex,float4 uv)</code>&#x66FF;&#x4EE3;</p>
 <table>
 <thead>
-<tr>
-<th>类型</th>
-<th>精度</th>
+<tr class="header">
+<th>&#x7C7B;&#x578B;</th>
+<th>&#x7CBE;&#x5EA6;</th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td>float</td>
-<td>32bit 浮点</td>
+<td>32bit &#x6D6E;&#x70B9;</td>
 </tr>
-<tr>
+<tr class="even">
 <td>half</td>
-<td>16bit 浮点 -60000 ~ +60000</td>
+<td>16bit &#x6D6E;&#x70B9; -60000 ~ +60000</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>fixed</td>
 <td>11bit -2.0~+2.0</td>
 </tr>
@@ -185,41 +202,43 @@
 </table>
 <table>
 <thead>
-<tr>
-<th>指令</th>
-<th>描述</th>
+<tr class="header">
+<th>&#x6307;&#x4EE4;</th>
+<th>&#x63CF;&#x8FF0;</th>
 </tr>
 </thead>
 <tbody>
-<tr>
+<tr class="odd">
 <td>#pragma target 2.0</td>
-<td>DX9 SM2.0 不支持对顶点纹理采样，不支持显示LOD纹理采样</td>
+<td>DX9 SM2.0 &#x4E0D;&#x652F;&#x6301;&#x5BF9;&#x9876;&#x70B9;&#x7EB9;&#x7406;&#x91C7;&#x6837;&#xFF0C;&#x4E0D;&#x652F;&#x6301;&#x663E;&#x793A;LOD&#x7EB9;&#x7406;&#x91C7;&#x6837;</td>
 </tr>
-<tr>
+<tr class="even">
 <td>#pragma target 3.0</td>
-<td>DX9 SM3.0支持顶点纹理采样</td>
+<td>DX9 SM3.0&#x652F;&#x6301;&#x9876;&#x70B9;&#x7EB9;&#x7406;&#x91C7;&#x6837;</td>
 </tr>
-<tr>
+<tr class="odd">
 <td>#pragma target 4.0</td>
-<td>DX10 SM4,0 支持几何着色器</td>
+<td>DX10 SM4,0 &#x652F;&#x6301;&#x51E0;&#x4F55;&#x7740;&#x8272;&#x5668;</td>
 </tr>
-<tr>
+<tr class="even">
 <td>#pragma target 5.0</td>
 <td>DX11 SM5.0</td>
 </tr>
 </tbody>
 </table>
-<p>对向量进行转换<br><code>mul(v,(float3x3)_World2Object)</code> == <code>mul(_Object2World,v)</code></p>
-<h3 id="屏幕坐标"><a href="#屏幕坐标" class="headerlink" title="屏幕坐标"></a>屏幕坐标</h3><p>计算屏幕位置<code>ComputeScreenPos(float4 projectionPos)</code></p>
+<p>&#x5BF9;&#x5411;&#x91CF;&#x8FDB;&#x884C;&#x8F6C;&#x6362; <code>mul(v,(float3x3)_World2Object)</code> == <code>mul(_Object2World,v)</code></p>
+<h3 id="&#x5C4F;&#x5E55;&#x5750;&#x6807;">&#x5C4F;&#x5E55;&#x5750;&#x6807;</h3>
+<p>&#x8BA1;&#x7B97;&#x5C4F;&#x5E55;&#x4F4D;&#x7F6E;<code>ComputeScreenPos(float4 projectionPos)</code></p>
 <p><code>ObjSpaceViewDir(float4 objectpos)</code></p>
-<h4 id="采样Depth-Texture-World"><a href="#采样Depth-Texture-World" class="headerlink" title="采样Depth Texture World"></a>采样Depth Texture World</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">v2f</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">	...</span><br><span class="line">    float4 pos ：SV_POSITION;</span><br><span class="line">	float3 ray : TEXCOORD1;</span><br><span class="line">  	float4 screenUV : TEXCOORD0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">v2f <span class="title">vert</span><span class="params">(appdata v)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	v2f o;</span><br><span class="line">  	o.pos = mul(UNITY_MATRIX_MVP,float4(v.pos,<span class="number">1</span>));</span><br><span class="line">  	o.screenUV = ComputeScreenPos(o.pos);</span><br><span class="line"> 	o.ray = mul(UNITY_MATRIX_MV,float4(v.pos,<span class="number">1</span>).xyz * float3(<span class="number">-1</span>,<span class="number">-1</span>,<span class="number">1</span>));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">sampler2D_float _CameraDepthTexture;</span><br><span class="line"></span><br><span class="line">fixed4 frag(v2f i): SV_Target</span><br><span class="line">&#123;</span><br><span class="line">  	<span class="keyword">float</span> depth = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,i.screenUV.xy/i.screenUV.w);</span><br><span class="line">  	depth = Linear01Depth(depth); <span class="comment">//sample depth texture</span></span><br><span class="line">	i.ray = i.ray *(_ProjectionParams.z / i.ray.z);</span><br><span class="line">	float4 vpos = float4(i.ray* depth,<span class="number">1</span>); <span class="comment">//view pos</span></span><br><span class="line">  	float3 wpos = mul(unity_CameraToWorld,vpos).xyz; <span class="comment">//world pos</span></span><br><span class="line">  	float3 opos = mul(unity_WorldToObject,float4(wpos,<span class="number">1</span>)).xyz;<span class="comment">//object pos </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="&#x91C7;&#x6837;depth-texture-world">&#x91C7;&#x6837;Depth Texture World</h4>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">v2f</span></span></span><br><span class="line"><span class="class">{</span></span><br><span class="line">	...</span><br><span class="line">    float4 pos &#xFF1A;SV_POSITION;</span><br><span class="line">	float3 ray : TEXCOORD1;</span><br><span class="line">  	float4 screenUV : TEXCOORD0;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="function">v2f <span class="title">vert</span><span class="params">(appdata v)</span></span></span><br><span class="line"><span class="function"></span>{</span><br><span class="line">	v2f o;</span><br><span class="line">  	o.pos = mul(UNITY_MATRIX_MVP,float4(v.pos,<span class="number">1</span>));</span><br><span class="line">  	o.screenUV = ComputeScreenPos(o.pos);</span><br><span class="line"> 	o.ray = mul(UNITY_MATRIX_MV,float4(v.pos,<span class="number">1</span>).xyz * float3(<span class="number">-1</span>,<span class="number">-1</span>,<span class="number">1</span>));</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line">sampler2D_float _CameraDepthTexture;</span><br><span class="line"></span><br><span class="line">fixed4 frag(v2f i): SV_Target</span><br><span class="line">{</span><br><span class="line">  	<span class="keyword">float</span> depth = SAMPLE_DEPTH_TEXTURE(_CameraDepthTexture,i.screenUV.xy/i.screenUV.w);</span><br><span class="line">  	depth = Linear01Depth(depth); <span class="comment">//sample depth texture</span></span><br><span class="line">	i.ray = i.ray *(_ProjectionParams.z / i.ray.z);</span><br><span class="line">	float4 vpos = float4(i.ray* depth,<span class="number">1</span>); <span class="comment">//view pos</span></span><br><span class="line">  	float3 wpos = mul(unity_CameraToWorld,vpos).xyz; <span class="comment">//world pos</span></span><br><span class="line">  	float3 opos = mul(unity_WorldToObject,float4(wpos,<span class="number">1</span>)).xyz;<span class="comment">//object pos </span></span><br><span class="line">}</span><br></pre></td></tr></table></figure>
 
   </div>
 </article>
 
     <div class="blog-post-comments">
         <div id="disqus_thread">
-            <noscript>Please enable JavaScript to view the comments.</noscript>
+            <noscript>Por favor activa JavaScript para ver el contenido.</noscript>
         </div>
     </div>
 
@@ -233,21 +252,21 @@
     <div id="nav-footer" style="display: none">
       <ul>
          
-          <li><a href="/">Home</a></li>
+          <li><a href="/">Inicio</a></li>
          
-          <li><a href="/about/">About</a></li>
+          <li><a href="/about/">Acerca de</a></li>
          
-          <li><a href="/archives/">Writing</a></li>
+          <li><a href="/archives/">Articulos</a></li>
          
-          <li><a href="/projects/">Projects</a></li>
+          <li><a href="/projects/">Proyectos</a></li>
          
-          <li><a href="/Search/">Search</a></li>
+          <li><a href="/Search/">Buscar</a></li>
         
       </ul>
     </div>
 
     <div id="toc-footer" style="display: none">
-      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#光照基础"><span class="toc-number">1.</span> <span class="toc-text">光照基础</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#坐标转换"><span class="toc-number">2.</span> <span class="toc-text">坐标转换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#屏幕坐标"><span class="toc-number">3.</span> <span class="toc-text">屏幕坐标</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#采样Depth-Texture-World"><span class="toc-number">3.1.</span> <span class="toc-text">采样Depth Texture World</span></a></li></ol></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#光照基础"><span class="toc-number">1.</span> <span class="toc-text">光照基础</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#坐标转换"><span class="toc-number">2.</span> <span class="toc-text">坐标转换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#屏幕坐标"><span class="toc-number">3.</span> <span class="toc-text">屏幕坐标</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#采样depth-texture-world"><span class="toc-number">3.1.</span> <span class="toc-text">采样Depth Texture World</span></a></li></ol></li></ol>
     </div>
 
     <div id="share-footer" style="display: none">
@@ -261,15 +280,23 @@
   <li><a class="icon" href="http://reddit.com/submit?url=http://yemi.me/2016/12/11/Unity-shader-Note/&title=Unity shader Note"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yemi.me/2016/12/11/Unity-shader-Note/&title=Unity shader Note"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" href="http://digg.com/submit?url=http://yemi.me/2016/12/11/Unity-shader-Note/&title=Unity shader Note"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yemi.me/2016/12/11/Unity-shader-Note/&name=Unity shader Note&description=&lt;h3 id=&#34;光照基础&#34;&gt;&lt;a href=&#34;#光照基础&#34; class=&#34;headerlink&#34; title=&#34;光照基础&#34;&gt;&lt;/a&gt;光照基础&lt;/h3&gt;&lt;p&gt;辐照度irradiance&lt;/p&gt;
-&lt;p&gt;散射scattering 吸收 absorption&lt;br&gt;散射只改变光的方向 吸收只改变光线的密度和颜色&lt;/p&gt;
-&lt;p&gt;光线进入如物体会发生折射refraction和投射transmission 以及被散射到外部的反射reflection&lt;br&gt;区别不同的散射方向 高光反射 specular 漫反射diffuse&lt;/p&gt;
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yemi.me/2016/12/11/Unity-shader-Note/&name=Unity shader Note&description=&lt;h3 id=&#34;光照基础&#34;&gt;光照基础&lt;/h3&gt;
+&lt;p&gt;辐照度irradiance&lt;/p&gt;
+&lt;p&gt;散射scattering 吸收 absorption 散射只改变光的方向 吸收只改变光线的密度和颜色&lt;/p&gt;
+&lt;p&gt;光线进入如物体会发生折射refraction和投射transmission 以及被散射到外部的反射reflection 区别不同的散射方向 高光反射 specular 漫反射diffuse&lt;/p&gt;
 &lt;p&gt;出射度 exitance 辐照度和出射度满足线性关系 比值就是漫反射和高光反射的属性&lt;/p&gt;
 &lt;p&gt;BRDF (Bidirectional Reflection Distribution Function)&lt;/p&gt;
-&lt;p&gt;标准光照模型 direct light&lt;br&gt;自发光 emissive 高光specular 漫反射diffuse 环境光ambient&lt;/p&gt;
-&lt;p&gt;diffuse Lambert’s Law&lt;br&gt;$$&lt;br&gt;c_{diffuse} = (c_{light} &lt;em&gt; m_{diffuse})max(0,n&lt;/em&gt;l)&lt;br&gt;$$&lt;/p&gt;
-&lt;p&gt;光源颜色&lt;em&gt;漫反射材质颜色&lt;/em&gt;亮度值&lt;br&gt;Phong光照模型&lt;br&gt;$$&lt;br&gt;C_{specular} = (c_{light} &lt;em&gt; m_{specular})max(0,v&lt;/em&gt;r)^{m_{gloss}}&lt;br&gt;$$&lt;/p&gt;
-&lt;p&gt;Blinn-Phong&lt;br&gt;$$&lt;br&gt;h = \frac{v+l}{|v+l|}&lt;br&gt;C_{specular} = (c_{light} &lt;em&gt; m_{specular})max(0,n&lt;/em&gt;h)^{m_{gloss}}&lt;br&gt;$$&lt;br&gt;Phong shading 逐像素光照 Gouraud shading 逐顶点光照&lt;br&gt;各向同性isotropic  各向异性anisotropic&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+&lt;p&gt;标准光照模型 direct light 自发光 emissive 高光specular 漫反射diffuse 环境光ambient&lt;/p&gt;
+&lt;p&gt;diffuse Lambert&#39;s Law &lt;span class=&#34;math display&#34;&gt;\displaystyle 
+c_{diffuse} = (c_{light} * m_{diffuse})max(0,n*l)
+&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;光源颜色&lt;em&gt;漫反射材质颜色&lt;/em&gt;亮度值 Phong光照模型 &lt;span class=&#34;math display&#34;&gt;\displaystyle 
+C_{specular} = (c_{light} * m_{specular})max(0,v*r)^{m_{gloss}}
+&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;Blinn-Phong &lt;span class=&#34;math display&#34;&gt;\displaystyle 
+h = \frac{v+l}{|v+l|}
+C_{specular} = (c_{light} * m_{specular})max(0,n*h)^{m_{gloss}}
+&lt;/span&gt; Phong shading 逐像素光照 Gouraud shading 逐顶点光照 各向同性isotropic 各向异性anisotropic&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -277,7 +304,7 @@
     <div id="actions-footer">
         <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
         <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Compartir</a>
         <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
     </div>
 
@@ -293,15 +320,15 @@
     <nav>
       <ul>
          
-          <li><a href="/">Home</a></li>
+          <li><a href="/">Inicio</a></li>
          
-          <li><a href="/about/">About</a></li>
+          <li><a href="/about/">Acerca de</a></li>
          
-          <li><a href="/archives/">Writing</a></li>
+          <li><a href="/archives/">Articulos</a></li>
          
-          <li><a href="/projects/">Projects</a></li>
+          <li><a href="/projects/">Proyectos</a></li>
          
-          <li><a href="/Search/">Search</a></li>
+          <li><a href="/Search/">Buscar</a></li>
         
       </ul>
     </nav>
