@@ -1402,8 +1402,9 @@ pre code {
   border: none;
 }
 code {
-  padding: 0 5px;
-  border: 1px dotted #666;
+  padding: 0 3px;
+  margin: 0 2px;
+  background-color: #272a2d;
   border-radius: 2px;
   -webkit-border-radius: 2px;
 }
@@ -1412,7 +1413,7 @@ code {
   margin: 1rem 0;
   padding: 10px 15px;
   border-radius: 4px;
-  background: #212326;
+  background: #272a2d;
   font-family: "Menlo", "Meslo LG", monospace;
   -webkit-border-radius: 4px;
 }
@@ -1455,4 +1456,16 @@ code {
 }
 .highlight .line {
   height: 22px;
+}
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  background-color: #666;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #999;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
 }
