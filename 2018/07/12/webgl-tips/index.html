@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="WebGL notes Khronos&amp;#x5B9A;&amp;#x5236;&amp;#x7684;WebGL specification&amp;#xFF0C;Chrome&amp;#x548C;Firefox&amp;#x5728;&amp;#x5B9E;&amp;#x73B0;desktop&amp;#x7684;WEBGL&amp;#x65F6;&amp;#xFF0C;&amp;#x5F00;&amp;#x53D1;&amp;#x4E86;&amp;#x4E00;&amp;#x4E2A;&amp;#x56FE;">
+<meta name="keywords" content="webgl">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WebGL Tips">
+<meta property="og:url" content="http://yemi.me/2018/07/12/webgl-tips/index.html">
+<meta property="og:site_name" content="Yemi&#39;s Blog">
+<meta property="og:description" content="WebGL notes Khronos&amp;#x5B9A;&amp;#x5236;&amp;#x7684;WebGL specification&amp;#xFF0C;Chrome&amp;#x548C;Firefox&amp;#x5728;&amp;#x5B9E;&amp;#x73B0;desktop&amp;#x7684;WEBGL&amp;#x65F6;&amp;#xFF0C;&amp;#x5F00;&amp;#x53D1;&amp;#x4E86;&amp;#x4E00;&amp;#x4E2A;&amp;#x56FE;">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2018-07-21T10:24:52.732Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="WebGL Tips">
+<meta name="twitter:description" content="WebGL notes Khronos&amp;#x5B9A;&amp;#x5236;&amp;#x7684;WebGL specification&amp;#xFF0C;Chrome&amp;#x548C;Firefox&amp;#x5728;&amp;#x5B9E;&amp;#x73B0;desktop&amp;#x7684;WEBGL&amp;#x65F6;&amp;#xFF0C;&amp;#x5F00;&amp;#x53D1;&amp;#x4E86;&amp;#x4E00;&amp;#x4E2A;&amp;#x56FE;">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.png">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+          
+        
+    
+    <!-- title -->
+    <title>WebGL Tips</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss -->
+    
+    
+</head>
+
+<body class="max-width mx-auto px3">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+         
+          <li><a href="/Search/">Search</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" href="/2018/07/01/stable-fluid/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yemi.me/2018/07/12/webgl-tips/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://yemi.me/2018/07/12/webgl-tips/&text=WebGL Tips"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yemi.me/2018/07/12/webgl-tips/&title=WebGL Tips"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yemi.me/2018/07/12/webgl-tips/&is_video=false&description=WebGL Tips"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=WebGL Tips&body=Check out this article: http://yemi.me/2018/07/12/webgl-tips/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://yemi.me/2018/07/12/webgl-tips/&title=WebGL Tips"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://yemi.me/2018/07/12/webgl-tips/&title=WebGL Tips"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yemi.me/2018/07/12/webgl-tips/&title=WebGL Tips"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://yemi.me/2018/07/12/webgl-tips/&title=WebGL Tips"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yemi.me/2018/07/12/webgl-tips/&name=WebGL Tips&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#webgl-notes"><span class="toc-number">1.</span> <span class="toc-text">WebGL notes</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#webgl-insight-tips"><span class="toc-number">2.</span> <span class="toc-text">WebGL insight Tips</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index my4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        WebGL Tips
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Yemi's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2018-07-12T05:49:59.000Z" itemprop="datePublished">2018-07-12</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/webgl/">webgl</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h2 id="webgl-notes">WebGL notes</h2>
+<p>Khronos&#x5B9A;&#x5236;&#x7684;WebGL specification&#xFF0C;Chrome&#x548C;Firefox&#x5728;&#x5B9E;&#x73B0;desktop&#x7684;WEBGL&#x65F6;&#xFF0C;&#x5F00;&#x53D1;&#x4E86;&#x4E00;&#x4E2A;&#x56FE;&#x5F62;API&#x5E93;<a href="https://github.com/google/angle" target="_blank" rel="noopener">ANGLE</a>&#x3002;ANGLE&#x63D0;&#x4F9B;&#x4E86;webgl&#x7684;API&#x63A5;&#x53E3;&#xFF0C;&#x5728;&#x975E;&#x539F;&#x751F;openGL-es&#x7684;&#x5E73;&#x53F0;&#x4E0A;&#xFF0C;&#x901A;&#x8FC7;&#x5176;&#x4ED6;&#x56FE;&#x50CF;API&#x5BF9;WGL&#x7684;API&#x8FDB;&#x884C;&#x6A21;&#x62DF;&#x548C;&#x6620;&#x5C04;&#x3002;</p>
+<p>&#x7531;&#x4E8E;js&#x662F;&#x52A8;&#x6001;&#x811A;&#x672C;&#x8BED;&#x8A00;&#x540C;&#x65F6;&#x975E;&#x5F3A;&#x7C7B;&#x578B;&#xFF0C;&#x5728;js&#x811A;&#x672C;&#x5BF9;API&#x7684;&#x8C03;&#x7528;&#x8F83;&#x4E3A;&#x968F;&#x610F;&#xFF0C;&#x800C;&#x56FE;&#x5F62;API&#x7684;&#x539F;&#x59CB;API&#x662F;&#x57FA;&#x4E8E;C/C++&#x7684;&#x3002;&#x6240;&#x4EE5;ANGLE&#x5728;gl&#x65B9;&#x6CD5;&#x8C03;&#x7528;&#x65F6;&#x4E3A;&#x4E86;&#x786E;&#x4FDD;&#x6BCF;&#x6B21;API&#x8C03;&#x7528;&#x90FD;&#x4E0D;&#x4F1A;&#x4F7F;&#x5F97;&#x5E95;&#x5C42;&#x4F7F;&#x7528;&#x7684;&#x56FE;&#x50CF;API crash&#xFF0C;&#x505A;&#x4E86;&#x5927;&#x91CF;&#x7684;&#x9A8C;&#x8BC1;&#x3002;&#x8FD9;&#x90E8;&#x5206;overhead&#x76F8;&#x5BF9;&#x4E8E;&#x539F;&#x751F;&#x7684;directX&#x548C;openGL&#x6765;&#x8BF4;&#x662F;&#x6BD4;&#x8F83;&#x5927;&#x7684;&#x3002;&#x6240;&#x4EE5;&#x5728;desktop&#x4E2D;&#x8C03;&#x7528;webgl&#x4F1A;&#x6709;&#x66F4;&#x591A;driver&#x5C42;&#x7684;overhead&#x3002;</p>
+<p>&#x540C;&#x65F6;&#x5BF9;&#x4E8E;desktop&#x7684;WebGL&#x548C;mobile&#x7684;webgl&#x6765;&#x8BF4;&#xFF0C;&#x7531;&#x4E8E;ANGLE&#x505A;&#x4E86;&#x4E00;&#x90E8;&#x5206;&#x4FDD;&#x62A4;&#xFF0C;&#x90E8;&#x5206;API&#x7684;&#x884C;&#x4E3A;&#x65B9;&#x5F0F;&#x5728;&#x4E0D;&#x540C;&#x5E73;&#x53F0;&#x6839;&#x636E;&#x5B9E;&#x73B0;&#x7684;&#x5DEE;&#x5F02;&#x4E0A;&#x4F1A;&#x6709;&#x4E0D;&#x540C;&#x3002;&#x4F8B;&#x5982;&#x5728;desktop chrome&#x548C;iOS webview&#x4E2D;&#xFF0C;<code>gl.BindBuffer()</code>&#x65B9;&#x6CD5;&#x7684;buffer&#x5BF9;&#x8C61;&#x4F20;&#x5165;<code>undefined</code>&#x662F;&#x4E0D;&#x4F1A;&#x62A5;&#x9519;&#x7684;&#xFF0C;&#x800C;&#x5728;Android&#x7684;&#x5FAE;&#x4FE1;tencent X5&#x6D4F;&#x89C8;&#x5668;&#x4E2D;&#x5C31;&#x4F1A;&#x76F4;&#x63A5;&#x62A5;&#x9519;&#x3002;</p>
+<h2 id="webgl-insight-tips">WebGL insight Tips</h2>
+<ol style="list-style-type: decimal">
+<li><a href="http://webglreport.com/" target="_blank" rel="noopener">WebGL Report</a> &#x53EF;&#x4EE5;&#x67E5;&#x770B;&#x6D4F;&#x89C8;&#x5668;&#x7684;WebGL&#x652F;&#x6301;&#x60C5;&#x51B5;&#xFF0C;&#x5C24;&#x5176;&#x662F;&#x5728;&#x8C03;&#x8BD5;&#x6D4F;&#x89C8;&#x5668;&#x6216;&#x8BBE;&#x5907;&#x76F8;&#x5173;&#x7684;&#x95EE;&#x9898;&#x3002;</li>
+<li>&#x907F;&#x514D;&#x5728;&#x6E32;&#x67D3;loop&#x4E2D;&#x8FDB;&#x884C;&#x5BF9;&#x8C61;&#x5185;&#x5B58;&#x5206;&#x914D;&#xFF0C;&#x5C3D;&#x53EF;&#x80FD;&#x91CD;&#x7528;&#x5BF9;&#x8C61;&#x548C;&#x6570;&#x7EC4;&#xFF0C;&#x5C3D;&#x91CF;&#x907F;&#x514D;&#x4F7F;&#x7528;<code>map</code>&#x548C;<code>filter</code>&#x7B49;&#x5185;&#x7F6E;&#x6570;&#x636E;&#x65B9;&#x6CD5;&#x3002;&#x6BCF;&#x4E2A;&#x65B0;&#x5BF9;&#x8C61;&#x7684;&#x5185;&#x5B58;&#x5206;&#x914D;&#x4F1A;&#x6709;&#x4E00;&#x4E9B;GC&#x76F8;&#x5173;&#x7684;&#x5DE5;&#x4F5C;&#xFF0C;&#x5728;&#x4E00;&#x4E9B;&#x60C5;&#x51B5;&#x4E0B;GC&#x4F1A;&#x963B;&#x585E;&#x6E32;&#x67D3;&#x5FAA;&#x73AF;&#x9020;&#x6210;&#x51E0;&#x5E27;&#x7684;&#x5361;&#x987F;&#x3002;</li>
+<li>&#x5728;&#x6CA1;&#x6709;&#x5FC5;&#x8981;&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x4E0D;&#x8981;&#x4F7F;&#x7528;alpha,depth,stencil,antialias&#x4EE5;&#x53CA;&#x5C06;<code>preserveDrawingBuffer</code>&#x8BBE;&#x7F6E;&#x4E3A;false,&#x8FD9;&#x6837;&#x4F1A;&#x8282;&#x7EA6;&#x4E00;&#x90E8;&#x5206;&#x5185;&#x5B58;&#x3002;&#x540C;&#x65F6;&#x9700;&#x8981;&#x65F6;&#x523B;&#x6CE8;&#x610F;&#x5728;&#x4F7F;&#x7528;&#x5B8C;alpha,depth,antialias&#x4E4B;&#x540E;&#x9700;&#x8981;&#x5C06;context&#x72B6;&#x6001;&#x663E;&#x793A;&#x5173;&#x95ED;&#x3002;</li>
+<li>&#x83B7;&#x53D6;attribute&#x548C;uniform location&#x53EA;&#x5728;&#x521D;&#x59CB;&#x5316;&#x65F6;&#x8FDB;&#x884C;&#x3002;</li>
+<li>int precision &#x6807;&#x5FD7;&#x5728;vertex &#x548C;fragment shader&#x4E2D;&#x5E76;&#x4E0D;&#x76F8;&#x540C;&#xFF0C;&#x4F7F;&#x7528;int precision&#x4F1A;&#x5BFC;&#x81F4;&#x4E0D;&#x6B63;&#x786E;&#x7684;&#x6E32;&#x67D3;&#x6548;&#x679C;&#x3002;</li>
+<li>&#x8003;&#x8651;&#x517C;&#x5BB9;&#x6027;&#xFF0C;&#x5728;varying&#x548C;uniform&#x5C5E;&#x6027;&#x662F;&#xFF0C;vs&#x548C;ps&#x4E2D;&#x4FDD;&#x6301;&#x76F8;&#x540C;&#x7684;&#x5927;&#x5C0F;&#xFF0C;&#x540C;&#x65F6;&#x5728;GLSL ES&#x7684;&#x89C4;&#x8303;&#x4E2D;&#x3002;&#x8003;&#x8651;&#x4F7F;&#x7528;vec4&#x66FF;&#x4EE3;float&#x6570;&#x7EC4;&#xFF0C;vec4&#x4F1A;&#x6709;&#x66F4;&#x7D27;&#x5BC6;&#x7684;&#x5185;&#x5B58;&#x6392;&#x5E03;.</li>
+<li>&#x975E;2&#x6B21;&#x5E42;&#x7684;&#x8D34;&#x56FE;&#x53EA;&#x652F;&#x6301;linear&#x6216;nearest filter&#x4EE5;&#x53CA;clamp-to-border,clampmode &#x652F;&#x6301;clamp-to-edge wrapping. Mipmap filtering &#x548C; repeat wrapping&#x4E0D;&#x652F;&#x6301;&#x3002;</li>
+<li>&#x5728;<code>WEBGL_draw_buffers</code> extesnion&#x4E0B;&#xFF0C;&#x5F53;&#x4F7F;&#x7528;&#x8D85;&#x8FC7;&#x4E00;&#x4E2A;draw buffer&#x65F6;&#xFF0C;&#x5982;&#x679C;&#x4E0D;&#x9700;&#x8981;&#x5F80;&#x67D0;&#x4E2A;draw buffer&#x7ED8;&#x5236;&#xFF0C;&#x5C06;gl.NONE &#x4F20;&#x9012;&#x7ED9;draw buffer&#x7684;&#x53C2;&#x6570;&#x7559;&#x522B;&#x3002;</li>
+<li>&#x59CB;&#x7EC8;&#x4F7F;&#x7528;&quot;use strict&quot; &#x58F0;&#x660E;&#x7F16;&#x5199;&#x4EE3;&#x7801;&#xFF0C;&#x8BB8;&#x591A;&#x88AB;&#x9690;&#x85CF;&#x7684;&#x9519;&#x8BEF;&#x4F1A;&#x88AB;&#x8F6C;&#x6362;&#x4E3A;&#x8FD0;&#x884C;&#x65F6;&#x5F02;&#x5E38;&#x629B;&#x51FA;&#x3002;&quot;use strict&quot;&#x4F7F;&#x5F97;&#x5728;&#x7279;&#x5B9A;&#x60C5;&#x51B5;&#x4E0B;&#x6D4F;&#x89C8;&#x5668;&#x53EF;&#x4EE5;&#x5BF9;&#x4EE3;&#x7801;&#x8FDB;&#x884C;&#x66F4;&#x597D;&#x7684;&#x4F18;&#x5316;&#x3002;</li>
+<li>Code linters,&#x5982;JSHint&#x5BF9;&#x4FDD;&#x6301;JS&#x4EE3;&#x7801;&#x6574;&#x6D01;&#x4EE5;&#x53CA;&#x66F4;&#x5C11;&#x9519;&#x8BEF;&#x6765;&#x8BF4;&#x662F;&#x4E00;&#x4E2A;&#x975E;&#x5E38;&#x6709;&#x7528;&#x7684;&#x5DE5;&#x5177;&#x3002;</li>
+<li>&#x59CB;&#x7EC8;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x65B0;&#x7684;Texture&#x800C;&#x4E0D;&#x662F;&#x6539;&#x53D8;&#x539F;&#x5148;&#x8D34;&#x56FE;&#x7684;&#x5927;&#x5C0F;&#x4EE5;&#x53CA;&#x683C;&#x5F0F;&#x3002;</li>
+<li>&#x907F;&#x514D;&#x4F7F;&#x7528;<code>gl.TRIANGLE_FAN</code>,<code>gl.TRIANGLE_FAN</code>&#x662F;&#x5728;CPU&#x7AEF;&#x8FDB;&#x884C;&#x6A21;&#x62DF;&#x7684;&#x3002;</li>
+<li>&#x5728;&#x5408;&#x9002;&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#x4F7F;&#x7528;<code>gl.STATIC_DRAW</code>&#x6807;&#x8BB0;1buffer,<code>gl.STATIC_DRAW</code>&#x4F7F;&#x5F97;&#x6D4F;&#x89C8;&#x5668;&#x548C;&#x9A71;&#x52A8;&#x5C42;&#x53EF;&#x4EE5;&#x5BF9;&#x9759;&#x6001;&#x6570;&#x636E;&#x7684;buffer&#x6709;&#x66F4;&#x591A;&#x6027;&#x80FD;&#x4E0A;&#x7684;&#x4F18;&#x5316;&#x3002;</li>
+<li>&#x786E;&#x4FDD;&#x6709;&#x4E00;&#x4E2A;<code>attribute</code>&#x88AB;&#x7ED1;&#x5B9A;&#x5230;<code>gl.bindAttribLocation</code>&#x7684;<code>location 0</code>.&#x5426;&#x5219;&#x5728;&#x975E;openGL-ES&#x5F97;&#x5E73;&#x53F0;&#x4E0A;&#x4F1A;&#x6709;&#x8F83;&#x9AD8;&#x7684;overhead&#xFF0C;&#x5982;MacOSX &#x4EE5;&#x53CA;desktop Linux.</li>
+<li>&#x5C3D;&#x53EF;&#x80FD;&#x4F7F;&#x7528;<code>transferable objects</code>&#x5728;Web Workers&#x76F4;&#x63A5;&#x4F20;&#x9012;&#x6570;&#x636E;&#x3002;</li>
+<li><code>typed arrays</code> &#x6709;&#x66F4;&#x9AD8;&#x7684;&#x6027;&#x80FD;&#x76F8;&#x5BF9;&#x4E8E;JS&#x7684;array&#x3002;</li>
+<li>&#x5728;fragment shaders&#x4E2D;&#x4F7F;&#x7528;<code>mediump</code>&#x7CBE;&#x5EA6;&#x4F1A;&#x6709;&#x66F4;&#x597D;&#x7684;&#x8BBE;&#x5907;&#x517C;&#x5BB9;&#x6027;&#xFF0C;&#x4F46;&#x8FD8;&#x662F;&#x6709;&#x53EF;&#x80FD;&#x5728;&#x7F3A;&#x5C11;&#x8DB3;&#x591F;&#x6D4B;&#x8BD5;&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#x5F71;&#x54CD;&#x6E32;&#x67D3;&#x7ED3;&#x679C;&#x3002;</li>
+<li>&#x4F7F;&#x7528;<code>highp</code>&#x7CBE;&#x5EA6;&#x4F1A;&#x6709;&#x66F4;&#x5927;&#x7684;&#x6027;&#x80FD;&#x6D88;&#x8017;&#x4F46;&#x662F;&#x6E32;&#x67D3;&#x7ED3;&#x679C;&#x66F4;&#x52A0;&#x51C6;&#x786E;&#xFF0C;&#x5728;vertex shader&#x4E2D;&#x63A8;&#x8350;&#x4F7F;&#x7528;<code>highp</code>.</li>
+<li>&#x4F7F;&#x7528;<code>mediump</code>&#x548C;<code>lowp</code>precision&#x8FDB;&#x884C;&#x8BBE;&#x5907;shader&#x7684;&#x517C;&#x5BB9;&#x6027;&#x6D4B;&#x8BD5;&#xFF0C;&#x5728;Chrome&#x4E2D;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;<code>emulate</code>precision&#x4F7F;&#x7528;&#x8F6F;&#x4EF6;&#x6765;&#x6A21;&#x62DF;&#x6D4B;&#x8BD5;&#x3002;</li>
+<li>&#x4F7F;&#x7528;RGB framebuffer&#x65F6;&#xFF0C;&#x59CB;&#x7EC8;&#x5B9E;&#x73B0;RGBA&#x683C;&#x5F0F;&#x7684;fallback&#x5728;RGB framebuffer&#x4E0D;&#x652F;&#x6301;&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#x3002;&#x4F7F;&#x7528;<code>gl.checkFramebufferStatus</code>&#x83B7;&#x5F97;&#x66F4;&#x591A;&#x4FE1;&#x606F;&#x3002;</li>
+<li>&#x4F7F;&#x7528;vertex array objects(VAOs)&#x548C;interleave static vertex data&#x53EF;&#x4EE5;&#x51CF;&#x5C11;&#x8BB8;&#x591A;GL&#x7684;API&#x8C03;&#x7528;&#x3002;&#x8003;&#x8651;&#x6027;&#x80FD;&#xFF0C;&#x5C3D;&#x91CF;&#x4E0D;&#x8981;&#x5728;&#x6BCF;&#x5E27;&#x66F4;&#x65B0;uniform&#xFF0C;&#x800C;&#x53EA;&#x5728;uniform&#x53D8;&#x5316;&#x65F6;&#x66F4;&#x65B0;&#x3002;</li>
+<li>&#x5982;&#x679C;&#x5728;&#x7F29;&#x653E;&#x6D4F;&#x89C8;&#x5668;&#x7684;&#x7A97;&#x53E3;&#x5927;&#x5C0F;&#x4F1A;&#x6709;&#x5927;&#x5E45;&#x5EA6;&#x7684;&#x6027;&#x80FD;&#x63D0;&#x5347;&#xFF0C;&#x53EF;&#x4EE5;&#x8003;&#x8651;&#x5728;&#x9F20;&#x6807;&#x62D6;&#x52A8;&#x7684;&#x4E92;&#x52A8;&#x65F6;&#x4F7F;&#x7528;&#x4E00;&#x534A;&#x5206;&#x8FA8;&#x7387;&#x7684;framebuffer&#x3002;</li>
+<li>&#x5206;&#x6563;&#x8F83;&#x6162;&#x7684;&#x4EFB;&#x52A1;&#x8DE8;&#x5E27;&#x6267;&#x884C;&#x53EF;&#x4EE5;&#x4F18;&#x5316;&#x52A0;&#x8F7D;&#x65F6;&#x95F4;&#x3002;</li>
+<li>&#x786E;&#x4FDD;&#x6240;&#x6709;&#x7684;WebGL&#x65B9;&#x6CD5;&#x8C03;&#x7528;&#x5168;&#x90E8;&#x90FD;&#x5728;<code>requestAnimationFrame</code>&#x65B9;&#x6CD5;&#x4E2D;&#x6267;&#x884C;&#x3002;</li>
+<li>GLSL&#x65B9;&#x6CD5;<code>textureProj</code>&#xFF0C;&#x5982;<code>vec4 color = textureProj(sampler,uv.xyw)</code>&#x53EF;&#x4EE5;&#x4F7F;&#x7528;<code>vec4 color = texture(sampler,uv.xy/uv.w)</code>&#x8FDB;&#x884C;&#x6A21;&#x62DF;&#x3002;</li>
+<li>&#x907F;&#x514D;&#x4F7F;&#x7528;Wavefront OBJ&#x6216;COLLADA&#x8FD9;&#x7C7B;text-based 3D &#x6570;&#x636E;&#x683C;&#x5F0F;&#x8FDB;&#x884C;&#x8D44;&#x6E90;&#x5206;&#x53D1;&#x3002;&#x4F7F;&#x7528;glTF&#x6216;SRC&#x8FD9;&#x7C7B;&#x4F18;&#x5316;&#x8FC7;&#x7684;Web&#x8D44;&#x6E90;&#x683C;&#x5F0F;&#x4F5C;&#x4E3A;&#x66FF;&#x4EE3;&#x65B9;&#x6848;&#x3002;</li>
+<li>&#x4F7F;&#x7528;OES_element_index_uint &#x5728;&#x4E00;&#x6B21;draw call&#x4E2D;&#x7ED8;&#x5236;indexed&#x8D85;&#x8FC7;uint16.Max 65535&#x7684;&#x6A21;&#x578B;&#x3002;</li>
+<li>&#x5E73;&#x6ED1;&#x7684;&#x76F8;&#x673A;&#x79FB;&#x52A8;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;cosine-base&#x63D2;&#x503C;&#x5BF9;&#x4F4D;&#x7F6E;&#x548C;&#x65CB;&#x8F6C;&#x8FDB;&#x884C;&#x8BA1;&#x7B97;&#x3002;&#x76F8;&#x5BF9;&#x4E8E;&#x7EBF;&#x6027;&#x63D2;&#x503C;&#xFF0C;&#x4F59;&#x5F26;&#x63D2;&#x503C;&#x6709;&#x66F4;&#x5C11;&#x7684;&#x6027;&#x80FD;&#x6D88;&#x8017;&#x4EE5;&#x53CA;&#x66F4;&#x7B80;&#x5355;&#x7684;&#x8BA1;&#x7B97;&#x516C;&#x5F0F;&#x3002;</li>
+</ol>
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+         
+          <li><a href="/Search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#webgl-notes"><span class="toc-number">1.</span> <span class="toc-text">WebGL notes</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#webgl-insight-tips"><span class="toc-number">2.</span> <span class="toc-text">WebGL insight Tips</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yemi.me/2018/07/12/webgl-tips/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://yemi.me/2018/07/12/webgl-tips/&text=WebGL Tips"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yemi.me/2018/07/12/webgl-tips/&title=WebGL Tips"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yemi.me/2018/07/12/webgl-tips/&is_video=false&description=WebGL Tips"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=WebGL Tips&body=Check out this article: http://yemi.me/2018/07/12/webgl-tips/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://yemi.me/2018/07/12/webgl-tips/&title=WebGL Tips"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://yemi.me/2018/07/12/webgl-tips/&title=WebGL Tips"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yemi.me/2018/07/12/webgl-tips/&title=WebGL Tips"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://yemi.me/2018/07/12/webgl-tips/&title=WebGL Tips"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yemi.me/2018/07/12/webgl-tips/&name=WebGL Tips&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2018 yemi
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+         
+          <li><a href="/Search/">Search</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/fontawesome-all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-117987782-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'yemiblog';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+
