@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="&amp;#x672C;&amp;#x6587;&amp;#x5B9E;&amp;#x73B0;&amp;#x57FA;&amp;#x4E8E;C#&amp;#x4E0E;Typescript.  &amp;#x94FE;&amp;#x5F0F;&amp;#x8C03;&amp;#x7528; &amp;#x4F7F;&amp;#x7528;Generics &amp;#x5B9E;&amp;#x73B0;&amp;#x94FE;&amp;#x5F0F;&amp;#x8C03;&amp;#x7528;&amp;#x6269;&amp;#x5C55; &amp;#">
+<meta name="keywords" content="C#,Programming Pattern,Method Chaining,Typescript,Generics">
+<meta property="og:type" content="article">
+<meta property="og:title" content="支持继承的链式调用范式Method chaining Pattern with generic derivation">
+<meta property="og:url" content="http://yemi.me/2018/09/27/method-chaining-with-derivation/index.html">
+<meta property="og:site_name" content="Yemi&#39;s Blog">
+<meta property="og:description" content="&amp;#x672C;&amp;#x6587;&amp;#x5B9E;&amp;#x73B0;&amp;#x57FA;&amp;#x4E8E;C#&amp;#x4E0E;Typescript.  &amp;#x94FE;&amp;#x5F0F;&amp;#x8C03;&amp;#x7528; &amp;#x4F7F;&amp;#x7528;Generics &amp;#x5B9E;&amp;#x73B0;&amp;#x94FE;&amp;#x5F0F;&amp;#x8C03;&amp;#x7528;&amp;#x6269;&amp;#x5C55; &amp;#">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2018-09-27T13:12:06.196Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="支持继承的链式调用范式Method chaining Pattern with generic derivation">
+<meta name="twitter:description" content="&amp;#x672C;&amp;#x6587;&amp;#x5B9E;&amp;#x73B0;&amp;#x57FA;&amp;#x4E8E;C#&amp;#x4E0E;Typescript.  &amp;#x94FE;&amp;#x5F0F;&amp;#x8C03;&amp;#x7528; &amp;#x4F7F;&amp;#x7528;Generics &amp;#x5B9E;&amp;#x73B0;&amp;#x94FE;&amp;#x5F0F;&amp;#x8C03;&amp;#x7528;&amp;#x6269;&amp;#x5C55; &amp;#">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.png">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+          
+        
+    
+    <!-- title -->
+    <title>支持继承的链式调用范式Method chaining Pattern with generic derivation</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss -->
+    
+    
+</head>
+
+<body class="max-width mx-auto px3">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+         
+          <li><a href="/Search/">Search</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" href="/2018/09/17/powervr-architecture-overview/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yemi.me/2018/09/27/method-chaining-with-derivation/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://yemi.me/2018/09/27/method-chaining-with-derivation/&text=支持继承的链式调用范式Method chaining Pattern with generic derivation"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yemi.me/2018/09/27/method-chaining-with-derivation/&title=支持继承的链式调用范式Method chaining Pattern with generic derivation"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yemi.me/2018/09/27/method-chaining-with-derivation/&is_video=false&description=支持继承的链式调用范式Method chaining Pattern with generic derivation"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=支持继承的链式调用范式Method chaining Pattern with generic derivation&body=Check out this article: http://yemi.me/2018/09/27/method-chaining-with-derivation/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://yemi.me/2018/09/27/method-chaining-with-derivation/&title=支持继承的链式调用范式Method chaining Pattern with generic derivation"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://yemi.me/2018/09/27/method-chaining-with-derivation/&title=支持继承的链式调用范式Method chaining Pattern with generic derivation"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yemi.me/2018/09/27/method-chaining-with-derivation/&title=支持继承的链式调用范式Method chaining Pattern with generic derivation"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://yemi.me/2018/09/27/method-chaining-with-derivation/&title=支持继承的链式调用范式Method chaining Pattern with generic derivation"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yemi.me/2018/09/27/method-chaining-with-derivation/&name=支持继承的链式调用范式Method chaining Pattern with generic derivation&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#链式调用"><span class="toc-number">1.</span> <span class="toc-text">链式调用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用generics实现链式调用扩展"><span class="toc-number">2.</span> <span class="toc-text">使用Generics实现链式调用扩展</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用local-class优化代码结构"><span class="toc-number">3.</span> <span class="toc-text">使用local class优化代码结构</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index my4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        支持继承的链式调用范式Method chaining Pattern with generic derivation
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Yemi's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2018-09-27T03:51:52.000Z" itemprop="datePublished">2018-09-27</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/C/">C#</a>, <a class="tag-link" href="/tags/Generics/">Generics</a>, <a class="tag-link" href="/tags/Method-Chaining/">Method Chaining</a>, <a class="tag-link" href="/tags/Programming-Pattern/">Programming Pattern</a>, <a class="tag-link" href="/tags/Typescript/">Typescript</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>&#x672C;&#x6587;&#x5B9E;&#x73B0;&#x57FA;&#x4E8E;C#&#x4E0E;Typescript.</p>
+<ul>
+<li>&#x94FE;&#x5F0F;&#x8C03;&#x7528;</li>
+<li>&#x4F7F;&#x7528;Generics &#x5B9E;&#x73B0;&#x94FE;&#x5F0F;&#x8C03;&#x7528;&#x6269;&#x5C55;</li>
+<li>&#x4F7F;&#x7528;local class&#x4F18;&#x5316;&#x4EE3;&#x7801;&#x7ED3;&#x6784;</li>
+</ul>
+<h2 id="&#x94FE;&#x5F0F;&#x8C03;&#x7528;">&#x94FE;&#x5F0F;&#x8C03;&#x7528;</h2>
+<p>&#x94FE;&#x5F0F;&#x8C03;&#x7528;&#x65B9;&#x6CD5;&#x662F;&#x4E00;&#x4E2A;&#x5E38;&#x89C1;&#x7684;&#x7F16;&#x7A0B;&#x8303;&#x5F0F;&#xFF0C;&#x7279;&#x522B;&#x662F;&#x5728;&#x5BF9;&#x8C61;&#x6784;&#x9020;&#x5668;&#x7684;&#x7C7B;&#x4E0A;&#xFF0C;&#x901A;&#x5E38;&#x662F;&#x4E00;&#x4E9B;<code>builder</code>&#x7684;&#x7C7B;&#x4F7F;&#x7528;&#x4E86;&#x94FE;&#x5F0F;&#x8C03;&#x7528;&#x3002;&#x94FE;&#x5F0F;&#x8C03;&#x7528;&#x7ED9;&#x590D;&#x6742;&#x5BF9;&#x8C61;&#x7684;&#x521B;&#x5EFA;&#x53C2;&#x6570;&#x63D0;&#x4F9B;&#x4E86;&#x7B80;&#x4FBF;&#x7684;&#x8C03;&#x7528;&#x65B9;&#x5F0F;&#x3002;</p>
+<p>&#x4E00;&#x4E2A;&#x5E38;&#x89C1;&#x7684;Method Chaining &#x7C7B; <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">class</span> Data{</span><br><span class="line">  <span class="keyword">public</span> items:Item[] = [];</span><br><span class="line">  <span class="keyword">public</span> num:<span class="built_in">number</span> = <span class="number">0</span>;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> DataBuilder{</span><br><span class="line">  <span class="keyword">protected</span> m_data:Data = <span class="keyword">new</span> Data();</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> create():DataBuilder{</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> DataBuilder();</span><br><span class="line">  }</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">public</span> addItem(o:Item):DataBuilder{</span><br><span class="line">    <span class="keyword">this</span>.m_data.items.push(o);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">  }</span><br><span class="line">  <span class="keyword">public</span> addNum(n:<span class="built_in">number</span>):DataBuilder{</span><br><span class="line">    <span class="keyword">this</span>.m_data.num +=n;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">  }</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">public</span> finish():Data{</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.m_data;</span><br><span class="line">  }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> data = DataBuilder.create().addItem(<span class="keyword">new</span> Item()).addNum(<span class="number">100</span>).addItem(<span class="keyword">new</span> Item()).finish();</span><br></pre></td></tr></table></figure></p>
+<p>&#x8003;&#x8651;&#x7EE7;&#x627F;&#x7684;&#x60C5;&#x51B5;&#xFF0C;&#x6BD4;&#x5982;<code>DataBuilder</code>&#x662F;&#x5728;&#x63D0;&#x4F9B;&#x7684;&#x4E00;&#x4E2A;Library&#x4E2D;&#x7684;&#x7C7B;&#xFF0C;&#x540C;&#x65F6;&#x5E0C;&#x671B;&#x4F7F;&#x7528;&#x7684;&#x5F00;&#x53D1;&#x8005;&#x53EF;&#x4EE5;&#x5BF9;&#x8FD9;&#x4E2A;&#x94FE;&#x5F0F;&#x8C03;&#x7528;&#x6784;&#x9020;&#x7C7B;&#x8FDB;&#x884C;&#x6269;&#x5C55;&#x3002;</p>
+<p>&#x5177;&#x4F53;&#x7684;&#x60C5;&#x5F62;&#x5C31;&#x53D8;&#x4E3A;&#xFF1A;</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> CustomDataBuilder <span class="keyword">extends</span> DataBuilder{</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> create():CustomDataBuilder{</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> CustomDataBuilder();</span><br><span class="line">  }</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> addCustomItem(o:Item):CustomDataBuilder{</span><br><span class="line">    <span class="keyword">this</span>.m_data.items.push(o);</span><br><span class="line">  }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> data = CustomDataBuilder.create().addCustomItem(<span class="literal">null</span>).addNum(<span class="number">100</span>).finish();</span><br></pre></td></tr></table></figure>
+<p>&#x8FD9;&#x6837;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x5B50;&#x7C7B;&#x7684;&#x65B9;&#x6CD5;&#x8FDB;&#x884C;&#x94FE;&#x5F0F;&#x8C03;&#x7528;&#xFF0C;&#x540C;&#x65F6;&#x4E5F;&#x53EF;&#x4EE5;&#x8C03;&#x7528;&#x5230;&#x57FA;&#x7C7B;&#x7684;<code>addNum</code>&#x65B9;&#x6CD5;&#x3002;</p>
+<p>&#x4F46;&#x662F;&#x8FD9;&#x91CC;&#x5B58;&#x5728;&#x4E00;&#x4E2A;&#x95EE;&#x9898;&#xFF0C;&#x5F53;<code>CustomDataBuilder</code>&#x7684;&#x5BF9;&#x8C61;&#x8C03;&#x7528;&#x4E86;&#x5176;&#x57FA;&#x7C7B;&#x7684;&#x65B9;&#x6CD5;&#x540E;&#xFF0C;&#x8FD4;&#x56DE;&#x7684;&#x662F;&#x57FA;&#x7C7B;<code>DataBuilder</code>&#x7684;&#x5B9E;&#x4F8B;&#xFF0C;&#x5C31;&#x65E0;&#x6CD5;&#x518D;&#x6B21;&#x94FE;&#x5F0F;&#x8C03;&#x7528;<code>CustomDataBuilder</code>&#x7684;&#x65B9;&#x6CD5;&#x4E86;&#x3002;&#x4E5F;&#x5C31;&#x662F;&#xFF1A;</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> data = CustomDataBuilder.create().addNum(<span class="number">100</span>).addCustomItem(<span class="literal">null</span>); <span class="comment">//Error</span></span><br></pre></td></tr></table></figure>
+<p>&#x867D;&#x7136;typescript&#x4F1A;&#x88AB;&#x7F16;&#x8BD1;&#x6210;js&#xFF0C;<code>this</code>&#x4F9D;&#x65E7;&#x662F;<code>CustomDataBuilder</code>&#x7684;&#x5BF9;&#x8C61;&#x53EF;&#x4EE5;&#x6B63;&#x5E38;&#x6267;&#x884C;&#xFF0C;&#x4F46;&#x662F;typescript&#x7684;&#x7C7B;&#x578B;&#x68C0;&#x6D4B;&#x5374;&#x65E0;&#x6CD5;&#x901A;&#x8FC7;&#x3002; &#x540C;&#x65F6;&#x8FD9;&#x4E2A;pattern&#x5728;C#&#x4E2D;&#x4E5F;&#x662F;&#x65E0;&#x6CD5;&#x5B8C;&#x6210;&#x7F16;&#x8BD1;&#x7684;&#x3002;</p>
+<h2 id="&#x4F7F;&#x7528;generics&#x5B9E;&#x73B0;&#x94FE;&#x5F0F;&#x8C03;&#x7528;&#x6269;&#x5C55;">&#x4F7F;&#x7528;Generics&#x5B9E;&#x73B0;&#x94FE;&#x5F0F;&#x8C03;&#x7528;&#x6269;&#x5C55;</h2>
+<p>&#x6240;&#x4EE5;&#x6211;&#x4EEC;&#x5E0C;&#x671B;&#x6240;&#x6709;&#x7684;&#x94FE;&#x5F0F;&#x8C03;&#x7528;&#x65B9;&#x6CD5;&#x8FD4;&#x56DE;&#x7684;&#x90FD;&#x662F;&#x5176;&#x672C;&#x8EAB;&#x7684;&#x7C7B;&#x578B;&#x7B7E;&#x540D;&#xFF0C;&#x8FD9;&#x6837;&#x6211;&#x4EEC;&#x5C31;&#x5FC5;&#x987B;&#x7528;&#x5230;GenericType&#x3002;</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> ABuilder&lt;T <span class="keyword">extends</span> ABuilder&lt;T&gt;&gt;{</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">public</span> funcA():T{</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<p>&#x7531;&#x4E8E;&#x94FE;&#x5F0F;&#x8C03;&#x7528;&#x7684;&#x9700;&#x6C42;&#xFF0C;<code>T</code>&#x5FC5;&#x987B;&#x662F;<code>ABuilder&lt;T&gt;</code>&#x7684;&#x5B50;&#x7C7B;&#x3002;&#x6240;&#x4EE5;<code>T</code>&#x5E26;&#x6709;<code>T extends ABuilder&lt;T&gt;</code>&#x7684;&#x7EA6;&#x675F;&#x3002;</p>
+<p>&#x540C;&#x65F6;&#x7531;&#x4E8E;&#x6211;&#x4EEC;&#x6CA1;&#x6CD5;&#x9650;&#x5B9A;<code>ABuilder&lt;T&gt;</code>&#x662F;<code>T</code>&#x6216;&#x5176;&#x5B50;&#x7C7B;&#xFF0C;&#x6240;&#x4EE5;<code>funcA()</code>&#x4E2D;&#x4E0D;&#x80FD;<code>return this</code>&#xFF0C;&#x6240;&#x4EE5;&#x6211;&#x4EEC;&#x5F15;&#x5165;&#x4E00;&#x4E2A;<code>T</code>&#x7684;&#x6210;&#x5458;&#x3002;</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> ABuilder&lt;T <span class="keyword">extends</span> ABuilder&lt;T&gt;&gt;{</span><br><span class="line">  <span class="keyword">protected</span> t:T&#xFF1B;</span><br><span class="line">  <span class="keyword">public</span> funcA():T{</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.t;</span><br><span class="line">  }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<p>&#x7531;&#x4E8E;<code>ABuilder</code>&#x662F;&#x6CDB;&#x578B;&#x7C7B;&#xFF0C;&#x4E0D;&#x80FD;&#x76F4;&#x63A5;&#x521B;&#x5EFA;&#x5176;&#x5BF9;&#x8C61;&#xFF0C;&#x5728;typescript&#x4E2D;<code>let b = new ABuilder()</code>&#x65F6;&#xFF0C;&#x6CDB;&#x578B;&#x7C7B;<code>T</code>&#x662F;&#x4E00;&#x4E2A;&#x7A7A;&#x5BF9;&#x8C61;<code>{}</code>&#x3002; &#x6211;&#x4EEC;&#x9700;&#x8981;&#x5F15;&#x5165;&#x4E00;&#x4E2A;&#x989D;&#x5916;&#x7684;&#x7C7B;&#xFF0C;&#x6765;&#x5B9E;&#x73B0;&#x5176;&#x6CDB;&#x578B;&#x3002;</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> ABuilder&lt;T <span class="keyword">extends</span> ABuilder&lt;T&gt;&gt;{</span><br><span class="line">  <span class="keyword">protected</span> t:T&#xFF1B;</span><br><span class="line">  <span class="keyword">public</span> funcA():T{</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.t;</span><br><span class="line">  }</span><br><span class="line">}</span><br><span class="line"><span class="keyword">class</span> A <span class="keyword">extends</span> ABuilder&lt;A&gt;{</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> create():A{</span><br><span class="line">    <span class="keyword">let</span> a = <span class="keyword">new</span> A();</span><br><span class="line">    a.t = a;</span><br><span class="line">    <span class="keyword">return</span> a;</span><br><span class="line">  }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> a = A.create().funcA().funcA().funcA();</span><br></pre></td></tr></table></figure>
+<p><strong>&#x5B9E;&#x73B0;&#x7EE7;&#x627F;</strong></p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> B <span class="keyword">extends</span> ABuilder&lt;B&gt;{</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> create():B{</span><br><span class="line">    <span class="keyword">let</span> b = <span class="keyword">new</span> B();</span><br><span class="line">    b.t = b;</span><br><span class="line">    <span class="keyword">return</span> b;</span><br><span class="line">  }</span><br><span class="line">  <span class="keyword">public</span> funcB():B{</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.t;</span><br><span class="line">  }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> a = A.create().funcA().funcA().funcA();</span><br><span class="line"><span class="keyword">let</span> b = B.create().funcB().funcA().funcB();</span><br></pre></td></tr></table></figure>
+<p>&#x8FD9;&#x6837;&#x6211;&#x4EEC;&#x5C31;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x7C7B;&#x7684;&#x7EE7;&#x627F;&#x6765;&#x6269;&#x5C55;<code>ABuilder</code>&#x3002;</p>
+<p>&#x5982;&#x679C;&#x7C7B;<code>B</code>&#x4E5F;&#x9700;&#x8981;&#x88AB;&#x6269;&#x5C55;&#xFF0C;&#x90A3;&#x4E48;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x5B9A;&#x4E49;&#x4E00;&#x4E2A;<code>BBuilder&lt;T&gt;</code>&#xFF1A;</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> BBuilder&lt;T <span class="keyword">extends</span> BBuilder&lt;T&gt;&gt; <span class="keyword">extends</span> ABuilder&lt;T&gt;{</span><br><span class="line"></span><br><span class="line">  <span class="keyword">public</span> funcB():B{</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.t;</span><br><span class="line">  }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> B <span class="keyword">extends</span> BBuilder&lt;B&gt;{</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> create():B{</span><br><span class="line">    <span class="keyword">let</span> b = <span class="keyword">new</span> B();</span><br><span class="line">    b.t = b;</span><br><span class="line">    <span class="keyword">return</span> b;</span><br><span class="line">  }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> C <span class="keyword">extends</span> BBuilder&lt;C&gt;{</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> create():C{</span><br><span class="line">    <span class="keyword">let</span> c = <span class="keyword">new</span> C();</span><br><span class="line">    c.t = c;</span><br><span class="line">    <span class="keyword">return</span> c;</span><br><span class="line">  }</span><br><span class="line">  <span class="keyword">public</span> funcC():C{</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.t;</span><br><span class="line">  }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> c = C.create().funcA().funcB().funcA();</span><br></pre></td></tr></table></figure>
+<h2 id="&#x4F7F;&#x7528;local-class&#x4F18;&#x5316;&#x4EE3;&#x7801;&#x7ED3;&#x6784;">&#x4F7F;&#x7528;local class&#x4F18;&#x5316;&#x4EE3;&#x7801;&#x7ED3;&#x6784;</h2>
+<p>&#x7531;&#x4E8E;&#x5728;C#&#x4E2D;&#xFF0C;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x76F8;&#x540C;&#x7684;Symbol&#x5B9A;&#x4E49;&#x4E00;&#x4E2A;&#x7C7B;&#x548C;&#x4E00;&#x4E2A;&#x7C7B;&#x7684;&#x8303;&#x578B;&#x7C7B;&#xFF0C;&#x8FD9;&#x6837;&#x5C06;&#x539F;&#x5148;&#x7684;&#x4E00;&#x4E2A;&#x7C7B;&#x62C6;&#x5C01;&#x4E3A;&#x4E24;&#x4E2A;&#x7ED3;&#x6784;&#x4E0A;&#x770B;&#x4E0A;&#x53BB;&#x4F9D;&#x65E7;&#x4F18;&#x96C5;&#x3002;</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public class A&lt;T&gt; where T:A&lt;T&gt;{</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">}</span><br><span class="line">public class A: A&lt;A&gt;{</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+<p>&#x8981;&#x8FDB;&#x884C;&#x6269;&#x5C55;&#x65F6;&#x4F7F;&#x7528;<code>A&lt;T&gt;</code>,&#x76F4;&#x63A5;&#x8C03;&#x7528;&#x65F6;&#x4F7F;&#x7528;<code>A</code>&#x3002;</p>
+<p>&#x4F46;&#x662F;&#x5728;TS&#x4E2D;&#x6CDB;&#x578B;&#x4EC5;&#x4EC5;&#x662F;Typescript Compiler&#x7684;&#x8BED;&#x6CD5;&#x7CD6;&#xFF0C;&#x6700;&#x7EC8;&#x7F16;&#x8BD1;&#x4E3A;&#x7684;JS&#x4E2D;<code>A&lt;T&gt;</code>&#x4E0E;<code>A</code>&#x5171;&#x7528;&#x4E86;&#x540C;&#x4E00;&#x4E2A;&#x57DF;&#x4E2D;&#x7684;&#x540D;&#x79F0;&#x3002;&#x6240;&#x4EE5;&#x5C31;&#x4E00;&#x5B9A;&#x8981;&#x6709;&#x4E24;&#x4E2A;&#x4E0D;&#x540C;&#x7684;&#x540D;&#x79F0;&#x3002;</p>
+<p>&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;<code>typescript</code>&#x4E2D;&#x7684;local class&#x6765;&#x5C06;&#x4E24;&#x4E2A;&#x7C7B;&#x5408;&#x5E76;&#x3002;</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> A&lt;T <span class="keyword">extends</span> A&lt;T&gt;&gt;{</span><br><span class="line">  <span class="keyword">protected</span> t:T;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> ABuilder = <span class="keyword">class</span> ABuilder <span class="keyword">extends</span> A&lt;ABuilder&gt;{</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">constructor</span>(<span class="params"></span>){</span><br><span class="line">      <span class="keyword">super</span>();</span><br><span class="line">      <span class="keyword">this</span>.t = <span class="keyword">this</span>;</span><br><span class="line">    }</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> create():ABuilder{</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">new</span> ABuilder();</span><br><span class="line">    }</span><br><span class="line">  }</span><br><span class="line">  <span class="keyword">public</span> funcA():T{</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.t;</span><br><span class="line">  }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> B&lt;T <span class="keyword">extends</span> B&lt;T&gt;&gt; <span class="keyword">extends</span> A&lt;T&gt;{</span><br><span class="line">  <span class="keyword">protected</span> t:T;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> BBuilder = <span class="keyword">class</span> BBuilder <span class="keyword">extends</span> B&lt;BBuilder&gt;{</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">constructor</span>(<span class="params"></span>){</span><br><span class="line">      <span class="keyword">super</span>();</span><br><span class="line">      <span class="keyword">this</span>.t = <span class="keyword">this</span>;</span><br><span class="line">    }</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> create():BBuilder{</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">new</span> BBuilder();</span><br><span class="line">    }</span><br><span class="line">  }</span><br><span class="line">  <span class="keyword">public</span> funcB():T{</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.t;</span><br><span class="line">  }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> a = A.ABuilder.create().funcA().funcA().funcA();</span><br><span class="line"><span class="keyword">let</span> b = B.BBuilder.create().funcB().funcA().funcB();</span><br></pre></td></tr></table></figure>
+<p><a href="https://gist.github.com/soyemi/21475d1945b1fbd22906606bb10d5e96" target="_blank" rel="noopener">Gist - C#/Typescript</a></p>
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+         
+          <li><a href="/Search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#链式调用"><span class="toc-number">1.</span> <span class="toc-text">链式调用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用generics实现链式调用扩展"><span class="toc-number">2.</span> <span class="toc-text">使用Generics实现链式调用扩展</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用local-class优化代码结构"><span class="toc-number">3.</span> <span class="toc-text">使用local class优化代码结构</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yemi.me/2018/09/27/method-chaining-with-derivation/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://yemi.me/2018/09/27/method-chaining-with-derivation/&text=支持继承的链式调用范式Method chaining Pattern with generic derivation"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yemi.me/2018/09/27/method-chaining-with-derivation/&title=支持继承的链式调用范式Method chaining Pattern with generic derivation"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yemi.me/2018/09/27/method-chaining-with-derivation/&is_video=false&description=支持继承的链式调用范式Method chaining Pattern with generic derivation"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=支持继承的链式调用范式Method chaining Pattern with generic derivation&body=Check out this article: http://yemi.me/2018/09/27/method-chaining-with-derivation/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://yemi.me/2018/09/27/method-chaining-with-derivation/&title=支持继承的链式调用范式Method chaining Pattern with generic derivation"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://yemi.me/2018/09/27/method-chaining-with-derivation/&title=支持继承的链式调用范式Method chaining Pattern with generic derivation"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yemi.me/2018/09/27/method-chaining-with-derivation/&title=支持继承的链式调用范式Method chaining Pattern with generic derivation"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://yemi.me/2018/09/27/method-chaining-with-derivation/&title=支持继承的链式调用范式Method chaining Pattern with generic derivation"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yemi.me/2018/09/27/method-chaining-with-derivation/&name=支持继承的链式调用范式Method chaining Pattern with generic derivation&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2018 yemi
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+         
+          <li><a href="/Search/">Search</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/fontawesome-all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-117987782-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'yemiblog';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+
