@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang=en>
-<head>
+<head><meta name="generator" content="Hexo 3.8.0">
     <!-- so meta -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="description" content="一直觉得体积光之类的效果很酷炫，在shadertoy也看到了很多惊艳的ray marching实现。看了一些文章和Paper相关的内容之后决定在Unity中实现一遍，记录下来。文中都是个人的理解，肯定会有一些错误，希望能有所帮助。   Volumetric LightING   自定义Shader中采样Shadow Map 通过CameraDepthTexture计算世界坐标 Ra">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="一直觉得体积光之类的效果很酷炫，在shadertoy也看到了很多惊艳的ray marching实现。看了一些文章和Paper相关的内容之后决定在Unity中实现一遍，记录下来。文中都是个人的理解，肯定会有一些错误，希望能有所帮助。  Volumetric LightING   自定义Shader中采样Shadow Map 通过CameraDepthTexture计算世界坐标 Ray">
 <meta name="keywords" content="Unity,Ray marching">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Unity中实现Post Process Volumetric Lighting">
 <meta property="og:url" content="http://yemi.me/2016/12/04/post-process-volumetric-lighting/index.html">
 <meta property="og:site_name" content="Yemi&#39;s Blog">
-<meta property="og:description" content="一直觉得体积光之类的效果很酷炫，在shadertoy也看到了很多惊艳的ray marching实现。看了一些文章和Paper相关的内容之后决定在Unity中实现一遍，记录下来。文中都是个人的理解，肯定会有一些错误，希望能有所帮助。   Volumetric LightING   自定义Shader中采样Shadow Map 通过CameraDepthTexture计算世界坐标 Ra">
+<meta property="og:description" content="一直觉得体积光之类的效果很酷炫，在shadertoy也看到了很多惊艳的ray marching实现。看了一些文章和Paper相关的内容之后决定在Unity中实现一遍，记录下来。文中都是个人的理解，肯定会有一些错误，希望能有所帮助。  Volumetric LightING   自定义Shader中采样Shadow Map 通过CameraDepthTexture计算世界坐标 Ray">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="http://yemi.me/images/161204_volumetric_light.png">
 <meta property="og:updated_time" content="2018-07-21T10:24:52.726Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Unity中实现Post Process Volumetric Lighting">
-<meta name="twitter:description" content="一直觉得体积光之类的效果很酷炫，在shadertoy也看到了很多惊艳的ray marching实现。看了一些文章和Paper相关的内容之后决定在Unity中实现一遍，记录下来。文中都是个人的理解，肯定会有一些错误，希望能有所帮助。   Volumetric LightING   自定义Shader中采样Shadow Map 通过CameraDepthTexture计算世界坐标 Ra">
+<meta name="twitter:description" content="一直觉得体积光之类的效果很酷炫，在shadertoy也看到了很多惊艳的ray marching实现。看了一些文章和Paper相关的内容之后决定在Unity中实现一遍，记录下来。文中都是个人的理解，肯定会有一些错误，希望能有所帮助。  Volumetric LightING   自定义Shader中采样Shadow Map 通过CameraDepthTexture计算世界坐标 Ray">
 <meta name="twitter:image" content="http://yemi.me/images/161204_volumetric_light.png">
     
     
@@ -59,6 +59,8 @@
          
           <li><a href="/">Home</a></li>
          
+          <li><a href="https://artworks.yemi.me/">Artworks</a></li>
+         
           <li><a href="/about/">About</a></li>
          
           <li><a href="/archives/">Writing</a></li>
@@ -69,7 +71,7 @@
         
       </ul>
     </span>
-    <br/>
+    <br>
     <span id="actions">
       <ul>
         
@@ -84,7 +86,7 @@
       <span id="i-top" class="info" style="display:none;">Back to top</span>
       <span id="i-share" class="info" style="display:none;">Share post</span>
     </span>
-    <br/>
+    <br>
     <div id="share" style="display: none">
       <ul>
   <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yemi.me/2016/12/04/post-process-volumetric-lighting/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
@@ -97,10 +99,9 @@
   <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yemi.me/2016/12/04/post-process-volumetric-lighting/&title=Unity中实现Post Process Volumetric Lighting"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
   <li><a class="icon" href="http://digg.com/submit?url=http://yemi.me/2016/12/04/post-process-volumetric-lighting/&title=Unity中实现Post Process Volumetric Lighting"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
   <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yemi.me/2016/12/04/post-process-volumetric-lighting/&name=Unity中实现Post Process Volumetric Lighting&description=&lt;p&gt;一直觉得体积光之类的效果很酷炫，在shadertoy也看到了很多惊艳的ray marching实现。看了一些文章和Paper相关的内容之后决定在Unity中实现一遍，记录下来。文中都是个人的理解，肯定会有一些错误，希望能有所帮助。&lt;/p&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;/images/161204_volumetric_light.png&#34; alt=&#34;Volumetric LightING&#34;&gt;
-&lt;p class=&#34;caption&#34;&gt;Volumetric LightING&lt;/p&gt;
-&lt;/div&gt;
+&lt;figure&gt;
+&lt;img src=&#34;/images/161204_volumetric_light.png&#34; alt=&#34;Volumetric LightING&#34;&gt;&lt;figcaption&gt;Volumetric LightING&lt;/figcaption&gt;
+&lt;/figure&gt;
 &lt;ul&gt;
 &lt;li&gt;自定义Shader中采样Shadow Map&lt;/li&gt;
 &lt;li&gt;通过CameraDepthTexture计算世界坐标&lt;/li&gt;
@@ -121,7 +122,7 @@
     
     <div class="content index my4">
         
-        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
   <header>
     
     <h1 class="posttitle" itemprop="name headline">
@@ -131,7 +132,7 @@
 
 
     <div class="meta">
-      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
         <span itemprop="name">Yemi's Blog</span>
       </span>
       
@@ -153,10 +154,9 @@
 
   <div class="content" itemprop="articleBody">
     <p>&#x4E00;&#x76F4;&#x89C9;&#x5F97;&#x4F53;&#x79EF;&#x5149;&#x4E4B;&#x7C7B;&#x7684;&#x6548;&#x679C;&#x5F88;&#x9177;&#x70AB;&#xFF0C;&#x5728;shadertoy&#x4E5F;&#x770B;&#x5230;&#x4E86;&#x5F88;&#x591A;&#x60CA;&#x8273;&#x7684;ray marching&#x5B9E;&#x73B0;&#x3002;&#x770B;&#x4E86;&#x4E00;&#x4E9B;&#x6587;&#x7AE0;&#x548C;Paper&#x76F8;&#x5173;&#x7684;&#x5185;&#x5BB9;&#x4E4B;&#x540E;&#x51B3;&#x5B9A;&#x5728;Unity&#x4E2D;&#x5B9E;&#x73B0;&#x4E00;&#x904D;&#xFF0C;&#x8BB0;&#x5F55;&#x4E0B;&#x6765;&#x3002;&#x6587;&#x4E2D;&#x90FD;&#x662F;&#x4E2A;&#x4EBA;&#x7684;&#x7406;&#x89E3;&#xFF0C;&#x80AF;&#x5B9A;&#x4F1A;&#x6709;&#x4E00;&#x4E9B;&#x9519;&#x8BEF;&#xFF0C;&#x5E0C;&#x671B;&#x80FD;&#x6709;&#x6240;&#x5E2E;&#x52A9;&#x3002;</p>
-<div class="figure">
-<img src="/images/161204_volumetric_light.png" alt="Volumetric LightING">
-<p class="caption">Volumetric LightING</p>
-</div>
+<figure>
+<img src="/images/161204_volumetric_light.png" alt="Volumetric LightING"><figcaption>Volumetric LightING</figcaption>
+</figure>
 <ul>
 <li>&#x81EA;&#x5B9A;&#x4E49;Shader&#x4E2D;&#x91C7;&#x6837;Shadow Map</li>
 <li>&#x901A;&#x8FC7;CameraDepthTexture&#x8BA1;&#x7B97;&#x4E16;&#x754C;&#x5750;&#x6807;</li>
@@ -170,10 +170,10 @@
 <p>&#x5177;&#x4F53;&#x7684;shadowmap&#x6E32;&#x67D3;&#x6709;&#x8BB8;&#x591A;&#x4E0D;&#x540C;&#x7684;&#x5B9E;&#x73B0;&#x65B9;&#x5F0F;&#xFF0C;Cascaded Shadow Maps&#x53EF;&#x4EE5;&#x89E3;&#x51B3;&#x4E00;&#x4E9B;ShadowMap&#x7684;&#x7CBE;&#x5EA6;&#x95EE;&#x9898;&#x3002;&#x5177;&#x4F53;&#x5982;&#x4F55;&#x9009;&#x53D6;&#x5149;&#x6E90;&#x4F4D;&#x7F6E;&#x7684;&#x89C6;&#x690E;&#x4F53;&#x53EF;&#x4EE5;&#x9605;&#x8BFB;<a href="http://blog.csdn.net/zjull/article/details/11740505" target="_blank" rel="noopener">&#x57FA;&#x4E8E;Shadow Map&#x7684;&#x9634;&#x5F71;&#x5B9E;&#x73B0;</a>&#x3002;</p>
 <h3 id="&#x5728;shader&#x4E2D;&#x83B7;&#x53D6;shadowmap">&#x5728;shader&#x4E2D;&#x83B7;&#x53D6;shadowmap</h3>
 <p>&#x5728;shader&#x4E2D;&#x53EF;&#x4EE5;&#x901A;&#x8FC7; <code>_CameraDepthTexture</code>&#x76F4;&#x63A5;&#x83B7;&#x53D6;&#x5230;&#x5F53;&#x524D;&#x7684;&#x6DF1;&#x5EA6;&#x56FE;&#x8FDB;&#x884C;&#x91C7;&#x6837;&#xFF0C;&#x7136;&#x800C;untiy&#x6CA1;&#x6709;&#x76F4;&#x63A5;&#x63D0;&#x4F9B;&#x8FD9;&#x6837;&#x7684;&#x5BF9;&#x8C61;&#xFF0C;&#x901A;&#x8FC7;&#x5176;&#x4ED6;&#x65B9;&#x5F0F;&#x83B7;&#x53D6;&#x5230;shadowmap&#x3002; <a href="https://docs.unity3d.com/Manual/SL-BuiltinMacros.html" target="_blank" rel="noopener">Unity SL-BuiltinMacros</a>&#x4E2D;&#x63D0;&#x4F9B;&#x4E86;&#x65B9;&#x6CD5;&#x6765;&#x5BF9;shadowmap&#x8FDB;&#x884C;&#x91C7;&#x6837;&#xFF0C;&#x4F46;&#x5E76;&#x6CA1;&#x6709;&#x5177;&#x4F53;&#x7684;&#x4F7F;&#x7528;&#x65B9;&#x6CD5;&#x3002;</p>
-<table style="width:97%;">
+<table>
 <colgroup>
-<col width="40%">
-<col width="56%">
+<col style="width: 41%">
+<col style="width: 58%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -223,6 +223,8 @@
          
           <li><a href="/">Home</a></li>
          
+          <li><a href="https://artworks.yemi.me/">Artworks</a></li>
+         
           <li><a href="/about/">About</a></li>
          
           <li><a href="/archives/">Writing</a></li>
@@ -250,10 +252,9 @@
   <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yemi.me/2016/12/04/post-process-volumetric-lighting/&title=Unity中实现Post Process Volumetric Lighting"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" href="http://digg.com/submit?url=http://yemi.me/2016/12/04/post-process-volumetric-lighting/&title=Unity中实现Post Process Volumetric Lighting"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
   <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yemi.me/2016/12/04/post-process-volumetric-lighting/&name=Unity中实现Post Process Volumetric Lighting&description=&lt;p&gt;一直觉得体积光之类的效果很酷炫，在shadertoy也看到了很多惊艳的ray marching实现。看了一些文章和Paper相关的内容之后决定在Unity中实现一遍，记录下来。文中都是个人的理解，肯定会有一些错误，希望能有所帮助。&lt;/p&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;/images/161204_volumetric_light.png&#34; alt=&#34;Volumetric LightING&#34;&gt;
-&lt;p class=&#34;caption&#34;&gt;Volumetric LightING&lt;/p&gt;
-&lt;/div&gt;
+&lt;figure&gt;
+&lt;img src=&#34;/images/161204_volumetric_light.png&#34; alt=&#34;Volumetric LightING&#34;&gt;&lt;figcaption&gt;Volumetric LightING&lt;/figcaption&gt;
+&lt;/figure&gt;
 &lt;ul&gt;
 &lt;li&gt;自定义Shader中采样Shadow Map&lt;/li&gt;
 &lt;li&gt;通过CameraDepthTexture计算世界坐标&lt;/li&gt;
@@ -286,6 +287,8 @@
       <ul>
          
           <li><a href="/">Home</a></li>
+         
+          <li><a href="https://artworks.yemi.me/">Artworks</a></li>
          
           <li><a href="/about/">About</a></li>
          

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang=en>
-<head>
+<head><meta name="generator" content="Hexo 3.8.0">
     <!-- so meta -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="description" content="&amp;#x5148;&amp;#x653E;&amp;#x4E0A;github repo Unity-CodeAnalyzerPlugin &amp;#x4E00;&amp;#x4E2A;&amp;#x7ED9;Unity&amp;#x9879;&amp;#x76EE;&amp;#x6DFB;&amp;#x52A0;CodeAnalyzer&amp;#x5F15;&amp;#x7528;&amp;#x7684;&amp;#x63D2;&amp;#x4EF6;&amp;#x3002;  &amp;#x5728;IDE&amp;#x">
 <meta name="keywords" content="Unity,Roslyn">
 <meta property="og:type" content="article">
@@ -59,6 +59,8 @@
          
           <li><a href="/">Home</a></li>
          
+          <li><a href="https://artworks.yemi.me/">Artworks</a></li>
+         
           <li><a href="/about/">About</a></li>
          
           <li><a href="/archives/">Writing</a></li>
@@ -69,7 +71,7 @@
         
       </ul>
     </span>
-    <br/>
+    <br>
     <span id="actions">
       <ul>
         
@@ -86,7 +88,7 @@
       <span id="i-top" class="info" style="display:none;">Back to top</span>
       <span id="i-share" class="info" style="display:none;">Share post</span>
     </span>
-    <br/>
+    <br>
     <div id="share" style="display: none">
       <ul>
   <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yemi.me/2018/05/22/unity-code-analysis/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
@@ -111,7 +113,7 @@
     
     <div class="content index my4">
         
-        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
   <header>
     
     <h1 class="posttitle" itemprop="name headline">
@@ -121,7 +123,7 @@
 
 
     <div class="meta">
-      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
         <span itemprop="name">Yemi's Blog</span>
       </span>
       
@@ -161,16 +163,15 @@
 <p>&#x4E8E;&#x662F;&#x6211;&#x7F16;&#x5199;&#x4E86;&#x4E00;&#x4E2A;&#x63D2;&#x4EF6;&#xFF0C;&#x53EF;&#x4EE5;hook&#x6BCF;&#x6B21;&#x91CD;&#x65B0;&#x751F;&#x6210;csproj&#x6587;&#x4EF6;&#xFF0C;&#x5E76;&#x5C06;code analyzer&#x6CE8;&#x5165;&#x5230;csproj&#x4E2D;&#x3002;</p>
 <h2 id="unity-plugin&#x7684;&#x5B9E;&#x73B0;&#x4E0E;&#x4F7F;&#x7528;">Unity Plugin&#x7684;&#x5B9E;&#x73B0;&#x4E0E;&#x4F7F;&#x7528;</h2>
 <p>&#x9996;&#x5148;&#x662F;hook csproj&#x6587;&#x4EF6;&#x7684;&#x5237;&#x65B0;&#x3002;</p>
-<p>&#x6211;&#x4EEC;&#x901A;&#x8FC7;unity OnPostprocessAllAssets&#x56DE;&#x8C03;&#x6765;&#x76D1;&#x542C;monoscript&#x7684;&#x6539;&#x52A8;&#x3002; <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title">UnityCSProjectAnalyzerPostprocessor</span> : <span class="title">AssetPostprocessor</span></span><br><span class="line">    {</span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">OnPostprocessAllAssets</span>(<span class="params"><span class="keyword">string</span>[] importedAssets, <span class="keyword">string</span>[] deletedAssets, <span class="keyword">string</span>[] movedAssets, <span class="keyword">string</span>[] movedFromAssetPaths</span>)</span></span><br><span class="line"><span class="function">        </span>{</span><br><span class="line">            <span class="keyword">if</span> (importedAssets.Any(asset =&gt; asset.ToLower().EndsWith(<span class="string">&quot;.cs&quot;</span>)) ||</span><br><span class="line">                deletedAssets.Any(asset =&gt; asset.ToLower().EndsWith(<span class="string">&quot;.cs&quot;</span>)) ||</span><br><span class="line">                movedAssets.Any(asset =&gt; asset.ToLower().EndsWith(<span class="string">&quot;.cs&quot;</span>)) ||</span><br><span class="line">                movedFromAssetPaths.Any(asset =&gt; asset.ToLower().EndsWith(<span class="string">&quot;.cs&quot;</span>)))</span><br><span class="line">            {</span><br><span class="line">                ModifyCSProject();</span><br><span class="line">            }</span><br><span class="line">        }</span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ModifyCSProject</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function">        </span>{</span><br><span class="line">            CodeAnalyzerEditorWindow.OnCSProjectModified();</span><br><span class="line">        }</span><br><span class="line">    }</span><br></pre></td></tr></table></figure></p>
+<p>&#x6211;&#x4EEC;&#x901A;&#x8FC7;unity OnPostprocessAllAssets&#x56DE;&#x8C03;&#x6765;&#x76D1;&#x542C;monoscript&#x7684;&#x6539;&#x52A8;&#x3002; <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title">UnityCSProjectAnalyzerPostprocessor</span> : <span class="title">AssetPostprocessor</span></span><br><span class="line">    {</span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">OnPostprocessAllAssets</span>(<span class="params"><span class="keyword">string</span>[] importedAssets, <span class="keyword">string</span>[] deletedAssets, <span class="keyword">string</span>[] movedAssets, <span class="keyword">string</span>[] movedFromAssetPaths</span>)</span></span><br><span class="line"><span class="function"></span>        {</span><br><span class="line">            <span class="keyword">if</span> (importedAssets.Any(asset =&gt; asset.ToLower().EndsWith(<span class="string">&quot;.cs&quot;</span>)) ||</span><br><span class="line">                deletedAssets.Any(asset =&gt; asset.ToLower().EndsWith(<span class="string">&quot;.cs&quot;</span>)) ||</span><br><span class="line">                movedAssets.Any(asset =&gt; asset.ToLower().EndsWith(<span class="string">&quot;.cs&quot;</span>)) ||</span><br><span class="line">                movedFromAssetPaths.Any(asset =&gt; asset.ToLower().EndsWith(<span class="string">&quot;.cs&quot;</span>)))</span><br><span class="line">            {</span><br><span class="line">                ModifyCSProject();</span><br><span class="line">            }</span><br><span class="line">        }</span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">ModifyCSProject</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>        {</span><br><span class="line">            CodeAnalyzerEditorWindow.OnCSProjectModified();</span><br><span class="line">        }</span><br><span class="line">    }</span><br></pre></td></tr></table></figure></p>
 <p>&#x5176;&#x6B21;&#x662F;&#x89E3;&#x6790;unity&#x7684;sln&#x4E0E;csproj&#x3002;&#x8FD9;&#x91CC;&#x9700;&#x8981;&#x6CE8;&#x610F;&#x7684;&#x662F;&#x4F7F;&#x7528;vscode&#x548C;vs&#x4F5C;&#x4E3A;&#x4EE3;&#x7801;&#x7F16;&#x8F91;&#x5668;&#x6253;&#x5F00;&#x5DE5;&#x7A0B;&#x751F;&#x6210;&#x7684;csproj&#x6587;&#x4EF6;&#x540D;&#x89C4;&#x5219;&#x662F;&#x4E0D;&#x540C;&#x7684;&#x3002;&#x5728;vscode&#x4E2D;&#x662F;&#x4EE5;<code>assembly-csharp.csproj</code>&#x548C;<code>assembly-csharp-editor.csproj</code> &#x800C;&#x5728;vs&#x4E2D;&#x662F;<code>&lt;projname&gt;.csproj</code>&#x548C;<code>&lt;projectname&gt;.editor.csproj</code>&#x3002;</p>
 <p>&#x5728;csproject&#x4E2D;&#x6DFB;&#x52A0;analyzer&#x7684;&#x5F15;&#x7528;&#xFF1A; <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">ItemGroup</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">Analyzer</span> <span class="attr">Include</span>=<span class="string">&quot;..\..\..\Linty.Analyzers.dll&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">ItemGroup</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
 <p>&#x4F7F;&#x7528;&#x81EA;&#x5DF1;&#x7F16;&#x5199;xml linq&#x6765;&#x89E3;&#x6790;csproj&#x662F;&#x7531;&#x4E8E;&#x8003;&#x8651;&#x5230;&#x8001;&#x7248;&#x672C;&#x7684;unity &#x8FD8;&#x53EA;&#x652F;&#x6301;&#x5230;.net 3.5 &#x5E76;&#x4E0D;&#x80FD;&#x4F7F;&#x7528;roslyn&#x7684;workspace&#x6216;msbuild&#x7684;lib&#x6765;&#x89E3;&#x6790;&#x9879;&#x76EE;&#x3002;</p>
 <h3 id="&#x4F7F;&#x7528;&#x65B9;&#x5F0F;">&#x4F7F;&#x7528;&#x65B9;&#x5F0F;</h3>
 <p>&#x5C06;Plugin&#x5BFC;&#x5165;Unity&#x540E;&#xFF0C;EditorWindow&#x6765;&#x9009;&#x62E9;analyzer&#x7684;dll&#x8DEF;&#x5F84;,&#x53EF;&#x4EE5;&#x5BF9;<code>Assembly-CSharp</code>&#x548C;<code>Assembly-Editor</code>&#x5206;&#x522B;&#x6DFB;&#x52A0;Analyzer&#x3002;</p>
-<div class="figure">
-<img src="/images/unity-codeanalysis-window.png" alt="Analyzer">
-<p class="caption">Analyzer</p>
-</div>
+<figure>
+<img src="/images/unity-codeanalysis-window.png" alt="Analyzer"><figcaption>Analyzer</figcaption>
+</figure>
 <p>&#x5728;MenuItem&#x7684;<code>CodeAnalysis\Config</code>&#x6253;&#x5F00;<code>CodeAnalyzerEditorWindow</code>. `<code>CodeAnalysis\Refresh</code>&#x5237;&#x65B0;&#x5F15;&#x7528;&#x7684;analyzer dll,&#x6BCF;&#x6B21;&#x5220;&#x9664;&#x811A;&#x672C;&#x6216;&#x8005;&#x521B;&#x5EFA;&#x811A;&#x672C;&#x90FD;&#x4F1A;&#x81EA;&#x52A8;&#x5237;&#x65B0;&#x5F15;&#x7528;&#x7684;analyzer.</p>
 
   </div>
@@ -193,6 +194,8 @@
       <ul>
          
           <li><a href="/">Home</a></li>
+         
+          <li><a href="https://artworks.yemi.me/">Artworks</a></li>
          
           <li><a href="/about/">About</a></li>
          
@@ -245,6 +248,8 @@
       <ul>
          
           <li><a href="/">Home</a></li>
+         
+          <li><a href="https://artworks.yemi.me/">Artworks</a></li>
          
           <li><a href="/about/">About</a></li>
          

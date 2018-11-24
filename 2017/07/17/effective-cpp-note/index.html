@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang=en>
-<head>
+<head><meta name="generator" content="Hexo 3.8.0">
     <!-- so meta -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="description" content="effective c++ 读完有一种醍醐灌顶的感觉。之前使用C++编程时在许多结构以及用法上都模糊不清，对于不同的需求可能有多种不同的实践，但是并不了解什么才是最佳实践或者说是有没有最佳实践。Effective可以给你一些答案。  4.避免对象在初始化之前使用它 不同编译单元内的 non-local static对象 初始化先后顺序的处理 将该对象声明在为函数的 local static 对">
 <meta name="keywords" content="C++">
 <meta property="og:type" content="article">
@@ -57,6 +57,8 @@
          
           <li><a href="/">Home</a></li>
          
+          <li><a href="https://artworks.yemi.me/">Artworks</a></li>
+         
           <li><a href="/about/">About</a></li>
          
           <li><a href="/archives/">Writing</a></li>
@@ -67,7 +69,7 @@
         
       </ul>
     </span>
-    <br/>
+    <br>
     <span id="actions">
       <ul>
         
@@ -84,7 +86,7 @@
       <span id="i-top" class="info" style="display:none;">Back to top</span>
       <span id="i-share" class="info" style="display:none;">Share post</span>
     </span>
-    <br/>
+    <br>
     <div id="share" style="display: none">
       <ul>
   <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yemi.me/2017/07/17/effective-cpp-note/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
@@ -118,7 +120,7 @@
     
     <div class="content index my4">
         
-        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
   <header>
     
     <h1 class="posttitle" itemprop="name headline">
@@ -128,7 +130,7 @@
 
 
     <div class="meta">
-      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
         <span itemprop="name">Yemi's Blog</span>
       </span>
       
@@ -171,7 +173,7 @@
 <p>&#x624B;&#x52A8;&#x63A7;&#x5236;&#x987A;&#x5E8F;</p>
 <p>&#x4F7F;&#x7528;copy and swap &#x4EA4;&#x6362;&#x6570;&#x636E;</p>
 <p>copy assignment &#x58F0;&#x660E;&#x4E3A;by value&#x5F62;&#x5F0F; &#x7136;&#x540E;&#x76F4;&#x63A5;&#x4F7F;&#x7528;swap</p>
-<ol start="12" style="list-style-type: decimal">
+<ol start="12" type="1">
 <li>&#x590D;&#x5236;&#x5BF9;&#x8C61;&#x65F6;&#x4E0D;&#x8981;&#x5FD8;&#x8BB0;&#x4EFB;&#x4F55;&#x4E00;&#x4E2A;&#x6210;&#x5458; derived class &#x7684;&#x590D;&#x6784;&#x9020;&#x51FD;&#x6570;&#x5FC5;&#x987B;&#x590D;&#x5236;&#x5176;base class&#x7684;&#x6210;&#x5206;&#x3002;&#x8C03;&#x7528;base class &#x7684;cctor &#x5728;&#x521D;&#x59CB;&#x5316;&#x5217;&#x8868;&#x4E2D;&#x3002;</li>
 </ol>
 <p>13.&#x4EE5;&#x5BF9;&#x8C61;&#x7BA1;&#x7406;&#x8D44;&#x6E90;</p>
@@ -184,13 +186,13 @@
 <p>16.&#x4F7F;&#x7528;new &#x548C; delete&#x65F6;&#x8981;&#x91C7;&#x53D6;&#x76F8;&#x540C;&#x7684;&#x5F62;&#x5F0F; &#x6700;&#x597D;&#x4E0D;&#x8981;&#x5BF9;&#x6570;&#x7EC4;&#x5F62;&#x5F0F;&#x505A;typedef &#x96BE;&#x4EE5;&#x6B63;&#x786E;delete []</p>
 <p>17.&#x4EE5;&#x72EC;&#x7ACB;&#x8BED;&#x53E5;new &#x5BF9;&#x8C61;&#x7F6E;&#x5165;&#x667A;&#x80FD;&#x6307;&#x9488; new&#x5BF9;&#x8C61;&#x7F6E;&#x5165;&#x667A;&#x80FD;&#x6307;&#x9488;&#x4E2D;&#x662F; &#x8981;&#x72EC;&#x7ACB;&#x8C03;&#x7528; &#x4E0D;&#x7136;&#x53EF;&#x80FD;&#x4F1A;&#x7531;&#x4E8E;&#x5F02;&#x5E38;&#x5BFC;&#x81F4;&#x4E00;&#x4E9B;&#x5947;&#x602A;&#x7684;&#x60C5;&#x5F62;</p>
 <p>19.&#x8BBE;&#x8BA1;class&#x72B9;&#x5982;&#x8BBE;&#x8BA1;type type&#x7684;&#x5BF9;&#x8C61;&#x5982;&#x4F55;&#x88AB;&#x521B;&#x5EFA;&#x4E0E;&#x9500;&#x6BC1; &#x5BF9;&#x8C61;&#x7684;&#x521D;&#x59CB;&#x5316;&#x4E0E;&#x8D4B;&#x503C;&#x6709;&#x4EC0;&#x4E48;&#x6837;&#x7684;&#x5DEE;&#x522B; &#x5BF9;&#x8C61;&#x5982;&#x679C;&#x4EE5;&#x503C;&#x7C7B;&#x578B;&#x4F20;&#x9012;&#x4F1A;&#x5982;&#x4F55; &#x4EC0;&#x4E48;&#x662F;type&#x7684;&#x5408;&#x6CD5;&#x503C; type&#x7684;&#x7EE7;&#x627F;&#x5173;&#x7CFB;&#x662F;&#x4EC0;&#x4E48; &#x65B0;&#x7684;type&#x9700;&#x8981;&#x4EC0;&#x4E48;&#x6837;&#x7684;&#x7C7B;&#x578B;&#x8F6C;&#x6362; &#x4EC0;&#x4E48;&#x6837;&#x7684;&#x64CD;&#x4F5C;&#x7B26;&#x5BF9;&#x65B0;&#x7684;type&#x662F;&#x5408;&#x7406;&#x7684; &#x4EC0;&#x4E48;&#x6837;&#x7684;&#x6807;&#x51C6;&#x51FD;&#x6570;&#x9700;&#x8981;&#x9A73;&#x56DE; private &#x90A3;&#x4E9B;&#x6210;&#x5458;&#x65F6;public &#x4E0E;private&#x7684; &#x662F;&#x5426;&#x662F;&#x9700;&#x8981;&#x5B9A;&#x4E49;&#x6210;&#x6A21;&#x677F;</p>
-<ol start="20" style="list-style-type: decimal">
+<ol start="20" type="1">
 <li>&#x7528;pass-by-reference-to-const &#x66FF;&#x6362;pass-by-value pass by value&#x4F1A;&#x9020;&#x6210; &#x5BF9;&#x8C61;&#x7684;&#x5207;&#x5272; &#x53D8;&#x4E3A;&#x57FA;&#x7C7B;&#x5BF9;&#x8C61; &#x5982;&#x6709; &#x5185;&#x7F6E;&#x7C7B;&#x578B;&#x4F7F;&#x7528;&#x503C;&#x4F20;&#x9012;</li>
 </ol>
 <p>21.&#x5728;&#x5FC5;&#x987B;&#x8FD4;&#x56DE;&#x5BF9;&#x8C61;&#x65F6;&#x4E0D;&#x8981;&#x8FD4;&#x56DE;&#x5176;&#x5F15;&#x7528; &#x5728;&#x5806;&#x4E0A;&#x6216;&#x6808;&#x4E0A;&#x521B;&#x5EFA;&#x5BF9;&#x8C61;&#x90FD;&#x4F1A;&#x5BFC;&#x81F4;&#x95EE;&#x9898; &#x76F4;&#x63A5;&#x8FD4;&#x56DE;&#x5176;&#x503C;&#x7C7B;&#x578B; &#x4F1A;&#x591A;&#x4E00;&#x6B21;&#x590D;&#x5236;&#x6784;&#x9020;&#x51FD;&#x6570; &#x4F46;&#x662F;&#x907F;&#x514D;&#x4E86;&#x4E00;&#x4E9B;&#x5176;&#x4ED6;&#x7684;&#x95EE;&#x9898;</p>
 <p>22.&#x5C06;&#x6210;&#x5458;&#x53D8;&#x91CF;&#x58F0;&#x660E;&#x4E3A;private &#x5C06;&#x6210;&#x5458;&#x53D8;&#x91CF;&#x5C01;&#x88C5;&#x5230;getter setter&#x4E2D; &#x4FBF;&#x4E8E;&#x4FEE;&#x6539;&#x5B9E;&#x73B0; &#x6210;&#x5458;&#x53D8;&#x91CF;&#x5185;&#x5BB9;&#x53D1;&#x751F;&#x6539;&#x53D8;&#x65F6;&#x7684;&#x7834;&#x574F;&#x91CF;&#x8D8A;&#x5C0F;</p>
 <p>protected &#x53D8;&#x91CF;&#x5728;&#x4FEE;&#x6539;&#x65F6;&#x4E5F;&#x53EF;&#x80FD;&#x9700;&#x8981;&#x5BF9;&#x5927;&#x91CF;&#x7684;derived &#x7C7B;&#x8FDB;&#x884C;&#x4FEE;&#x6539; protected&#x6210;&#x5458;&#x50CF;public&#x6210;&#x5458;&#x4E00;&#x6837;&#x7F3A;&#x4E4F;&#x5C01;&#x88C5;&#x6027;</p>
-<ol start="23" style="list-style-type: decimal">
+<ol start="23" type="1">
 <li>prefer non-member non-friend &#x66FF;&#x6362;membr&#x51FD;&#x6570;</li>
 </ol>
 <p>&#x628A;&#x4FBF;&#x5229;&#x51FD;&#x6570;&#x653E;&#x5728;&#x76F8;&#x540C;&#x7684;namespace&#x4E0B;&#x9762;</p>
@@ -221,7 +223,7 @@
 <p>&#x57FA;&#x4E8E;function pointer&#x5B9E;&#x73B0;strategy&#x6A21;&#x5F0F;</p>
 <p>36.&#x7EDD;&#x4E0D;&#x8981;&#x91CD;&#x65B0;&#x5B9A;&#x4E49;&#x7EE7;&#x627F;&#x800C;&#x6765;&#x7684;non-virtual &#x51FD;&#x6570; viruta&#x51FD;&#x6570;&#x662F;&#x52A8;&#x6001;&#x7ED1;&#x5B9A;&#x7684; non-virtual&#x662F;&#x975E;&#x52A8;&#x6001;&#x7ED1;&#x5B9A;&#x7684; &#x91CD;&#x65B0;&#x5B9A;&#x4E49;&#x57FA;&#x7C7B;&#x7684;non-virtual&#x4F1A;&#x5BFC;&#x81F4;&#x4E00;&#x4E9B;&#x4E0D;&#x53EF;&#x610F;&#x6599;&#x7684;&#x60C5;&#x51B5;&#xFF0C;&#x53D6;&#x51B3;&#x4E8E;&#x58F0;&#x660E;&#x7684;&#x6307;&#x9488;&#x7C7B;&#x578B;</p>
 <p>37.&#x4E0D;&#x8981;&#x91CD;&#x65B0;&#x5B9A;&#x4E49;&#x7EE7;&#x627F;&#x800C;&#x6765;&#x7684;&#x7F3A;&#x7701;&#x53C2;&#x6570; virtual&#x51FD;&#x6570;&#x662F;&#x52A8;&#x6001;&#x7ED1;&#x5B9A;&#x7684; &#x4F46;&#x662F;&#x7F3A;&#x7701;&#x53C2;&#x6570;&#x662F;&#x9759;&#x6001;&#x7ED1;&#x5B9A;&#x7684; &#x6700;&#x7EC8;&#x8C03;&#x7528;derived class&#x7684;&#x65B9;&#x6CD5;&#x65F6;&#x4F1A;&#x4F7F;&#x7528;base class &#x7684;&#x53C2;&#x6570; C++&#x4E3A;&#x4E86;&#x8FD0;&#x884C;&#x6548;&#x7387;&#x5BF9;&#x7F3A;&#x7701;&#x53C2;&#x6570;&#x7684;&#x7ED1;&#x5B9A;&#x5B9E;&#x73B0;&#x4E3A;&#x9759;&#x6001;&#x7ED1;&#x5B9A; &#x4F7F;&#x7528;NVI&#x907F;&#x514D;&#x91CD;&#x65B0;&#x7F16;&#x5199;&#x7F3A;&#x7701;&#x53C2;&#x6570;</p>
-<ol start="38" style="list-style-type: decimal">
+<ol start="38" type="1">
 <li>&#x590D;&#x5408; is-implemented in terms of / has a</li>
 </ol>
 <p>39.&#x660E;&#x667A;&#x800C;&#x8C28;&#x614E;&#x5730;&#x4F7F;&#x7528;private &#x7EE7;&#x627F; private &#x7EE7;&#x627F; &#x7F16;&#x8BD1;&#x5668;&#x4E0D;&#x4F1A;&#x81EA;&#x52A8;&#x5C06;&#x4E00;&#x4E2A;derived class&#x5BF9;&#x8C61;&#x8F6C;&#x6362;&#x4E3A;base class &#x5BF9;&#x8C61; private&#x7EE7;&#x627F;&#x800C;&#x6765;&#x7684;&#x6240;&#x6709;&#x6210;&#x5458;&#x5728;derived class &#x4E2D;&#x90FD;&#x4F1A;&#x53D8;&#x6210;private</p>
@@ -249,6 +251,8 @@
       <ul>
          
           <li><a href="/">Home</a></li>
+         
+          <li><a href="https://artworks.yemi.me/">Artworks</a></li>
          
           <li><a href="/about/">About</a></li>
          
@@ -310,6 +314,8 @@
       <ul>
          
           <li><a href="/">Home</a></li>
+         
+          <li><a href="https://artworks.yemi.me/">Artworks</a></li>
          
           <li><a href="/about/">About</a></li>
          

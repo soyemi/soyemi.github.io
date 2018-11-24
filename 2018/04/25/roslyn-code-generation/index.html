@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang=en>
-<head>
+<head><meta name="generator" content="Hexo 3.8.0">
     <!-- so meta -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <meta name="description" content="&amp;#x81EA;&amp;#x4ECE;C#&amp;#x6210;&amp;#x4E3A;&amp;#x65E5;&amp;#x5E38;&amp;#x4E3B;&amp;#x8981;&amp;#x7684;&amp;#x5F00;&amp;#x53D1;&amp;#x8BED;&amp;#x8A00;&amp;#xFF0C;&amp;#x5C31;&amp;#x89C9;&amp;#x5F97;&amp;#x6709;&amp;#x65F6;&amp;#x5019;&amp;#x53D7;&amp;#x9650;&amp;#x4E8E;C#&amp;#x7684;&amp;#x8">
 <meta name="keywords" content="c#,roslyn,compilation">
 <meta property="og:type" content="article">
@@ -57,6 +57,8 @@
          
           <li><a href="/">Home</a></li>
          
+          <li><a href="https://artworks.yemi.me/">Artworks</a></li>
+         
           <li><a href="/about/">About</a></li>
          
           <li><a href="/archives/">Writing</a></li>
@@ -67,7 +69,7 @@
         
       </ul>
     </span>
-    <br/>
+    <br>
     <span id="actions">
       <ul>
         
@@ -84,7 +86,7 @@
       <span id="i-top" class="info" style="display:none;">Back to top</span>
       <span id="i-share" class="info" style="display:none;">Share post</span>
     </span>
-    <br/>
+    <br>
     <div id="share" style="display: none">
       <ul>
   <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yemi.me/2018/04/25/roslyn-code-generation/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
@@ -109,7 +111,7 @@
     
     <div class="content index my4">
         
-        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
   <header>
     
     <h1 class="posttitle" itemprop="name headline">
@@ -119,7 +121,7 @@
 
 
     <div class="meta">
-      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
         <span itemprop="name">Yemi's Blog</span>
       </span>
       
@@ -146,7 +148,7 @@
 <h2 id="&#x521D;&#x89C1;roslyn">&#x521D;&#x89C1;Roslyn</h2>
 <p>&#x76EE;&#x524D;Roslyn&#x9879;&#x76EE;&#x6700;&#x7EC8;&#x4F1A;&#x751F;&#x6210;&#x591A;&#x4E2A;Package&#xFF0C;&#x4E3B;&#x8981;&#x662F;&#x5728;<code>Microsof.CodeAnalysis</code>&#x7684;namespace&#x4E0B;&#x9762;&#x3002;Roslyn&#x63D0;&#x4F9B;&#x4E86;&#x4E00;&#x5957;SourceCode &#x8BCD;&#x6CD5;&#x89E3;&#x6790;&#xFF0C;&#x751F;&#x6210;&#x8BED;&#x6CD5;&#x6811;&#xFF0C;&#x4EE5;&#x53CA;&#x7ED9;&#x4E88;&#x8BED;&#x6CD5;&#x6811;&#x7684;&#x7F16;&#x8BD1;&#x5BF9;&#x8BED;&#x4E49;Semantic&#x8FDB;&#x884C;&#x5206;&#x6790;&#x3002;&#x540C;&#x65F6;&#x652F;&#x6301;&#x5404;&#x79CD;&#x9879;&#x76EE;&#x7ED3;&#x6784;Workspace&#x4EE5;&#x53CA;&#x4E00;&#x4E9B;&#x7F16;&#x8BD1;&#x5668;IDE&#x7684;&#x4F18;&#x5316;&#x529F;&#x80FD;&#x3002;</p>
 <p>&#x603B;&#x4F53;&#x6765;&#x8BF4;&#x5C31;&#x662F;&#x51E0;&#x4E2A;&#x6B65;&#x9AA4;</p>
-<ol style="list-style-type: decimal">
+<ol type="1">
 <li><p>&#x6E90;&#x4EE3;&#x7801;&#x751F;&#x6210;&#x8BED;&#x6CD5;&#x6811;<code>SyntaTree</code>&#x3002;&#x8BED;&#x6CD5;&#x6811;&#x53EF;&#x4EE5;&#x8FDB;&#x884C;&#x904D;&#x5386;&#x83B7;&#x53D6;&#x5404;&#x79CD;&#x8BED;&#x6CD5;&#x6811;&#x8282;&#x70B9;<code>SyntaxNode</code>&#x3002; &#x8BED;&#x6CD5;&#x6811;&#x53EF;&#x4EE5;&#x8FDB;&#x884C;&#x4FEE;&#x6539;&#xFF0C;&#x904D;&#x5386;&#x66FF;&#x6362;&#x63D2;&#x5165;&#x7B49;&#x7B49;&#x3002;</p></li>
 <li><p>&#x591A;&#x4E2A;&#x8BED;&#x6CD5;&#x6811;&#x52A0;&#x4E0A;<code>MetaDataReference</code>&#x53EF;&#x4EE5;&#x8FDB;&#x884C;&#x7F16;&#x8BD1;,&#x751F;&#x6210;&#x4E00;&#x4E2A;<code>Compilation</code>&#x5BF9;&#x8C61;&#x3002;Compilation&#x53EF;&#x4EE5;&#x5F97;&#x5230;<code>Diagnostic</code>&#xFF0C;&#x83B7;&#x53D6;&#x7F16;&#x8BD1;&#x5668;&#x7684;&#x62A5;&#x9519;&#x4EE5;&#x53CA;&#x5404;&#x7C7B;Warning&#x7B49;&#x7B49;&#x3002;</p></li>
 <li><p>&#x4ECE;<code>Compilation</code>&#x4E2D;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x83B7;&#x5F97;<code>Semantic</code>&#x5BF9;&#x8C61;&#xFF0C;&#x8FDB;&#x884C;&#x8BED;&#x4E49;&#x5206;&#x6790;&#x3002;&#x8BED;&#x4E49;&#x548C;&#x8BED;&#x6CD5;&#x7684;&#x533A;&#x522B;&#x5728;&#x4E8E;&#x8BED;&#x6CD5;&#x8282;&#x70B9;&#x53EF;&#x4EE5;&#x8BA4;&#x4E3A;&#x662F;&#x4E00;&#x4E2A;&#x4E2A;word&#xFF0C;&#x5355;&#x4E2A;word&#x6CA1;&#x6709;&#x7684;&#x610F;&#x4E49;&#xFF0C;&#x800C;&#x8BED;&#x4E49;&#x662F;&#x4E00;&#x6BB5;&#x6BB5;&#x53E5;&#x5B50;&#x3002;&#x4E8B;&#x5B9E;&#x4E0A;&#x4ECE;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x4ECE;<code>Syntax</code>&#x4E2D;&#x5B8C;&#x5168;&#x53EF;&#x4EE5;&#x83B7;&#x5F97;&#x5230;<code>Semantic</code>&#x4E2D;&#x5B8C;&#x5168;&#x76F8;&#x540C;&#x7684;&#x4FE1;&#x606F;&#xFF0C;&#x4F46;&#x662F;<code>Syntax</code>&#x4E2D;&#x4F1A;&#x6709;&#x66F4;&#x591A;&#x7684;<code>Trivial</code>&#x3002;</p></li>
@@ -192,6 +194,8 @@
       <ul>
          
           <li><a href="/">Home</a></li>
+         
+          <li><a href="https://artworks.yemi.me/">Artworks</a></li>
          
           <li><a href="/about/">About</a></li>
          
@@ -244,6 +248,8 @@
       <ul>
          
           <li><a href="/">Home</a></li>
+         
+          <li><a href="https://artworks.yemi.me/">Artworks</a></li>
          
           <li><a href="/about/">About</a></li>
          
