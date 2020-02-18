@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="这篇blog记录下如何将Unity导出的macOS应用提交到Steam和AppStore。通常情况下我们在macOS系统上的开发依赖于Xcode，如果在Unity的PlayerSettings里面没有设置签名和BundleId，那么只能使用相应的命令行工具对二进制的Game.app进行签名和处理。 首先会介绍一些签名相关的基本概念和命令，或者你可以直接跳到:提交到Steam和第三方直接发布提交到m">
+<meta property="og:type" content="article">
+<meta property="og:title" content="发布Unity项目到macOS AppStore和Steam">
+<meta property="og:url" content="https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/index.html">
+<meta property="og:site_name" content="Yemi&#39;s Blog">
+<meta property="og:description" content="这篇blog记录下如何将Unity导出的macOS应用提交到Steam和AppStore。通常情况下我们在macOS系统上的开发依赖于Xcode，如果在Unity的PlayerSettings里面没有设置签名和BundleId，那么只能使用相应的命令行工具对二进制的Game.app进行签名和处理。 首先会介绍一些签名相关的基本概念和命令，或者你可以直接跳到:提交到Steam和第三方直接发布提交到m">
+<meta property="article:published_time" content="2020-02-17T09:31:49.000Z">
+<meta property="article:modified_time" content="2020-02-18T09:08:54.219Z">
+<meta property="article:author" content="yemi">
+<meta property="article:tag" content="macOS">
+<meta property="article:tag" content="Steam">
+<meta property="article:tag" content="CodeSign">
+<meta property="article:tag" content="AppStore">
+<meta property="article:tag" content="dev">
+<meta name="twitter:card" content="summary">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.png">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+          
+        
+    
+    <!-- title -->
+    <title>发布Unity项目到macOS AppStore和Steam</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- rss -->
+
+    <link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet">
+    
+    
+<meta name="generator" content="Hexo 4.2.0"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+
+<body class="max-width mx-auto px3">
+    
+      <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="https://artwork.yemi.me/" target="_blank" rel="noopener">Artworks</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+         
+          <li><a href="/Search/">Search</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" href="/2019/08/19/method-calling-restriction-csharp/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/" target="_blank" rel="noopener"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/&text=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/&title=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/&is_video=false&description=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=发布Unity项目到macOS AppStore和Steam&body=Check out this article: https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/&title=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/&title=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/&title=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/&title=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/&name=发布Unity项目到macOS AppStore和Steam&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#包体配置和签名"><span class="toc-number">1.</span> <span class="toc-text">包体配置和签名</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#基本概念"><span class="toc-number">1.1.</span> <span class="toc-text">基本概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#应用Bundle处理"><span class="toc-number">1.2.</span> <span class="toc-text">应用Bundle处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CodeSign签名"><span class="toc-number">1.3.</span> <span class="toc-text">CodeSign签名</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#提交到Steam和第三方直接发布"><span class="toc-number">2.</span> <span class="toc-text">提交到Steam和第三方直接发布</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#证书创建"><span class="toc-number">2.1.</span> <span class="toc-text">证书创建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#包体配置和准备"><span class="toc-number">2.2.</span> <span class="toc-text">包体配置和准备</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#修复SteamLib"><span class="toc-number">2.3.</span> <span class="toc-text">修复SteamLib</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Codesign签名"><span class="toc-number">2.4.</span> <span class="toc-text">Codesign签名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#提交苹果Notarization验证"><span class="toc-number">2.5.</span> <span class="toc-text">提交苹果Notarization验证</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#提交到macOS-App-Store"><span class="toc-number">3.</span> <span class="toc-text">提交到macOS App Store</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#证书创建-1"><span class="toc-number">3.1.</span> <span class="toc-text">证书创建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#包体配置和准备-1"><span class="toc-number">3.2.</span> <span class="toc-text">包体配置和准备</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#生成pkg文件"><span class="toc-number">3.3.</span> <span class="toc-text">生成pkg文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用AppLoader提交到itune服务器"><span class="toc-number">3.4.</span> <span class="toc-text">使用AppLoader提交到itune服务器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#FAQ"><span class="toc-number">4.</span> <span class="toc-text">FAQ</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index my4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        发布Unity项目到macOS AppStore和Steam
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Yemi's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2020-02-17T09:31:49.000Z" itemprop="datePublished">2020-02-17</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/AppStore/" rel="tag">AppStore</a>, <a class="tag-link" href="/tags/CodeSign/" rel="tag">CodeSign</a>, <a class="tag-link" href="/tags/Steam/" rel="tag">Steam</a>, <a class="tag-link" href="/tags/dev/" rel="tag">dev</a>, <a class="tag-link" href="/tags/macOS/" rel="tag">macOS</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>这篇blog记录下如何将Unity导出的macOS应用提交到Steam和AppStore。通常情况下我们在macOS系统上的开发依赖于Xcode，如果在Unity的<code>PlayerSettings</code>里面没有设置签名和BundleId，那么只能使用相应的命令行工具对二进制的<code>Game.app</code>进行签名和处理。</p>
+<p>首先会介绍一些签名相关的基本概念和命令，或者你可以直接跳到:<br><a href="#提交到Steam和第三方直接发布">提交到Steam和第三方直接发布</a><br><a href="#提交到macOS-App-Store">提交到macOS-App-Store</a></p>
+<h2 id="包体配置和签名"><a href="#包体配置和签名" class="headerlink" title="包体配置和签名"></a>包体配置和签名</h2><h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><p>Apple提供了签名工具用于给应用文件进行签名，通常macOS系统的应用都是一个<code>.app</code>的Bundle，不像Windows系统中是一个<code>.exe</code>的文件。所以macOS的codesign 是对于整个bundle的所有文件的。</p>
+<p><strong>Designated Requirement(DR)</strong></p>
+<p>Apple会给每一个要签名的应用创建一个Designated Requirement(DR),这个DR通常由应用的BundleID进行标识。</p>
+<p><strong>Resource envelope</strong></p>
+<p>签名会对Game.app下的所有代码和非代码的资源文件以及第三方的插件进行签名，计算出每个文件的hash，同时再合并所有资源文件的hash生成最终的一个Hash值。</p>
+<p><code>Resource envelope 有两个版本，最新的 v2版本会对所有文件进行签名，OSX Mavericks 10.9之后都是使用 v2的版本</code></p>
+<p>只有有任何记录的文件有改动，都会通过hash校验来被检测出来。所以即使没有修改Game.app下的文件，在签名完成之后添加新的文件，整个Budnle也是校验不过的。无法通过<code>GateKeeper</code>的验证。</p>
+<h3 id="应用Bundle处理"><a href="#应用Bundle处理" class="headerlink" title="应用Bundle处理"></a>应用Bundle处理</h3><p><strong>修改BundleId</strong></p>
+<p>直接打开<code>Game.app/Contents/Info.plist</code> 修改<code>CFBundleIdentifier</code>。</p>
+<p><strong>移除不需要的文件</strong></p>
+<p>使用Unity编辑器时，如果导入macOS或者iOS的<code>framewor</code>和<code>bundle</code>文件，Unity会自动对文件夹下的所有文件和文件夹创建一个对应的<code>.meta</code>文件。<br>这个文件存在的路径在Bundle中不是标准的路径，同时会导致<code>codesign</code>时失败，我们需要移除它。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#remove all remove meta files</span></span><br><span class="line">find <span class="string">"./Game.app"</span> -name <span class="string">"*.meta"</span> -<span class="built_in">type</span> f -<span class="built_in">exec</span> rm &#123;&#125; \;</span><br></pre></td></tr></table></figure>
+
+<h3 id="CodeSign签名"><a href="#CodeSign签名" class="headerlink" title="CodeSign签名"></a>CodeSign签名</h3><p><strong>第三方库签名</strong></p>
+<p>Apple要求所有提交给macOS AppStore和经Notarization认证后直接分发的应用中，所有的<strong>第三方库<code>dylib,framework,bundle</code>都需要被签名</strong>。</p>
+<blockquote>
+<p>同时需要注意：提交到acOS AppStore的应用中，所有的第三方库和插件都需要使用<strong>Apple开发者</strong>的签名。</p>
+</blockquote>
+<p>也就是说你如果提交给macOS Store的话，还是需要给类似<code>libssl.dylib</code>这类的库重新签名。</p>
+<p><strong>Entitlements文件</strong></p>
+<p>在使用CodeSign签名之前我们需要创建<code>.entitlements</code>文件。如果使用xcode开发应用，xcode会帮我们创建好。但我们只有一个<code>.app</code>的Bundle文件，那么只能手动创建然后，使用命令行进行签名。</p>
+<p>macOS AppStore需要的<code>.entitlements</code>文件和第三方发布提交给Steam的<code>.entitlements</code>文件是不同的.</p>
+<p>下面是一个最简的配置,如果应用有其他的capabilities配置，需要再额外配置其他的key/value。</p>
+<p><strong>For macOS AppStore</strong><br>        <figure class="highlight plist"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">plist</span> <span class="meta-keyword">PUBLIC</span> <span class="meta-string">"-//Apple//DTD PLIST 1.0//EN"</span> <span class="meta-string">"http://www.apple.com/DTDs/PropertyList-1.0.dtd"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">plist</span> <span class="attr">version</span>=<span class="string">"1.0"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dict</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>com.apple.security.app-sandbox<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">true</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>com.apple.security.files.user-selected.read-only<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">true</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dict</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">plist</span></span></span><br></pre></td></tr></table></figure></p>
+<p><strong>For Steam</strong></p>
+<figure class="highlight plist"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">plist</span> <span class="meta-keyword">PUBLIC</span> <span class="meta-string">"-//Apple//DTD PLIST 1.0//EN"</span> <span class="meta-string">"http://www.apple.com/DTDs/PropertyList-1.0.dtd"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">plist</span> <span class="attr">version</span>=<span class="string">"1.0"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dict</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">key</span>&gt;</span>com.apple.security.cs.disable-library-validation<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">true</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">key</span>&gt;</span>com.apple.security.cs.disable-executable-page-protection<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">true</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dict</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>CodeSign 命令</strong></p>
+<p>codesign命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">codesign --deep --force --verify --verbose=4 --timestamp --options runtime --entitlements  <span class="variable">$EntitlementsFile</span> --sign <span class="string">"<span class="variable">$CertName</span>"</span> <span class="variable">$FileName</span></span><br></pre></td></tr></table></figure>
+
+<p>参数sign填写的证书的名称 类似于<code>Mac Developer:XXXXX(TEAMID)</code>之类的。这个参数会有自动匹配只要不出现冲突就可以。</p>
+<p>如何验证codesign是否正确</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">codesign --verify --deep --strict --verbose=4 Game.app</span><br></pre></td></tr></table></figure>
+
+<p>验证通过则会输出</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="module-access"><span class="module"><span class="identifier">Game</span>.</span></span>app: valid on disk</span><br><span class="line"><span class="module-access"><span class="module"><span class="identifier">Game</span>.</span></span>app: satisfies its Designated Requirement</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="提交到Steam和第三方直接发布"><a href="#提交到Steam和第三方直接发布" class="headerlink" title="提交到Steam和第三方直接发布"></a>提交到Steam和第三方直接发布</h2><p>提交到Steam直接分发给用户的macOS程序需要通过Apple的认证流程，详细的说明 <a href="https://developer.apple.com/documentation/xcode/notarizing_macos_software_before_distribution" target="_blank" rel="noopener">Notarizing macOS Software Before Distribution</a></p>
+<h3 id="证书创建"><a href="#证书创建" class="headerlink" title="证书创建"></a>证书创建</h3><p>首先是证书创建，需要在<a href="https://developer.apple.com/" target="_blank" rel="noopener">Apple Developer</a>后台的证书中创建一个 <code>Developer ID Application</code> 证书。</p>
+<p><code>Developer ID Application Certificate</code> 只能由Apple Developer的<strong>account holder</strong>创建，开发者账号下即使是有admin权限的子账号也是无法创建的。</p>
+<p>和创建普通的开发者证书一样，提交CSR文件,创建完成后下载双击导入到keychain中。</p>
+<h3 id="包体配置和准备"><a href="#包体配置和准备" class="headerlink" title="包体配置和准备"></a>包体配置和准备</h3><p>现在我们有一个<code>Game.app</code>的二进制包，以及一个<code>Developer ID Application Certificate</code>。</p>
+<p>按照第一部分的<a href="#应用Bundle处理">应用Bundle处理</a>中的说明</p>
+<p>进行下面的操作</p>
+<ol>
+<li>删除<code>Game.app</code>下面的所有.meta文件</li>
+<li>在<code>Game.app</code>同级目录创建<code>Game.entitlements</code></li>
+<li>修改<code>Game.app/Contents/Info.plist</code>中的信息</li>
+</ol>
+<h3 id="修复SteamLib"><a href="#修复SteamLib" class="headerlink" title="修复SteamLib"></a>修复SteamLib</h3><p>通常Unity使用的Steamworks Lib是第三方开发的<a href="https://github.com/rlabrecque/Steamworks.NET" target="_blank" rel="noopener">rlabrecque/Steamworks.NET</a>。在codesign之前我们要对他进行处理。</p>
+<p><code>rlabrecque/Steamworks.NET</code>的库文件为<code>Steam_api.bundle</code></p>
+<ol>
+<li>Steam_api.bundle的 CFBundleIdentifier为<code>com.rileylabrecque.steam_api</code>，不是标准的BundleId，我们需要将它改成<code>com.rileylabrecque.steamapi</code>去掉下划线。 修改的文件地址在<code>steam_api.bundle/Contents/Info.plist</code>中。</li>
+<li><code>libsteam_api.dylib</code>包含32位的symbol。提交到Apple的bundle必须支持64位的文件，32位的symbol需要删除。<br><code>lipo -remove x86_64 libsteam_api.dylib -o libsteam_api.dylib</code></li>
+</ol>
+<p>这样我们对SteamworkLibrary的处理就完成了。如果有其他的第三方库有类似的问题，也需要进行相同的操作。</p>
+<h3 id="Codesign签名"><a href="#Codesign签名" class="headerlink" title="Codesign签名"></a>Codesign签名</h3><p>Apple文档上建议首先要先对所有的lib，framework以及bundle进行签名，最后再对<code>Game.app</code>进行签名。使用<code>--deep</code>参数进行签名不保证能够正确处理嵌套的lib的正确签名。只能用于文件修改后的codesign patch。</p>
+<ol>
+<li>对所有的library签名</li>
+</ol>
+<p>$BINARY = ‘Game.app’</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">libfile=`find ./<span class="variable">$BINARY</span> -name <span class="string">'*.dylib'</span>`</span><br><span class="line"><span class="keyword">while</span> <span class="built_in">read</span> -r libname; <span class="keyword">do</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"Sign:"</span> <span class="variable">$libname</span></span><br><span class="line">        codesign --deep --force --verify -vvvv --timestamp --options runtime --entitlements  <span class="variable">$ENTITLEMENTS</span> --sign <span class="string">"<span class="variable">$SIGNCERT</span>"</span> <span class="variable">$libname</span></span><br><span class="line"><span class="keyword">done</span> &lt;&lt;&lt; <span class="string">"<span class="variable">$libfile</span>"</span></span><br><span class="line"></span><br><span class="line">bundlefile=`find ./<span class="variable">$BINARY</span> -name <span class="string">'*.bundle'</span>`</span><br><span class="line"><span class="keyword">while</span> <span class="built_in">read</span> -r bundlename; <span class="keyword">do</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"Sign:"</span> <span class="variable">$bundlename</span></span><br><span class="line">        codesign --deep --force --verify -vvvv --timestamp --options runtime --entitlements  <span class="variable">$ENTITLEMENTS</span> --sign <span class="string">"<span class="variable">$SIGNCERT</span>"</span> <span class="variable">$bundlename</span></span><br><span class="line"><span class="keyword">done</span> &lt;&lt;&lt; <span class="string">"<span class="variable">$bundlefile</span>"</span></span><br><span class="line"></span><br><span class="line">frameworkfile=`find ./<span class="variable">$BINARY</span> -name <span class="string">'*.framework'</span>`</span><br><span class="line"><span class="keyword">while</span> <span class="built_in">read</span> -r frameworkname; <span class="keyword">do</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"Sign:"</span> <span class="variable">$frameworkname</span></span><br><span class="line">        codesign --deep --force --verify -vvvv --timestamp --options runtime --entitlements  <span class="variable">$ENTITLEMENTS</span> --sign <span class="string">"<span class="variable">$SIGNCERT</span>"</span> <span class="variable">$frameworkname</span></span><br><span class="line"><span class="keyword">done</span> &lt;&lt;&lt; <span class="string">"<span class="variable">$frameworkfile</span>"</span></span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>在所有的lib签名成功后对整体的包进行签名</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">codesign --deep --force --verify --verbose --timestamp --options runtime --entitlements  <span class="variable">$ENTITLEMENTS</span> --sign <span class="string">"<span class="variable">$SIGNCERT</span>"</span> <span class="variable">$BINARY</span> -i <span class="variable">$BUNDLE_ID</span></span><br><span class="line"><span class="comment"># verification</span></span><br><span class="line">codesign --verify --deep -vvvv --strict Game.app</span><br></pre></td></tr></table></figure>
+
+<p>需要注意的是<code>--sign</code>参数输入”Developer ID Application:”就可以了，codesign会从keychain中自动匹配</p>
+<h3 id="提交苹果Notarization验证"><a href="#提交苹果Notarization验证" class="headerlink" title="提交苹果Notarization验证"></a>提交苹果Notarization验证</h3><p>1.提交到Notarization需要将<code>Game.app</code>打包为一个zip包。</p>
+<p><strong>需要注意的是我们要使用apple提供的ditto命令进行打包，直接使用<code>zip</code>命令会丢失签名信息其他额外信息</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ditto -c -k --sequesterRsrc --keepParent <span class="string">"Game.app"</span> <span class="string">"Game.app.zip"</span></span><br></pre></td></tr></table></figure>
+
+<p>2.提交认证请求</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">xcrun altool --notarize-app --primary-bundle-id <span class="string">"<span class="variable">$&#123;Bundle_Identifier&#125;</span>"</span> --username <span class="string">"<span class="variable">$&#123;APPLE_ID_ACCOUNT&#125;</span>"</span> --password <span class="string">"<span class="variable">$&#123;APPLE_ID_PWD&#125;</span>"</span> --file Game.app.zip --asc-provider <span class="string">"<span class="variable">$&#123;ASC_PROVIDER&#125;</span>"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#sample</span></span><br><span class="line">xcrun altool --notarize-app --primary-bundle-id <span class="string">"com.xxxx.game"</span> --username <span class="string">"yourid@gmail.com"</span> --password <span class="string">"password"</span> --file Game.app.zip --asc-provider <span class="string">"ABCDEFGH"</span></span><br></pre></td></tr></table></figure>
+<p><code>asc-provider</code>是<code>ProviderShortname</code>, 通常是开发者证书末尾的那个<code>Team ID</code>，在<code>Apple Developer/Membership/Team ID</code>中可以找到</p>
+<p>比较老的apple developer账号<code>ProviderShortname</code>和<code>Team ID</code>不一致，我们可以使用命令来查询<code>ProviderShortName</code>。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ xcrun altool --list-providers -u <span class="string">"AC_USERNAME"</span> -p <span class="string">"PWD"</span></span><br></pre></td></tr></table></figure>
+
+<p>提交成功之后会显示一个RequestId 如<code>1809fca2-XXXX-XXXX-XXXX-14aa62f6XXXX</code>。</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">altool[<span class="number">16765</span>:<span class="number">378423</span>] No errors uploading <span class="string">'Game.app.zip'</span>.</span><br><span class="line">RequestUUID = <span class="number">1809f</span>ca2-XXXX-XXXX-XXXX<span class="number">-14</span>aa62f6XXXX</span><br></pre></td></tr></table></figure>
+
+<p>根据RequestID 我们可以查询notarization的结果，通常需要等待5分钟左右。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#查询结果</span></span><br><span class="line">$ xcrun altool --notarization-info <span class="string">"1809fca2-XXXX-XXXX-XXXX-14aa62f6XXXX"</span> --username <span class="string">"<span class="variable">$&#123;APPLE_ID_ACCOUNT&#125;</span>"</span> --password <span class="string">"<span class="variable">$&#123;APPLE_ID_PWD&#125;</span>"</span></span><br></pre></td></tr></table></figure>
+
+<p>提交成功后AppleID邮箱会收到一个来自Apple的邮件。<br>如果失败可以根据Request Identifier查询相应的log。</p>
+<ol start="3">
+<li>在提交成功之后我们就可以给应用盖章了。</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ xcrun stapler staple <span class="string">"Game.app"</span></span><br><span class="line">$ zip -r -q Game.dist.app Game.app</span><br></pre></td></tr></table></figure>
+
+<p>这里注意的是不能直接给<code>Game.app.zip</code> staple。<br>对于Staple完成的<code>.app</code>Bundle，再zip之后就可以直接分发了。</p>
+<h2 id="提交到macOS-App-Store"><a href="#提交到macOS-App-Store" class="headerlink" title="提交到macOS App Store"></a>提交到macOS App Store</h2><h3 id="证书创建-1"><a href="#证书创建-1" class="headerlink" title="证书创建"></a>证书创建</h3><p>提交到macOS AppStore需要两个证书</p>
+<ol>
+<li>Mac App Distribution Certificate</li>
+<li>Mac Installer Distribution Certificate</li>
+</ol>
+<p><code>Mac App Distribution Certificate</code>用于给bundle CodeSign</p>
+<p><code>Mac Installer Distribution Certificate</code>用于pack bundle 之后提交到itunes server审核</p>
+<h3 id="包体配置和准备-1"><a href="#包体配置和准备-1" class="headerlink" title="包体配置和准备"></a>包体配置和准备</h3><p>和<a href="#提交到Steam和第三方直接发布">提交到Steam和第三方直接发布</a>中的流程一致</p>
+<ol>
+<li>删除<code>Game.app</code>下面的所有.meta文件</li>
+<li>在<code>Game.app</code>同级目录创建<code>Game.entitlements</code></li>
+<li>修改<pre>Game.app/Contents/Info.plist</pre>中的信息</li>
+<li>处理第三方lib，修改bundleId或删除symbol</li>
+<li>对所有lib签名</li>
+<li>对Game.app签名，这里使用<code>Mac App Distribution</code>证书进行签名</li>
+</ol>
+<h3 id="生成pkg文件"><a href="#生成pkg文件" class="headerlink" title="生成pkg文件"></a>生成pkg文件</h3><p>签名完成后需要将 <code>Game.app</code> pack成 <code>Game.app.pkg</code>文件。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">productbuild --component <span class="variable">$&#123;BINARY&#125;</span> /Applications --sign <span class="string">"3rd Party Mac Developer Installer:"</span> <span class="string">"<span class="variable">$&#123;PKG_FILE&#125;</span>"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#sample</span></span><br><span class="line">productbuild --component Game.app /Applications --sign <span class="string">"3rd Party Mac Developer Installer:"</span> Game.app.pkg</span><br></pre></td></tr></table></figure>
+
+<p>pack成功之后会得到一个<code>Game.app.pkg</code>。</p>
+<h3 id="使用AppLoader提交到itune服务器"><a href="#使用AppLoader提交到itune服务器" class="headerlink" title="使用AppLoader提交到itune服务器"></a>使用AppLoader提交到itune服务器</h3><p>和iOS开发相同，使用application loader提交的itunes服务器进行验证。由于最新的xcode 11不再提供GUI版本的的 application loader。我们只能使用命令行<code>xcrun alttol</code>进行处理</p>
+<ol>
+<li>首再提交到itunes之前先验证。</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xcrun altool --validate-app -f Game.app.pkg -u <span class="string">"<span class="variable">$&#123;USER&#125;</span>"</span> -p <span class="string">"<span class="variable">$&#123;PWD&#125;</span>"</span></span><br></pre></td></tr></table></figure>
+<p>等到处理结果，如果提示<code>not error</code>则我们可以提交应用。</p>
+<p>需要注意的是<code>xcrun altool --validate-app</code><strong>并不会查出所有的错误</strong>，再提交到itunes之后，apple还会对包体进行验证。可能本地<code>validation</code>没有错误，但是还是会被apple拒绝。</p>
+<ol start="2">
+<li>上传pkg到itune服务器</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ xcrun altool --upload-app -f Game.app.pkg -u <span class="string">"<span class="variable">$&#123;USER&#125;</span>"</span> -p <span class="string">"<span class="variable">$&#123;PWD&#125;</span>"</span></span><br></pre></td></tr></table></figure>
+
+<p>提示<code>no error uploading package</code>，就表示上传成功了。我们只需要等待itunes后台处理。</p>
+<p>如果收到了Apple的邮件:<br><code>App Store Connect: Your app &quot;XXXXX&quot; (Apple ID: 123456789 Version: 1.0 Build: 0) has one or more issues</code><br>就表示本次提交的包里面还有其他错误。</p>
+<p>当这个版本的提交itunes服务器通过了验证，则不会收到邮件，直接在itunes connect后台可以看到提交的版本了。</p>
+<p><strong>在iTunes服务器验证失败后，就需要重新走一遍codesign-&gt;pkg-&gt;upload的流程。和ios开发相同，对于同一个版本每次提交必须要有不同的build，手动修改Game.app/Contents/Info.plist的build version重新操作即可。</strong></p>
+<hr>
+<h2 id="FAQ"><a href="#FAQ" class="headerlink" title="FAQ"></a>FAQ</h2><p><strong>ITMS-90303: Unable to Sign</strong><br>code object is not signed at all In subcomponent:  有额外的文件没有删除，删除文件后再签名。</p>
+<p><strong>ITMS-90238: Invalid Signature</strong></p>
+<p>某些lib文件没有签名，或者有额外的文件没有删除</p>
+<p><strong>codesign 时提示CSSMERR_TP_CERT_REVOKED</strong></p>
+<p>证书过期需要重新从apple developer后台下载证书</p>
+<p><strong>codesign 提示 errSecInternalComponent</strong></p>
+<p>需要解锁Security的keychain读取证书进行签名</p>
+<hr>
+<p>Reference</p>
+<p><a href="https://docs.unity3d.com/Manual/HOWTO-PortToAppleMacStore.html" target="_blank" rel="noopener">Unity Manual: Delivering your application to the Mac App Store</a><br><a href="https://gist.github.com/dpid/270bdb6c1011fe07211edf431b2d0fe4" target="_blank" rel="noopener">gist:how-to-notarize-unity-for-macos.md</a><br><a href="https://developer.apple.com/documentation/xcode/notarizing_macos_software_before_distribution" target="_blank" rel="noopener">Notarizing macOS Software Before Distribution</a><br><a href="https://developer.apple.com/library/archive/technotes/tn2206/_index.html" target="_blank" rel="noopener">Technical Note TN2206:macOS Code Signing In Depth</a></p>
+<hr>
+<p>感谢阅读，如果有任何错误或者问题请下下面留言。</p>
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="https://artwork.yemi.me/" target="_blank" rel="noopener">Artworks</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+         
+          <li><a href="/Search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#包体配置和签名"><span class="toc-number">1.</span> <span class="toc-text">包体配置和签名</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#基本概念"><span class="toc-number">1.1.</span> <span class="toc-text">基本概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#应用Bundle处理"><span class="toc-number">1.2.</span> <span class="toc-text">应用Bundle处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CodeSign签名"><span class="toc-number">1.3.</span> <span class="toc-text">CodeSign签名</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#提交到Steam和第三方直接发布"><span class="toc-number">2.</span> <span class="toc-text">提交到Steam和第三方直接发布</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#证书创建"><span class="toc-number">2.1.</span> <span class="toc-text">证书创建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#包体配置和准备"><span class="toc-number">2.2.</span> <span class="toc-text">包体配置和准备</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#修复SteamLib"><span class="toc-number">2.3.</span> <span class="toc-text">修复SteamLib</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Codesign签名"><span class="toc-number">2.4.</span> <span class="toc-text">Codesign签名</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#提交苹果Notarization验证"><span class="toc-number">2.5.</span> <span class="toc-text">提交苹果Notarization验证</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#提交到macOS-App-Store"><span class="toc-number">3.</span> <span class="toc-text">提交到macOS App Store</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#证书创建-1"><span class="toc-number">3.1.</span> <span class="toc-text">证书创建</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#包体配置和准备-1"><span class="toc-number">3.2.</span> <span class="toc-text">包体配置和准备</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#生成pkg文件"><span class="toc-number">3.3.</span> <span class="toc-text">生成pkg文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用AppLoader提交到itune服务器"><span class="toc-number">3.4.</span> <span class="toc-text">使用AppLoader提交到itune服务器</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#FAQ"><span class="toc-number">4.</span> <span class="toc-text">FAQ</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/" target="_blank" rel="noopener"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/&text=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/&title=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/&is_video=false&description=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=发布Unity项目到macOS AppStore和Steam&body=Check out this article: https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/&title=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/&title=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/&title=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/&title=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/&name=发布Unity项目到macOS AppStore和Steam&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2020 yemi
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="https://artwork.yemi.me/" target="_blank" rel="noopener">Artworks</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+         
+          <li><a href="/Search/">Search</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+</body>
+</html>
+<!-- styles -->
+
+<link rel="stylesheet" href="/lib/font-awesome/css/fontawesome-all.min.css">
+
+
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+
+<!-- jquery -->
+
+<script src="/lib/jquery/jquery.min.js"></script>
+
+
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-117987782-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'yemiblog';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+

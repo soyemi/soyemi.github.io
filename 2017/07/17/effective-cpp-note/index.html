@@ -1,23 +1,22 @@
 <!DOCTYPE html>
 <html lang=en>
-<head><meta name="generator" content="Hexo 3.8.0">
-    <!-- so meta -->
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!-- so meta -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="description" content="effective c++ 读完有一种醍醐灌顶的感觉。之前使用C++编程时在许多结构以及用法上都模糊不清，对于不同的需求可能有多种不同的实践，但是并不了解什么才是最佳实践或者说是有没有最佳实践。Effective可以给你一些答案。  4.避免对象在初始化之前使用它 不同编译单元内的 non-local static对象 初始化先后顺序的处理 将该对象声明在为函数的 local static 对">
-<meta name="keywords" content="C++">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="effective c++ 读完有一种醍醐灌顶的感觉。之前使用C++编程时在许多结构以及用法上都模糊不清，对于不同的需求可能有多种不同的实践，但是并不了解什么才是最佳实践或者说是有没有最佳实践。Effective可以给你一些答案。  4.避免对象在初始化之前使用它不同编译单元内的 non-local static对象 初始化先后顺序的处理将该对象声明在为函数的 local static 对象 为内">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Effective C++ 阅读笔记">
-<meta property="og:url" content="http://yemi.me/2017/07/17/effective-cpp-note/index.html">
+<meta property="og:url" content="https://yemi.me/2017/07/17/effective-cpp-note/index.html">
 <meta property="og:site_name" content="Yemi&#39;s Blog">
-<meta property="og:description" content="effective c++ 读完有一种醍醐灌顶的感觉。之前使用C++编程时在许多结构以及用法上都模糊不清，对于不同的需求可能有多种不同的实践，但是并不了解什么才是最佳实践或者说是有没有最佳实践。Effective可以给你一些答案。  4.避免对象在初始化之前使用它 不同编译单元内的 non-local static对象 初始化先后顺序的处理 将该对象声明在为函数的 local static 对">
-<meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2018-07-21T10:24:52.722Z">
+<meta property="og:description" content="effective c++ 读完有一种醍醐灌顶的感觉。之前使用C++编程时在许多结构以及用法上都模糊不清，对于不同的需求可能有多种不同的实践，但是并不了解什么才是最佳实践或者说是有没有最佳实践。Effective可以给你一些答案。  4.避免对象在初始化之前使用它不同编译单元内的 non-local static对象 初始化先后顺序的处理将该对象声明在为函数的 local static 对象 为内">
+<meta property="article:published_time" content="2017-07-17T15:55:07.000Z">
+<meta property="article:modified_time" content="2020-02-17T10:12:00.639Z">
+<meta property="article:author" content="yemi">
+<meta property="article:tag" content="C++">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Effective C++ 阅读笔记">
-<meta name="twitter:description" content="effective c++ 读完有一种醍醐灌顶的感觉。之前使用C++编程时在许多结构以及用法上都模糊不清，对于不同的需求可能有多种不同的实践，但是并不了解什么才是最佳实践或者说是有没有最佳实践。Effective可以给你一些答案。  4.避免对象在初始化之前使用它 不同编译单元内的 non-local static对象 初始化先后顺序的处理 将该对象声明在为函数的 local static 对">
     
     
         
@@ -39,15 +38,19 @@
     <!-- title -->
     <title>Effective C++ 阅读笔记</title>
     <!-- styles -->
-    <link rel="stylesheet" href="/css/style.css">
+    
+<link rel="stylesheet" href="/css/style.css">
+
     <!-- rss -->
+
+    <link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet">
     
     
-</head>
+<meta name="generator" content="Hexo 4.2.0"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
 
 <body class="max-width mx-auto px3">
     
-      <div id="header-post">
+      <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="header-post">
   <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
   <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
   <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
@@ -57,7 +60,7 @@
          
           <li><a href="/">Home</a></li>
          
-          <li><a href="https://artwork.yemi.me/">Artworks</a></li>
+          <li><a href="https://artwork.yemi.me/" target="_blank" rel="noopener">Artworks</a></li>
          
           <li><a href="/about/">About</a></li>
          
@@ -69,7 +72,7 @@
         
       </ul>
     </span>
-    <br>
+    <br/>
     <span id="actions">
       <ul>
         
@@ -86,28 +89,28 @@
       <span id="i-top" class="info" style="display:none;">Back to top</span>
       <span id="i-share" class="info" style="display:none;">Share post</span>
     </span>
-    <br>
+    <br/>
     <div id="share" style="display: none">
       <ul>
-  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yemi.me/2017/07/17/effective-cpp-note/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=http://yemi.me/2017/07/17/effective-cpp-note/&text=Effective C++ 阅读笔记"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yemi.me/2017/07/17/effective-cpp-note/&title=Effective C++ 阅读笔记"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yemi.me/2017/07/17/effective-cpp-note/&is_video=false&description=Effective C++ 阅读笔记"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=Effective C++ 阅读笔记&body=Check out this article: http://yemi.me/2017/07/17/effective-cpp-note/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=http://yemi.me/2017/07/17/effective-cpp-note/&title=Effective C++ 阅读笔记"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=http://yemi.me/2017/07/17/effective-cpp-note/&title=Effective C++ 阅读笔记"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yemi.me/2017/07/17/effective-cpp-note/&title=Effective C++ 阅读笔记"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=http://yemi.me/2017/07/17/effective-cpp-note/&title=Effective C++ 阅读笔记"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yemi.me/2017/07/17/effective-cpp-note/&name=Effective C++ 阅读笔记&description=&lt;p&gt;effective c++ 读完有一种醍醐灌顶的感觉。之前使用C++编程时在许多结构以及用法上都模糊不清，对于不同的需求可能有多种不同的实践，但是并不了解什么才是最佳实践或者说是有没有最佳实践。Effective可以给你一些答案。&lt;/p&gt;
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://yemi.me/2017/07/17/effective-cpp-note/" target="_blank" rel="noopener"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://yemi.me/2017/07/17/effective-cpp-note/&text=Effective C++ 阅读笔记" target="_blank" rel="noopener"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://yemi.me/2017/07/17/effective-cpp-note/&title=Effective C++ 阅读笔记" target="_blank" rel="noopener"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://yemi.me/2017/07/17/effective-cpp-note/&is_video=false&description=Effective C++ 阅读笔记" target="_blank" rel="noopener"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Effective C++ 阅读笔记&body=Check out this article: https://yemi.me/2017/07/17/effective-cpp-note/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://yemi.me/2017/07/17/effective-cpp-note/&title=Effective C++ 阅读笔记" target="_blank" rel="noopener"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://yemi.me/2017/07/17/effective-cpp-note/&title=Effective C++ 阅读笔记" target="_blank" rel="noopener"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://yemi.me/2017/07/17/effective-cpp-note/&title=Effective C++ 阅读笔记" target="_blank" rel="noopener"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://yemi.me/2017/07/17/effective-cpp-note/&title=Effective C++ 阅读笔记" target="_blank" rel="noopener"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://yemi.me/2017/07/17/effective-cpp-note/&name=Effective C++ 阅读笔记&description=&lt;p&gt;effective c++ 读完有一种醍醐灌顶的感觉。之前使用C++编程时在许多结构以及用法上都模糊不清，对于不同的需求可能有多种不同的实践，但是并不了解什么才是最佳实践或者说是有没有最佳实践。Effective可以给你一些答案。&lt;/p&gt;
 &lt;hr&gt;
-&lt;p&gt;4.避免对象在初始化之前使用它 不同编译单元内的 non-local static对象 初始化先后顺序的处理 将该对象声明在为函数的 local static 对象&lt;/p&gt;
+&lt;p&gt;4.避免对象在初始化之前使用它&lt;br&gt;不同编译单元内的 non-local static对象 初始化先后顺序的处理&lt;br&gt;将该对象声明在为函数的 local static 对象&lt;/p&gt;
 &lt;p&gt;为内置类型对象进行初始化 在方法中的内置类型对象c++不保证初始化他们&lt;/p&gt;
 &lt;p&gt;5.了解c++默默编写调用了哪些函数&lt;/p&gt;
-&lt;p&gt;c++会在默认情况下生成 析构，复制构造 复制赋值函数 如果没有定义默认构造函数 则会自动生成构造函数 【默认生产的析构函数是非virtual 除非基类的析构函数是virtual的】&lt;/p&gt;
+&lt;p&gt;c++会在默认情况下生成 析构，复制构造 复制赋值函数&lt;br&gt;如果没有定义默认构造函数 则会自动生成构造函数&lt;br&gt;【默认生产的析构函数是非virtual 除非基类的析构函数是virtual的】&lt;/p&gt;
 &lt;p&gt;自动创建的赋值构造函数会把每一个non-static成员拷贝到目标对象&lt;/p&gt;
-&lt;p&gt;如果在一个含有reference成员的class内支持赋值操作 必须自行定义copy assignment 基类的copy assignment为private 则也无法自动生成copy assignment&lt;/p&gt;
-&lt;p&gt;6.阻止编译器自动生成函数 声明private 的复制构造与赋值构造函数 不定义，阻止使用赋值构造&lt;/p&gt;
-&lt;p&gt;不定义只生命会在link期报错而不是编译期，可以创建一个基类来实现防止拷贝构造 protected： 构造函数，析构函数 private：复制构造，赋值构造&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+&lt;p&gt;如果在一个含有reference成员的class内支持赋值操作 必须自行定义copy assignment&lt;br&gt;基类的copy assignment为private 则也无法自动生成copy assignment&lt;/p&gt;
+&lt;p&gt;6.阻止编译器自动生成函数&lt;br&gt;声明private 的复制构造与赋值构造函数 不定义，阻止使用赋值构造&lt;/p&gt;
+&lt;p&gt;不定义只生命会在link期报错而不是编译期，可以创建一个基类来实现防止拷贝构造&lt;br&gt;protected： 构造函数，析构函数&lt;br&gt;private：复制构造，赋值构造&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -120,7 +123,7 @@
     
     <div class="content index my4">
         
-        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
   <header>
     
     <h1 class="posttitle" itemprop="name headline">
@@ -130,7 +133,7 @@
 
 
     <div class="meta">
-      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
         <span itemprop="name">Yemi's Blog</span>
       </span>
       
@@ -142,7 +145,7 @@
       
     <div class="article-tag">
         <i class="fas fa-tag"></i>
-        <a class="tag-link" href="/tags/C/">C++</a>
+        <a class="tag-link" href="/tags/C/" rel="tag">C++</a>
     </div>
 
 
@@ -151,85 +154,86 @@
   
 
   <div class="content" itemprop="articleBody">
-    <p>effective c++ &#x8BFB;&#x5B8C;&#x6709;&#x4E00;&#x79CD;&#x918D;&#x9190;&#x704C;&#x9876;&#x7684;&#x611F;&#x89C9;&#x3002;&#x4E4B;&#x524D;&#x4F7F;&#x7528;C++&#x7F16;&#x7A0B;&#x65F6;&#x5728;&#x8BB8;&#x591A;&#x7ED3;&#x6784;&#x4EE5;&#x53CA;&#x7528;&#x6CD5;&#x4E0A;&#x90FD;&#x6A21;&#x7CCA;&#x4E0D;&#x6E05;&#xFF0C;&#x5BF9;&#x4E8E;&#x4E0D;&#x540C;&#x7684;&#x9700;&#x6C42;&#x53EF;&#x80FD;&#x6709;&#x591A;&#x79CD;&#x4E0D;&#x540C;&#x7684;&#x5B9E;&#x8DF5;&#xFF0C;&#x4F46;&#x662F;&#x5E76;&#x4E0D;&#x4E86;&#x89E3;&#x4EC0;&#x4E48;&#x624D;&#x662F;&#x6700;&#x4F73;&#x5B9E;&#x8DF5;&#x6216;&#x8005;&#x8BF4;&#x662F;&#x6709;&#x6CA1;&#x6709;&#x6700;&#x4F73;&#x5B9E;&#x8DF5;&#x3002;Effective&#x53EF;&#x4EE5;&#x7ED9;&#x4F60;&#x4E00;&#x4E9B;&#x7B54;&#x6848;&#x3002;</p>
+    <p>effective c++ 读完有一种醍醐灌顶的感觉。之前使用C++编程时在许多结构以及用法上都模糊不清，对于不同的需求可能有多种不同的实践，但是并不了解什么才是最佳实践或者说是有没有最佳实践。Effective可以给你一些答案。</p>
 <hr>
-<p>4.&#x907F;&#x514D;&#x5BF9;&#x8C61;&#x5728;&#x521D;&#x59CB;&#x5316;&#x4E4B;&#x524D;&#x4F7F;&#x7528;&#x5B83; &#x4E0D;&#x540C;&#x7F16;&#x8BD1;&#x5355;&#x5143;&#x5185;&#x7684; non-local static&#x5BF9;&#x8C61; &#x521D;&#x59CB;&#x5316;&#x5148;&#x540E;&#x987A;&#x5E8F;&#x7684;&#x5904;&#x7406; &#x5C06;&#x8BE5;&#x5BF9;&#x8C61;&#x58F0;&#x660E;&#x5728;&#x4E3A;&#x51FD;&#x6570;&#x7684; local static &#x5BF9;&#x8C61;</p>
-<p>&#x4E3A;&#x5185;&#x7F6E;&#x7C7B;&#x578B;&#x5BF9;&#x8C61;&#x8FDB;&#x884C;&#x521D;&#x59CB;&#x5316; &#x5728;&#x65B9;&#x6CD5;&#x4E2D;&#x7684;&#x5185;&#x7F6E;&#x7C7B;&#x578B;&#x5BF9;&#x8C61;c++&#x4E0D;&#x4FDD;&#x8BC1;&#x521D;&#x59CB;&#x5316;&#x4ED6;&#x4EEC;</p>
-<p>5.&#x4E86;&#x89E3;c++&#x9ED8;&#x9ED8;&#x7F16;&#x5199;&#x8C03;&#x7528;&#x4E86;&#x54EA;&#x4E9B;&#x51FD;&#x6570;</p>
-<p>c++&#x4F1A;&#x5728;&#x9ED8;&#x8BA4;&#x60C5;&#x51B5;&#x4E0B;&#x751F;&#x6210; &#x6790;&#x6784;&#xFF0C;&#x590D;&#x5236;&#x6784;&#x9020; &#x590D;&#x5236;&#x8D4B;&#x503C;&#x51FD;&#x6570; &#x5982;&#x679C;&#x6CA1;&#x6709;&#x5B9A;&#x4E49;&#x9ED8;&#x8BA4;&#x6784;&#x9020;&#x51FD;&#x6570; &#x5219;&#x4F1A;&#x81EA;&#x52A8;&#x751F;&#x6210;&#x6784;&#x9020;&#x51FD;&#x6570; &#x3010;&#x9ED8;&#x8BA4;&#x751F;&#x4EA7;&#x7684;&#x6790;&#x6784;&#x51FD;&#x6570;&#x662F;&#x975E;virtual &#x9664;&#x975E;&#x57FA;&#x7C7B;&#x7684;&#x6790;&#x6784;&#x51FD;&#x6570;&#x662F;virtual&#x7684;&#x3011;</p>
-<p>&#x81EA;&#x52A8;&#x521B;&#x5EFA;&#x7684;&#x8D4B;&#x503C;&#x6784;&#x9020;&#x51FD;&#x6570;&#x4F1A;&#x628A;&#x6BCF;&#x4E00;&#x4E2A;non-static&#x6210;&#x5458;&#x62F7;&#x8D1D;&#x5230;&#x76EE;&#x6807;&#x5BF9;&#x8C61;</p>
-<p>&#x5982;&#x679C;&#x5728;&#x4E00;&#x4E2A;&#x542B;&#x6709;reference&#x6210;&#x5458;&#x7684;class&#x5185;&#x652F;&#x6301;&#x8D4B;&#x503C;&#x64CD;&#x4F5C; &#x5FC5;&#x987B;&#x81EA;&#x884C;&#x5B9A;&#x4E49;copy assignment &#x57FA;&#x7C7B;&#x7684;copy assignment&#x4E3A;private &#x5219;&#x4E5F;&#x65E0;&#x6CD5;&#x81EA;&#x52A8;&#x751F;&#x6210;copy assignment</p>
-<p>6.&#x963B;&#x6B62;&#x7F16;&#x8BD1;&#x5668;&#x81EA;&#x52A8;&#x751F;&#x6210;&#x51FD;&#x6570; &#x58F0;&#x660E;private &#x7684;&#x590D;&#x5236;&#x6784;&#x9020;&#x4E0E;&#x8D4B;&#x503C;&#x6784;&#x9020;&#x51FD;&#x6570; &#x4E0D;&#x5B9A;&#x4E49;&#xFF0C;&#x963B;&#x6B62;&#x4F7F;&#x7528;&#x8D4B;&#x503C;&#x6784;&#x9020;</p>
-<p>&#x4E0D;&#x5B9A;&#x4E49;&#x53EA;&#x751F;&#x547D;&#x4F1A;&#x5728;link&#x671F;&#x62A5;&#x9519;&#x800C;&#x4E0D;&#x662F;&#x7F16;&#x8BD1;&#x671F;&#xFF0C;&#x53EF;&#x4EE5;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x57FA;&#x7C7B;&#x6765;&#x5B9E;&#x73B0;&#x9632;&#x6B62;&#x62F7;&#x8D1D;&#x6784;&#x9020; protected&#xFF1A; &#x6784;&#x9020;&#x51FD;&#x6570;&#xFF0C;&#x6790;&#x6784;&#x51FD;&#x6570; private&#xFF1A;&#x590D;&#x5236;&#x6784;&#x9020;&#xFF0C;&#x8D4B;&#x503C;&#x6784;&#x9020;</p>
+<p>4.避免对象在初始化之前使用它<br>不同编译单元内的 non-local static对象 初始化先后顺序的处理<br>将该对象声明在为函数的 local static 对象</p>
+<p>为内置类型对象进行初始化 在方法中的内置类型对象c++不保证初始化他们</p>
+<p>5.了解c++默默编写调用了哪些函数</p>
+<p>c++会在默认情况下生成 析构，复制构造 复制赋值函数<br>如果没有定义默认构造函数 则会自动生成构造函数<br>【默认生产的析构函数是非virtual 除非基类的析构函数是virtual的】</p>
+<p>自动创建的赋值构造函数会把每一个non-static成员拷贝到目标对象</p>
+<p>如果在一个含有reference成员的class内支持赋值操作 必须自行定义copy assignment<br>基类的copy assignment为private 则也无法自动生成copy assignment</p>
+<p>6.阻止编译器自动生成函数<br>声明private 的复制构造与赋值构造函数 不定义，阻止使用赋值构造</p>
+<p>不定义只生命会在link期报错而不是编译期，可以创建一个基类来实现防止拷贝构造<br>protected： 构造函数，析构函数<br>private：复制构造，赋值构造</p>
 <a id="more"></a>
-<p>7.&#x5BF9;&#x4E8E;&#x90A3;&#x4E9B;&#x4E0D;&#x4F5C;&#x4E3A;&#x57FA;&#x7C7B;&#x7684;class &#x58F0;&#x660E;virtual&#x65B9;&#x6CD5;&#x4F1A;&#x589E;&#x52A0;&#x5185;&#x5B58;&#x5927;&#x5C0F; &#x865A;&#x51FD;&#x6570;&#x8868;vptr std::string &#x4E0D;&#x542B;&#x6709;&#x4EFB;&#x4F55;virtual&#x51FD;&#x6570; &#x4E0D;&#x80FD;&#x4F5C;&#x4E3A;&#x57FA;&#x7C7B; c++ &#x6CA1;&#x6709;sealed&#x7684;&#x7981;&#x6B62;&#x6D3E;&#x751F;&#x7684;&#x673A;&#x5236;</p>
-<p>&#x5E26;&#x6709;&#x591A;&#x6001;&#x6027;&#x8D28;&#x7684;base class &#x5E94;&#x8BE5;&#x58F0;&#x660E;&#x4E00;&#x4E2A;virtual&#x6790;&#x6784;&#x51FD;&#x6570; class&#x5982;&#x679C;&#x4E0D;&#x662F;&#x4E3A;&#x4E86;&#x4F5C;&#x4E3A;&#x57FA;&#x7C7B;&#x4F7F;&#x7528;&#xFF0C;&#x4E0D;&#x8BE5;&#x58F0;&#x660E;virtual&#x6790;&#x6784;</p>
-<p>8.&#x6790;&#x6784;&#x51FD;&#x6570;&#x4E2D;&#x7684;&#x5F02;&#x5E38; std::abort() &#x5F3A;&#x5236;&#x7ED3;&#x675F; &#x6790;&#x6784;&#x51FD;&#x6570;&#x8981;&#x6355;&#x83B7;&#x4EFB;&#x4F55;&#x5F02;&#x5E38;&#xFF0C;swallow or abort &#x63D0;&#x4F9B;&#x4E00;&#x4E2A;&#x65B9;&#x6CD5;&#x8FDB;&#x884C;&#x6790;&#x6784;</p>
-<p>9.&#x4E0D;&#x8981;&#x5728;&#x6784;&#x9020;&#x51FD;&#x6570;&#x6216;&#x6790;&#x6784;&#x51FD;&#x6570;&#x4E2D;&#x8C03;&#x7528;virtual &#x6784;&#x9020;&#x51FD;&#x6570;&#x5185;&#x7684;virtual&#x51FD;&#x6570;&#x4E0D;&#x4F1A;&#x8C03;&#x7528;derived &#x5BF9;&#x8C61;&#x7684;&#x5B9E;&#x73B0; &#x786E;&#x5B9A;&#x6784;&#x9020;&#x51FD;&#x6570;&#x548C;&#x6790;&#x6784;&#x51FD;&#x6570;&#x5185;&#x90E8;&#x4E0D;&#x4F1A;&#x8C03;&#x7528;&#x4EFB;&#x4F55;&#x70ED;virtual&#x51FD;&#x6570;</p>
-<p>&#x66FF;&#x4EE3;&#x5B9E;&#x73B0;&#x65B9;&#x5F0F;&#x662F;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x975E;virtual&#x65B9;&#x6CD5;&#xFF0C;&#x5C06;&#x53C2;&#x6570;&#x4F20;&#x9012;&#x5230;&#x57FA;&#x7C7B;</p>
-<p>10.operator= &#x8FD4;&#x56DE;&#x4E00;&#x4E2A;reference to <em>this int x,y,z;x=y=z=15 += -= </em>= =</p>
-<p>11.&#x5728;operator&#x4E2D;&#x5904;&#x7406;&#x81EA;&#x6211;&#x8D4B;&#x503C;</p>
-<p>w&amp; operator=(const w&amp; rhs){ if(this == &amp;rhs) return *this; //identity test }</p>
-<p>&#x624B;&#x52A8;&#x63A7;&#x5236;&#x987A;&#x5E8F;</p>
-<p>&#x4F7F;&#x7528;copy and swap &#x4EA4;&#x6362;&#x6570;&#x636E;</p>
-<p>copy assignment &#x58F0;&#x660E;&#x4E3A;by value&#x5F62;&#x5F0F; &#x7136;&#x540E;&#x76F4;&#x63A5;&#x4F7F;&#x7528;swap</p>
-<ol start="12" type="1">
-<li>&#x590D;&#x5236;&#x5BF9;&#x8C61;&#x65F6;&#x4E0D;&#x8981;&#x5FD8;&#x8BB0;&#x4EFB;&#x4F55;&#x4E00;&#x4E2A;&#x6210;&#x5458; derived class &#x7684;&#x590D;&#x6784;&#x9020;&#x51FD;&#x6570;&#x5FC5;&#x987B;&#x590D;&#x5236;&#x5176;base class&#x7684;&#x6210;&#x5206;&#x3002;&#x8C03;&#x7528;base class &#x7684;cctor &#x5728;&#x521D;&#x59CB;&#x5316;&#x5217;&#x8868;&#x4E2D;&#x3002;</li>
+
+<p>7.对于那些不作为基类的class 声明virtual方法会增加内存大小 虚函数表vptr<br>std::string 不含有任何virtual函数 不能作为基类<br>c++ 没有sealed的禁止派生的机制</p>
+<p>带有多态性质的base class 应该声明一个virtual析构函数<br>class如果不是为了作为基类使用，不该声明virtual析构</p>
+<p>8.析构函数中的异常<br>std::abort() 强制结束<br>析构函数要捕获任何异常，swallow or abort<br>提供一个方法进行析构</p>
+<p>9.不要在构造函数或析构函数中调用virtual<br>构造函数内的virtual函数不会调用derived 对象的实现<br>确定构造函数和析构函数内部不会调用任何热virtual函数</p>
+<p>替代实现方式是创建一个非virtual方法，将参数传递到基类</p>
+<p>10.operator= 返回一个reference to *this<br>int x,y,z;x=y=z=15<br>+= -= *= =</p>
+<p>11.在operator中处理自我赋值</p>
+<p>w&amp; operator=(const w&amp; rhs){<br>    if(this == &amp;rhs) return *this;    //identity test<br>}</p>
+<p>手动控制顺序</p>
+<p>使用copy and swap 交换数据</p>
+<p>copy assignment 声明为by value形式 然后直接使用swap</p>
+<ol start="12">
+<li>复制对象时不要忘记任何一个成员<br>derived class 的复构造函数必须复制其base class的成分。调用base class 的cctor 在初始化列表中。</li>
 </ol>
-<p>13.&#x4EE5;&#x5BF9;&#x8C61;&#x7BA1;&#x7406;&#x8D44;&#x6E90;</p>
-<p>auto_ptr-&gt;unique_ptr &#x5728;&#x5BF9;&#x8C61;&#x91CA;&#x653E;&#x7684;&#x65F6;&#x5019;&#x81EA;&#x52A8;delete RAII &#x8D44;&#x6E90;&#x53D6;&#x5F97;&#x7684;&#x65F6;&#x673A;&#x4FBF;&#x662F;&#x521D;&#x59CB;&#x5316;&#x65F6;&#x673A;</p>
-<p>auto_ptr&#x5982;&#x679C;&#x901A;&#x8FC7;&#x590D;&#x5236;&#x6784;&#x9020;&#x6216;&#x8005;&#x8D4B;&#x503C;&#x6784;&#x9020; &#x590D;&#x5236; &#x81EA;&#x8EAB;&#x4F1A;&#x53D8;&#x6210;null</p>
-<p>RCSP reference-counting smart pointer shared_ptr</p>
-<p>&#x667A;&#x80FD;&#x6307;&#x9488;&#x5728;&#x6790;&#x6784;&#x65F6;&#x90FD;&#x662F;&#x8C03;&#x7528; delete &#x800C;&#x4E0D;&#x662F;delete []</p>
-<p>14.&#x8D44;&#x6E90;&#x7BA1;&#x7406;&#x4E2D;&#x5C0F;&#x5FC3;&#x590D;&#x5236;&#x884C;&#x4E3A; &#x6291;&#x5236;&#x590D;&#x5236; &#x4F7F;&#x7528;&#x5F15;&#x7528;&#x8BA1;&#x6570;</p>
-<p>15.&#x5728;&#x8D44;&#x6E90;&#x7BA1;&#x7406;&#x7C7B;&#x4E2D;&#x63D0;&#x4F9B;&#x5BF9;&#x539F;&#x59CB;&#x8D44;&#x6E90;&#x7684;&#x8BBF;&#x95EE; get() &#x65B9;&#x6CD5;&#x66B4;&#x9732;&#x539F;&#x59CB;&#x8D44;&#x6E90; &#x6216;&#x8005;&#x4F7F;&#x7528;&#x9690;&#x5F0F;&#x8F6C;&#x6362; &#x9690;&#x5F0F;&#x8F6C;&#x6362;&#x4F1A;&#x51FA;&#x73B0;&#x4E00;&#x4E9B;&#x5176;&#x4ED6;&#x7684;&#x95EE;&#x9898;</p>
-<p>16.&#x4F7F;&#x7528;new &#x548C; delete&#x65F6;&#x8981;&#x91C7;&#x53D6;&#x76F8;&#x540C;&#x7684;&#x5F62;&#x5F0F; &#x6700;&#x597D;&#x4E0D;&#x8981;&#x5BF9;&#x6570;&#x7EC4;&#x5F62;&#x5F0F;&#x505A;typedef &#x96BE;&#x4EE5;&#x6B63;&#x786E;delete []</p>
-<p>17.&#x4EE5;&#x72EC;&#x7ACB;&#x8BED;&#x53E5;new &#x5BF9;&#x8C61;&#x7F6E;&#x5165;&#x667A;&#x80FD;&#x6307;&#x9488; new&#x5BF9;&#x8C61;&#x7F6E;&#x5165;&#x667A;&#x80FD;&#x6307;&#x9488;&#x4E2D;&#x662F; &#x8981;&#x72EC;&#x7ACB;&#x8C03;&#x7528; &#x4E0D;&#x7136;&#x53EF;&#x80FD;&#x4F1A;&#x7531;&#x4E8E;&#x5F02;&#x5E38;&#x5BFC;&#x81F4;&#x4E00;&#x4E9B;&#x5947;&#x602A;&#x7684;&#x60C5;&#x5F62;</p>
-<p>19.&#x8BBE;&#x8BA1;class&#x72B9;&#x5982;&#x8BBE;&#x8BA1;type type&#x7684;&#x5BF9;&#x8C61;&#x5982;&#x4F55;&#x88AB;&#x521B;&#x5EFA;&#x4E0E;&#x9500;&#x6BC1; &#x5BF9;&#x8C61;&#x7684;&#x521D;&#x59CB;&#x5316;&#x4E0E;&#x8D4B;&#x503C;&#x6709;&#x4EC0;&#x4E48;&#x6837;&#x7684;&#x5DEE;&#x522B; &#x5BF9;&#x8C61;&#x5982;&#x679C;&#x4EE5;&#x503C;&#x7C7B;&#x578B;&#x4F20;&#x9012;&#x4F1A;&#x5982;&#x4F55; &#x4EC0;&#x4E48;&#x662F;type&#x7684;&#x5408;&#x6CD5;&#x503C; type&#x7684;&#x7EE7;&#x627F;&#x5173;&#x7CFB;&#x662F;&#x4EC0;&#x4E48; &#x65B0;&#x7684;type&#x9700;&#x8981;&#x4EC0;&#x4E48;&#x6837;&#x7684;&#x7C7B;&#x578B;&#x8F6C;&#x6362; &#x4EC0;&#x4E48;&#x6837;&#x7684;&#x64CD;&#x4F5C;&#x7B26;&#x5BF9;&#x65B0;&#x7684;type&#x662F;&#x5408;&#x7406;&#x7684; &#x4EC0;&#x4E48;&#x6837;&#x7684;&#x6807;&#x51C6;&#x51FD;&#x6570;&#x9700;&#x8981;&#x9A73;&#x56DE; private &#x90A3;&#x4E9B;&#x6210;&#x5458;&#x65F6;public &#x4E0E;private&#x7684; &#x662F;&#x5426;&#x662F;&#x9700;&#x8981;&#x5B9A;&#x4E49;&#x6210;&#x6A21;&#x677F;</p>
-<ol start="20" type="1">
-<li>&#x7528;pass-by-reference-to-const &#x66FF;&#x6362;pass-by-value pass by value&#x4F1A;&#x9020;&#x6210; &#x5BF9;&#x8C61;&#x7684;&#x5207;&#x5272; &#x53D8;&#x4E3A;&#x57FA;&#x7C7B;&#x5BF9;&#x8C61; &#x5982;&#x6709; &#x5185;&#x7F6E;&#x7C7B;&#x578B;&#x4F7F;&#x7528;&#x503C;&#x4F20;&#x9012;</li>
+<p>13.以对象管理资源</p>
+<p>auto_ptr-&gt;unique_ptr 在对象释放的时候自动delete<br>RAII 资源取得的时机便是初始化时机</p>
+<p>auto_ptr如果通过复制构造或者赋值构造 复制 自身会变成null</p>
+<p>RCSP reference-counting smart pointer<br>shared_ptr</p>
+<p>智能指针在析构时都是调用 delete 而不是delete []</p>
+<p>14.资源管理中小心复制行为<br>抑制复制 使用引用计数</p>
+<p>15.在资源管理类中提供对原始资源的访问<br>get() 方法暴露原始资源 或者使用隐式转换<br>隐式转换会出现一些其他的问题</p>
+<p>16.使用new 和 delete时要采取相同的形式<br>最好不要对数组形式做typedef 难以正确delete []</p>
+<p>17.以独立语句new 对象置入智能指针<br>new对象置入智能指针中是 要独立调用 不然可能会由于异常导致一些奇怪的情形</p>
+<p>19.设计class犹如设计type<br>type的对象如何被创建与销毁<br>对象的初始化与赋值有什么样的差别<br>对象如果以值类型传递会如何<br>什么是type的合法值<br>type的继承关系是什么<br>新的type需要什么样的类型转换<br>什么样的操作符对新的type是合理的<br>什么样的标准函数需要驳回 private<br>那些成员时public 与private的<br>是否是需要定义成模板</p>
+<ol start="20">
+<li>用pass-by-reference-to-const 替换pass-by-value<br>pass by value会造成 对象的切割 变为基类对象 如有<br>内置类型使用值传递</li>
 </ol>
-<p>21.&#x5728;&#x5FC5;&#x987B;&#x8FD4;&#x56DE;&#x5BF9;&#x8C61;&#x65F6;&#x4E0D;&#x8981;&#x8FD4;&#x56DE;&#x5176;&#x5F15;&#x7528; &#x5728;&#x5806;&#x4E0A;&#x6216;&#x6808;&#x4E0A;&#x521B;&#x5EFA;&#x5BF9;&#x8C61;&#x90FD;&#x4F1A;&#x5BFC;&#x81F4;&#x95EE;&#x9898; &#x76F4;&#x63A5;&#x8FD4;&#x56DE;&#x5176;&#x503C;&#x7C7B;&#x578B; &#x4F1A;&#x591A;&#x4E00;&#x6B21;&#x590D;&#x5236;&#x6784;&#x9020;&#x51FD;&#x6570; &#x4F46;&#x662F;&#x907F;&#x514D;&#x4E86;&#x4E00;&#x4E9B;&#x5176;&#x4ED6;&#x7684;&#x95EE;&#x9898;</p>
-<p>22.&#x5C06;&#x6210;&#x5458;&#x53D8;&#x91CF;&#x58F0;&#x660E;&#x4E3A;private &#x5C06;&#x6210;&#x5458;&#x53D8;&#x91CF;&#x5C01;&#x88C5;&#x5230;getter setter&#x4E2D; &#x4FBF;&#x4E8E;&#x4FEE;&#x6539;&#x5B9E;&#x73B0; &#x6210;&#x5458;&#x53D8;&#x91CF;&#x5185;&#x5BB9;&#x53D1;&#x751F;&#x6539;&#x53D8;&#x65F6;&#x7684;&#x7834;&#x574F;&#x91CF;&#x8D8A;&#x5C0F;</p>
-<p>protected &#x53D8;&#x91CF;&#x5728;&#x4FEE;&#x6539;&#x65F6;&#x4E5F;&#x53EF;&#x80FD;&#x9700;&#x8981;&#x5BF9;&#x5927;&#x91CF;&#x7684;derived &#x7C7B;&#x8FDB;&#x884C;&#x4FEE;&#x6539; protected&#x6210;&#x5458;&#x50CF;public&#x6210;&#x5458;&#x4E00;&#x6837;&#x7F3A;&#x4E4F;&#x5C01;&#x88C5;&#x6027;</p>
-<ol start="23" type="1">
-<li>prefer non-member non-friend &#x66FF;&#x6362;membr&#x51FD;&#x6570;</li>
+<p>21.在必须返回对象时不要返回其引用<br>在堆上或栈上创建对象都会导致问题 直接返回其值类型 会多一次复制构造函数 但是避免了一些其他的问题</p>
+<p>22.将成员变量声明为private<br>将成员变量封装到getter setter中 便于修改实现<br>成员变量内容发生改变时的破坏量越小</p>
+<p>protected 变量在修改时也可能需要对大量的derived 类进行修改<br>protected成员像public成员一样缺乏封装性</p>
+<ol start="23">
+<li>prefer non-member non-friend 替换membr函数</li>
 </ol>
-<p>&#x628A;&#x4FBF;&#x5229;&#x51FD;&#x6570;&#x653E;&#x5728;&#x76F8;&#x540C;&#x7684;namespace&#x4E0B;&#x9762;</p>
-<p>24.&#x82E5;&#x6240;&#x6709;&#x53C2;&#x6570;&#x7686;&#x9700;&#x8981;&#x7C7B;&#x578B;&#x8F6C;&#x6362;&#xFF0C;&#x8BF7;&#x4F7F;&#x7528;non-member&#x51FD;&#x6570;</p>
-<p>&#x9690;&#x5F0F;&#x8F6C;&#x6362;&#x7684; operator&#x91CD;&#x8F7D;&#xFF0C;&#x6240;&#x6709;&#x53C2;&#x6570;&#x90FD;&#x8981;&#x9690;&#x5F0F;&#x8F6C;&#x6362;&#x65F6; &#x4E0D;&#x8981;&#x5B9A;&#x4E49;&#x5728;&#x6210;&#x5458;&#x51FD;&#x6570;&#x4E2D;</p>
-<p>25.&#x5199;&#x4E00;&#x4E2A;&#x4E0D;&#x629B;&#x51FA;&#x5F02;&#x5E38;&#x7684;swap&#x51FD;&#x6570; pimpl&#x6A21;&#x5F0F; swap&#x6307;&#x9488; &#x9ED8;&#x8BA4;&#x7684;swap&#x4F1A;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;temp&#x5BF9;&#x8C61;</p>
-<p>&#x5F53;std::swap&#x6548;&#x7387;&#x4E0D;&#x9AD8;&#x662F; &#x63D0;&#x4F9B;&#x4E00;&#x4E2A;swap&#x6210;&#x5458;&#x51FD;&#x6570;&#xFF0C;&#x5E76;&#x786E;&#x5B9A;&#x8BE5;&#x51FD;&#x6570;&#x4E0D;&#x629B;&#x51FA;&#x5F02;&#x5E38; &#x63D0;&#x4F9B;&#x4E00;&#x4E2A;member swap &#x4E5F;&#x63D0;&#x4F9B;&#x4E00;&#x4E2A;non-member &#x8C03;&#x7528;&#x524D;&#x8005; using std::swap &#x7136;&#x540E;&#x8C03;&#x7528;swap</p>
-<p>26.&#x5C3D;&#x53EF;&#x80FD;&#x5EF6;&#x540E;&#x53D8;&#x91CF;&#x5B9A;&#x4E49;&#x5F0F;&#x7684;&#x51FA;&#x73B0;&#x65F6;&#x95F4; &#x5B9A;&#x4E49;&#x53D8;&#x91CF; + &#x62F7;&#x8D1D;&#x8D4B;&#x503C; = &#x590D;&#x5236;&#x6784;&#x9020; &#x51CF;&#x5C11;&#x6784;&#x9020;&#x51FD;&#x6570;&#x7684;&#x8C03;&#x7528; &#x53D8;&#x91CF;&#x5728;&#x5FAA;&#x73AF;&#x4E2D;&#x5B9A;&#x4E49; &#x8FD8;&#x662F;&#x5728;&#x5FAA;&#x73AF;&#x5916;&#x58F0;&#x660E;&#x5728;&#x5FAA;&#x73AF;&#x5185;&#x505A;&#x8D4B;&#x503C; &#x90A3;&#x79CD;&#x6548;&#x7387;&#x66F4;&#x9AD8;&#xFF1F;</p>
-<p>27.&#x5C3D;&#x91CF;&#x51CF;&#x5C11;&#x7C7B;&#x578B;&#x8F6C;&#x6362; (T)expr T(expr) const_cast<t>() &#x6D88;&#x9664;const dynamic_cast<t>() &#x5411;&#x7EE7;&#x627F;&#x94FE;&#x4E0A;&#x8F6C;&#x6362; &#x53EF;&#x80FD;&#x8017;&#x8D39;&#x91CD;&#x5927;&#x6210;&#x672C; reinterpret_cast<t>() &#x4F4E;&#x7EA7;&#x8F6C;&#x6362; bitwise? static_cast<t>() &#x5F3A;&#x8FEB;&#x9690;&#x58EB;&#x8F6C;&#x6362; non-const-&gt;const int-&gt;double void*-&gt;typed ptr c++&#x4E2D;&#x4E00;&#x4E2A;&#x5BF9;&#x8C61;&#x53EF;&#x80FD;&#x6709;&#x5F88;&#x591A;&#x4E2A;&#x5E03;&#x5C40;&#x5730;&#x5740;&#xFF0C;&#x591A;&#x91CD;&#x7EE7;&#x627F;&#x7684;&#x6BCF;&#x4E2A;&#x57FA;&#x7C7B;&#x5E26;&#x6709;&#x4E00;&#x4E2A;offset</t></t></t></t></p>
-<p>&#x4F7F;&#x7528;dynamic_cast &#x5728;&#x4E00;&#x4E2A;base ptr&#x4E0A; &#x64CD;&#x4F5C;derived class&#x7684;&#x65B9;&#x6CD5;&#xFF0C;&#x4F60;&#x8BA4;&#x5B9A;&#x4ED6;&#x662F;&#x6307;&#x5411;derived instance</p>
-<p>&#x89E3;&#x51B3;&#x65B9;&#x5F0F;&#xFF1A;&#x5728;base type&#x4E2D;&#x5B9A;&#x4E49;&#x4E00;&#x4E2A;virtual &#x65B9;&#x6CD5;</p>
+<p>把便利函数放在相同的namespace下面</p>
+<p>24.若所有参数皆需要类型转换，请使用non-member函数</p>
+<p>隐式转换的 operator重载，所有参数都要隐式转换时 不要定义在成员函数中</p>
+<p>25.写一个不抛出异常的swap函数<br>pimpl模式 swap指针<br>默认的swap会创建一个temp对象</p>
+<p>当std::swap效率不高是 提供一个swap成员函数，并确定该函数不抛出异常<br>提供一个member swap 也提供一个non-member 调用前者<br>using std::swap 然后调用swap</p>
+<p>26.尽可能延后变量定义式的出现时间<br>定义变量 + 拷贝赋值 = 复制构造 减少构造函数的调用<br>变量在循环中定义 还是在循环外声明在循环内做赋值 那种效率更高？</p>
+<p>27.尽量减少类型转换<br>(T)expr T(expr)<br>const_cast<T>()    消除const<br>dynamic_cast<T>()     向继承链上转换 可能耗费重大成本<br>reinterpret_cast<T>()    低级转换 bitwise?<br>static_cast<T>()    强迫隐士转换 non-const-&gt;const int-&gt;double void*-&gt;typed ptr<br>c++中一个对象可能有很多个布局地址，多重继承的每个基类带有一个offset</p>
+<p>使用dynamic_cast 在一个base ptr上 操作derived class的方法，你认定他是指向derived instance</p>
+<p>解决方式：在base type中定义一个virtual 方法</p>
 <p>avoid cascading dynamic_cast -&gt;use virtual function</p>
-<p>28.&#x907F;&#x514D;&#x8FD4;&#x56DE;handles&#x6307;&#x5411;&#x5BF9;&#x8C61;&#x5185;&#x90E8;&#x6210;&#x5206; &#x8FD4;&#x56DE;&#x6210;&#x5458;&#x53D8;&#x91CF;&#x7684;&#x6307;&#x9488;&#x6216;&#x5F15;&#x7528; &#x52A0;&#x4E0A;const &#x9632;&#x6B62;&#x88AB;&#x4FEE;&#x6539; &#x5373;&#x4F7F;&#x52A0;&#x4E0A;const&#x4E5F;&#x662F;&#x5371;&#x9669;&#x7684; &#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x8BE5;handler&#x7684;&#x65B9;&#x6CD5;&#x7684;&#x8FD4;&#x56DE;&#x503C;&#x8FDB;&#x884C;&#x4FEE;&#x6539;</p>
-<p>29.exception-safe code copy and swap &#x5B9E;&#x73B0;&#x5F3A;&#x5F02;&#x5E38;&#x5B89;&#x5168; all or none</p>
-<p>30.&#x900F;&#x5F7B;&#x4E86;&#x89E3;inline inline &#x662F;&#x5BF9;&#x7F16;&#x8BD1;&#x5668;&#x7684;&#x7533;&#x8BF7;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x5F3A;&#x5236; &#x9690;&#x55BB;&#x5730;&#x63D0;&#x51FA;inline&#xFF0C;class &#x5185;&#x90E8;&#x7684;&#x6210;&#x5458;&#x51FD;&#x6570; inline &#x548C;template&#x901A;&#x5E38;&#x90FD;&#x88AB;&#x5B9A;&#x4E49;&#x4E0E;&#x5934;&#x6587;&#x4EF6;&#x4E2D; function template&#x4E0D;&#x4E00;&#x5B9A;&#x8981;inline</p>
-<p>&#x7531;&#x4E8E;&#x7F16;&#x8BD1;&#x65F6;&#x8FDB;&#x884C;inline &#x7F16;&#x8BD1;&#x5668;&#x9700;&#x8981;&#x77E5;&#x9053;&#x65B9;&#x6CD5;&#x5177;&#x4F53;&#x7684;&#x5B9E;&#x73B0;&#xFF08;vm &#x53EF;&#x4EE5;&#x5728;&#x8FD0;&#x884C;&#x65F6;&#x8FDB;&#x884C;inline&#xFF09; template &#x4E5F;&#x9700;&#x8981;&#x522B;&#x7F6E;&#x4E8E;&#x5934;&#x6587;&#x4EF6; &#x5B9E;&#x73B0;&#x6A21;&#x677F;&#x9700;&#x8981;&#x77E5;&#x9053;template&#x7684;&#x5177;&#x4F53;&#x5B9E;&#x73B0;</p>
-<p>virtual &#x65B9;&#x6CD5;&#x4E0D;&#x80FD;inline &#x56E0;&#x4E3A;&#x865A;&#x51FD;&#x6570;&#x8868;&#x4F9D;&#x8D56;&#x8FD0;&#x884C;&#x65F6;&#x8FDB;&#x884C;&#x8C03;&#x7528; &#x901A;&#x8FC7;&#x51FD;&#x6570;&#x6307;&#x9488;&#x4EA7;&#x751F;&#x7684;&#x8C03;&#x7528;&#x4E5F;&#x4E0D;&#x4F1A;inline</p>
-<p>inline&#x51FD;&#x6570;&#x65E0;&#x6CD5;&#x8FDB;&#x884C;&#x5347;&#x7EA7; &#x9700;&#x8981;&#x91CD;&#x65B0;&#x7F16;&#x8BD1; non-inline&#x53EA;&#x9700;&#x8981;&#x91CD;&#x65B0;&#x94FE;&#x63A5;</p>
-<p>31.&#x5C06;&#x6587;&#x4EF6;&#x95F4;&#x7684;&#x7F16;&#x8BD1;&#x4F9D;&#x5B58;&#x5173;&#x7CFB;&#x964D;&#x4F4E;&#x81F3;&#x6700;&#x4F4E; &#x5982;&#x679C;&#x53EF;&#x4EE5;&#x4F7F;&#x7528; obj ref &#x6216;obj ptr&#x5B9E;&#x73B0;&#x5C31;&#x4E0D;&#x8981;&#x4F7F;&#x7528;obj &#x5982;&#x679C;&#x53EF;&#x4EE5;&#xFF0C;&#x5C3D;&#x91CF;&#x4EE5;class&#x58F0;&#x660E;&#x66FF;&#x6362;class &#x5B9A;&#x4E49;</p>
-<p>handle classes and interface classes full and declearation-only forms header</p>
-<p>32.&#x786E;&#x4FDD;public &#x7EE7;&#x627F;&#x4E3A; is-a&#x7684;&#x5173;&#x7CFB; public inheritance means the relation of &#x2018;is-a&#x2019;</p>
-<p>33.&#x907F;&#x514D;&#x906E;&#x63A9;&#x7EE7;&#x627F;&#x800C;&#x6765;&#x7684;&#x540D;&#x79F0; derived class &#x5185;&#x7684;&#x540D;&#x79F0;&#x4F1A;&#x8986;&#x76D6;base class&#x5185;&#x7684;&#x540D;&#x79F0;</p>
-<p>34.&#x533A;&#x5206;&#x63A5;&#x53E3;&#x7EE7;&#x627F;&#x548C;&#x5B9E;&#x73B0;&#x7EE7;&#x627F;</p>
-<p>&#x53EF;&#x4EE5;&#x7ED9;pure virtual &#x51FD;&#x6570;&#x63D0;&#x4F9B;&#x5B9A;&#x4E49;&#xFF0C;&#x8C03;&#x7528;&#x7684;&#x552F;&#x4E00;&#x9014;&#x5F84;&#x662F;class::function impure virtual &#x51FD;&#x6570; derived class &#x53EF;&#x4EE5;override impure virtual &#x4F1A;&#x5728;&#x5B50;&#x7C7B;&#x672A;&#x58F0;&#x660E;&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#x9ED8;&#x9ED8;&#x7EE7;&#x627F;&#x57FA;&#x7C7B;&#x7684;&#x5B9E;&#x73B0;&#xFF0C;&#x7F3A;&#x7701;&#x5B9E;&#x73B0;&#x6709;&#x65F6;&#x5019;&#x4F1A;&#x9020;&#x6210;&#x95EE;&#x9898; &#x89E3;&#x51B3;&#x65B9;&#x6848; &#x58F0;&#x660E;&#x4E00;&#x4E2A;non-virtual &#x65B9;&#x6CD5; &#x518D;&#x58F0;&#x660E;&#x4E00;&#x4E2A;pure virtual &#x9ED8;&#x8BA4;&#x5B9E;&#x73B0;&#x65F6;&#x8C03;&#x7528;non-virtual&#x65B9;&#x6CD5;</p>
-<p>pure virtual &#x7EE7;&#x627F;&#x63A5;&#x53E3; impure virtual &#x7EE7;&#x627F;&#x63A5;&#x53E3;&#x548C;&#x4E00;&#x4EFD;&#x9ED8;&#x8BA4;&#x5B9E;&#x73B0; non virtual &#x7EE7;&#x627F;&#x63A5;&#x53E3;&#x548C;&#x4E00;&#x4EFD;&#x5F3A;&#x5236;&#x5B9E;&#x73B0;</p>
-<p>35.&#x8003;&#x8651;virtual &#x51FD;&#x6570;&#x5916;&#x7684;&#x5176;&#x4ED6;&#x9009;&#x62E9;</p>
-<p>public non-virtual &#x6210;&#x5458;&#x51FD;&#x6570;&#x95F4;&#x63A5;&#x8C03;&#x7528;private virtual &#x51FD;&#x6570; non-virtual interface(NVI) template method &#x8BBE;&#x8BA1;&#x6A21;&#x5F0F;&#x3002; NVI&#x4E0D;&#x4E00;&#x5B9A;&#x662F;private&#x65B9;&#x6CD5; &#x4E5F;&#x53EF;&#x4EE5;&#x662F;protected NVI&#x66FF;&#x4EE3;public virtual&#x51FD;&#x6570;</p>
-<p>&#x57FA;&#x4E8E;function pointer&#x5B9E;&#x73B0;strategy&#x6A21;&#x5F0F;</p>
-<p>36.&#x7EDD;&#x4E0D;&#x8981;&#x91CD;&#x65B0;&#x5B9A;&#x4E49;&#x7EE7;&#x627F;&#x800C;&#x6765;&#x7684;non-virtual &#x51FD;&#x6570; viruta&#x51FD;&#x6570;&#x662F;&#x52A8;&#x6001;&#x7ED1;&#x5B9A;&#x7684; non-virtual&#x662F;&#x975E;&#x52A8;&#x6001;&#x7ED1;&#x5B9A;&#x7684; &#x91CD;&#x65B0;&#x5B9A;&#x4E49;&#x57FA;&#x7C7B;&#x7684;non-virtual&#x4F1A;&#x5BFC;&#x81F4;&#x4E00;&#x4E9B;&#x4E0D;&#x53EF;&#x610F;&#x6599;&#x7684;&#x60C5;&#x51B5;&#xFF0C;&#x53D6;&#x51B3;&#x4E8E;&#x58F0;&#x660E;&#x7684;&#x6307;&#x9488;&#x7C7B;&#x578B;</p>
-<p>37.&#x4E0D;&#x8981;&#x91CD;&#x65B0;&#x5B9A;&#x4E49;&#x7EE7;&#x627F;&#x800C;&#x6765;&#x7684;&#x7F3A;&#x7701;&#x53C2;&#x6570; virtual&#x51FD;&#x6570;&#x662F;&#x52A8;&#x6001;&#x7ED1;&#x5B9A;&#x7684; &#x4F46;&#x662F;&#x7F3A;&#x7701;&#x53C2;&#x6570;&#x662F;&#x9759;&#x6001;&#x7ED1;&#x5B9A;&#x7684; &#x6700;&#x7EC8;&#x8C03;&#x7528;derived class&#x7684;&#x65B9;&#x6CD5;&#x65F6;&#x4F1A;&#x4F7F;&#x7528;base class &#x7684;&#x53C2;&#x6570; C++&#x4E3A;&#x4E86;&#x8FD0;&#x884C;&#x6548;&#x7387;&#x5BF9;&#x7F3A;&#x7701;&#x53C2;&#x6570;&#x7684;&#x7ED1;&#x5B9A;&#x5B9E;&#x73B0;&#x4E3A;&#x9759;&#x6001;&#x7ED1;&#x5B9A; &#x4F7F;&#x7528;NVI&#x907F;&#x514D;&#x91CD;&#x65B0;&#x7F16;&#x5199;&#x7F3A;&#x7701;&#x53C2;&#x6570;</p>
-<ol start="38" type="1">
-<li>&#x590D;&#x5408; is-implemented in terms of / has a</li>
+<p>28.避免返回handles指向对象内部成分<br>返回成员变量的指针或引用  加上const 防止被修改<br>即使加上const也是危险的 可以通过该handler的方法的返回值进行修改</p>
+<p>29.exception-safe code<br>copy and swap 实现强异常安全<br>all or none</p>
+<p>30.透彻了解inline<br>inline 是对编译器的申请，而不是强制<br>隐喻地提出inline，class 内部的成员函数<br>inline 和template通常都被定义与头文件中<br>function template不一定要inline</p>
+<p>由于编译时进行inline 编译器需要知道方法具体的实现（vm 可以在运行时进行inline）<br>template 也需要别置于头文件 实现模板需要知道template的具体实现</p>
+<p>virtual 方法不能inline 因为虚函数表依赖运行时进行调用<br>通过函数指针产生的调用也不会inline</p>
+<p>inline函数无法进行升级 需要重新编译 non-inline只需要重新链接</p>
+<p>31.将文件间的编译依存关系降低至最低<br>如果可以使用 obj ref 或obj ptr实现就不要使用obj<br>如果可以，尽量以class声明替换class 定义</p>
+<p>handle classes and interface classes<br>full and declearation-only forms header</p>
+<p>32.确保public 继承为 is-a的关系<br>public inheritance means the relation of ‘is-a’</p>
+<p>33.避免遮掩继承而来的名称<br>derived class 内的名称会覆盖base class内的名称</p>
+<p>34.区分接口继承和实现继承</p>
+<p>可以给pure virtual 函数提供定义，调用的唯一途径是class::function<br>impure virtual 函数 derived class 可以override<br>impure virtual 会在子类未声明的情况下默默继承基类的实现，缺省实现有时候会造成问题<br>解决方案 声明一个non-virtual 方法 再声明一个pure virtual 默认实现时调用non-virtual方法</p>
+<p>pure virtual    继承接口<br>impure virtual    继承接口和一份默认实现<br>non virtual    继承接口和一份强制实现</p>
+<p>35.考虑virtual 函数外的其他选择</p>
+<p>public non-virtual 成员函数间接调用private virtual 函数 non-virtual interface(NVI)<br>template method 设计模式。<br>NVI不一定是private方法 也可以是protected<br>NVI替代public virtual函数</p>
+<p>基于function pointer实现strategy模式</p>
+<p>36.绝不要重新定义继承而来的non-virtual 函数<br>viruta函数是动态绑定的 non-virtual是非动态绑定的<br>重新定义基类的non-virtual会导致一些不可意料的情况，取决于声明的指针类型</p>
+<p>37.不要重新定义继承而来的缺省参数<br>virtual函数是动态绑定的 但是缺省参数是静态绑定的<br>最终调用derived class的方法时会使用base class 的参数<br>C++为了运行效率对缺省参数的绑定实现为静态绑定<br>使用NVI避免重新编写缺省参数</p>
+<ol start="38">
+<li>复合 is-implemented in terms of / has a</li>
 </ol>
-<p>39.&#x660E;&#x667A;&#x800C;&#x8C28;&#x614E;&#x5730;&#x4F7F;&#x7528;private &#x7EE7;&#x627F; private &#x7EE7;&#x627F; &#x7F16;&#x8BD1;&#x5668;&#x4E0D;&#x4F1A;&#x81EA;&#x52A8;&#x5C06;&#x4E00;&#x4E2A;derived class&#x5BF9;&#x8C61;&#x8F6C;&#x6362;&#x4E3A;base class &#x5BF9;&#x8C61; private&#x7EE7;&#x627F;&#x800C;&#x6765;&#x7684;&#x6240;&#x6709;&#x6210;&#x5458;&#x5728;derived class &#x4E2D;&#x90FD;&#x4F1A;&#x53D8;&#x6210;private</p>
-<p>private&#x610F;&#x5473;&#x7740;&#x53EA;&#x6709;&#x5B9E;&#x73B0;&#x90E8;&#x5206;&#x88AB;&#x7EE7;&#x627F;&#xFF0C;&#x63A5;&#x53E3;&#x90E8;&#x5206;&#x5E94;&#x7565;&#x53BB;&#x3002; private inherit means is-implemented-in-terms-of</p>
-<p>&#x5C3D;&#x91CF;&#x4F7F;&#x7528;&#x590D;&#x5408;&#xFF0C;&#x5FC5;&#x8981;&#x65F6;&#x624D;&#x4F7F;&#x7528;private &#x7EE7;&#x627F;</p>
-<p>&#x4E0D;&#x5B58;&#x5728;is-a&#x7684;&#x5173;&#x7CFB;&#x7684;&#x4E24;&#x4E2A;class&#xFF0C;&#x4E00;&#x4E2A;&#x9700;&#x8981;&#x8BBF;&#x95EE;&#x53E6;&#x4E00;&#x4E2A;&#x7684;protected&#x6210;&#x5458;&#xFF0C;&#x6216;&#x9700;&#x8981;&#x91CD;&#x65B0;&#x5B9A;&#x4E49;&#x5176;&#x4E00;&#x4E2A;&#x6216;&#x591A;&#x4E2A;virtual&#x51FD;&#x6570;&#xFF0C;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;private&#x96C6;&#x6210; private &#x96C6;&#x6210;&#x53EF;&#x4EE5;&#x9020;&#x6210;EBO empty base optimize 40.&#x660E;&#x667A;&#x800C;&#x5BA1;&#x614E;&#x5730;&#x4F7F;&#x7528;&#x591A;&#x91CD;&#x7EE7;&#x627F;</p>
+<p>39.明智而谨慎地使用private 继承<br>private 继承 编译器不会自动将一个derived class对象转换为base class 对象<br>private继承而来的所有成员在derived class 中都会变成private</p>
+<p>private意味着只有实现部分被继承，接口部分应略去。<br>private inherit means is-implemented-in-terms-of</p>
+<p>尽量使用复合，必要时才使用private 继承</p>
+<p>不存在is-a的关系的两个class，一个需要访问另一个的protected成员，或需要重新定义其一个或多个virtual函数，可以使用private集成<br>private 集成可以造成EBO empty base optimize<br>40.明智而审慎地使用多重继承</p>
 
   </div>
 </article>
@@ -252,7 +256,7 @@
          
           <li><a href="/">Home</a></li>
          
-          <li><a href="https://artwork.yemi.me/">Artworks</a></li>
+          <li><a href="https://artwork.yemi.me/" target="_blank" rel="noopener">Artworks</a></li>
          
           <li><a href="/about/">About</a></li>
          
@@ -271,25 +275,25 @@
 
     <div id="share-footer" style="display: none">
       <ul>
-  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yemi.me/2017/07/17/effective-cpp-note/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=http://yemi.me/2017/07/17/effective-cpp-note/&text=Effective C++ 阅读笔记"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yemi.me/2017/07/17/effective-cpp-note/&title=Effective C++ 阅读笔记"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yemi.me/2017/07/17/effective-cpp-note/&is_video=false&description=Effective C++ 阅读笔记"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=Effective C++ 阅读笔记&body=Check out this article: http://yemi.me/2017/07/17/effective-cpp-note/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=http://yemi.me/2017/07/17/effective-cpp-note/&title=Effective C++ 阅读笔记"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=http://yemi.me/2017/07/17/effective-cpp-note/&title=Effective C++ 阅读笔记"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yemi.me/2017/07/17/effective-cpp-note/&title=Effective C++ 阅读笔记"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=http://yemi.me/2017/07/17/effective-cpp-note/&title=Effective C++ 阅读笔记"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yemi.me/2017/07/17/effective-cpp-note/&name=Effective C++ 阅读笔记&description=&lt;p&gt;effective c++ 读完有一种醍醐灌顶的感觉。之前使用C++编程时在许多结构以及用法上都模糊不清，对于不同的需求可能有多种不同的实践，但是并不了解什么才是最佳实践或者说是有没有最佳实践。Effective可以给你一些答案。&lt;/p&gt;
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://yemi.me/2017/07/17/effective-cpp-note/" target="_blank" rel="noopener"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://yemi.me/2017/07/17/effective-cpp-note/&text=Effective C++ 阅读笔记" target="_blank" rel="noopener"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://yemi.me/2017/07/17/effective-cpp-note/&title=Effective C++ 阅读笔记" target="_blank" rel="noopener"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://yemi.me/2017/07/17/effective-cpp-note/&is_video=false&description=Effective C++ 阅读笔记" target="_blank" rel="noopener"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Effective C++ 阅读笔记&body=Check out this article: https://yemi.me/2017/07/17/effective-cpp-note/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://yemi.me/2017/07/17/effective-cpp-note/&title=Effective C++ 阅读笔记" target="_blank" rel="noopener"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://yemi.me/2017/07/17/effective-cpp-note/&title=Effective C++ 阅读笔记" target="_blank" rel="noopener"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://yemi.me/2017/07/17/effective-cpp-note/&title=Effective C++ 阅读笔记" target="_blank" rel="noopener"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://yemi.me/2017/07/17/effective-cpp-note/&title=Effective C++ 阅读笔记" target="_blank" rel="noopener"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://yemi.me/2017/07/17/effective-cpp-note/&name=Effective C++ 阅读笔记&description=&lt;p&gt;effective c++ 读完有一种醍醐灌顶的感觉。之前使用C++编程时在许多结构以及用法上都模糊不清，对于不同的需求可能有多种不同的实践，但是并不了解什么才是最佳实践或者说是有没有最佳实践。Effective可以给你一些答案。&lt;/p&gt;
 &lt;hr&gt;
-&lt;p&gt;4.避免对象在初始化之前使用它 不同编译单元内的 non-local static对象 初始化先后顺序的处理 将该对象声明在为函数的 local static 对象&lt;/p&gt;
+&lt;p&gt;4.避免对象在初始化之前使用它&lt;br&gt;不同编译单元内的 non-local static对象 初始化先后顺序的处理&lt;br&gt;将该对象声明在为函数的 local static 对象&lt;/p&gt;
 &lt;p&gt;为内置类型对象进行初始化 在方法中的内置类型对象c++不保证初始化他们&lt;/p&gt;
 &lt;p&gt;5.了解c++默默编写调用了哪些函数&lt;/p&gt;
-&lt;p&gt;c++会在默认情况下生成 析构，复制构造 复制赋值函数 如果没有定义默认构造函数 则会自动生成构造函数 【默认生产的析构函数是非virtual 除非基类的析构函数是virtual的】&lt;/p&gt;
+&lt;p&gt;c++会在默认情况下生成 析构，复制构造 复制赋值函数&lt;br&gt;如果没有定义默认构造函数 则会自动生成构造函数&lt;br&gt;【默认生产的析构函数是非virtual 除非基类的析构函数是virtual的】&lt;/p&gt;
 &lt;p&gt;自动创建的赋值构造函数会把每一个non-static成员拷贝到目标对象&lt;/p&gt;
-&lt;p&gt;如果在一个含有reference成员的class内支持赋值操作 必须自行定义copy assignment 基类的copy assignment为private 则也无法自动生成copy assignment&lt;/p&gt;
-&lt;p&gt;6.阻止编译器自动生成函数 声明private 的复制构造与赋值构造函数 不定义，阻止使用赋值构造&lt;/p&gt;
-&lt;p&gt;不定义只生命会在link期报错而不是编译期，可以创建一个基类来实现防止拷贝构造 protected： 构造函数，析构函数 private：复制构造，赋值构造&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+&lt;p&gt;如果在一个含有reference成员的class内支持赋值操作 必须自行定义copy assignment&lt;br&gt;基类的copy assignment为private 则也无法自动生成copy assignment&lt;/p&gt;
+&lt;p&gt;6.阻止编译器自动生成函数&lt;br&gt;声明private 的复制构造与赋值构造函数 不定义，阻止使用赋值构造&lt;/p&gt;
+&lt;p&gt;不定义只生命会在link期报错而不是编译期，可以创建一个基类来实现防止拷贝构造&lt;br&gt;protected： 构造函数，析构函数&lt;br&gt;private：复制构造，赋值构造&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -307,7 +311,7 @@
     
     <footer id="footer">
   <div class="footer-left">
-    Copyright &copy; 2019 yemi
+    Copyright &copy; 2020 yemi
   </div>
   <div class="footer-right">
     <nav>
@@ -315,7 +319,7 @@
          
           <li><a href="/">Home</a></li>
          
-          <li><a href="https://artwork.yemi.me/">Artworks</a></li>
+          <li><a href="https://artwork.yemi.me/" target="_blank" rel="noopener">Artworks</a></li>
          
           <li><a href="/about/">About</a></li>
          
@@ -328,18 +332,28 @@
       </ul>
     </nav>
   </div>
-</footer>
+</footer><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 
 </body>
 </html>
 <!-- styles -->
+
 <link rel="stylesheet" href="/lib/font-awesome/css/fontawesome-all.min.css">
+
+
 <link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
 
+
 <!-- jquery -->
+
 <script src="/lib/jquery/jquery.min.js"></script>
+
+
 <script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+
+
 <script src="/js/main.js"></script>
+
 <!-- search -->
 
 <!-- Google Analytics -->

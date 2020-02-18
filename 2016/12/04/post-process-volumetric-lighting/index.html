@@ -1,25 +1,25 @@
 <!DOCTYPE html>
 <html lang=en>
-<head><meta name="generator" content="Hexo 3.8.0">
-    <!-- so meta -->
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!-- so meta -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="description" content="一直觉得体积光之类的效果很酷炫，在shadertoy也看到了很多惊艳的ray marching实现。看了一些文章和Paper相关的内容之后决定在Unity中实现一遍，记录下来。文中都是个人的理解，肯定会有一些错误，希望能有所帮助。  Volumetric LightING   自定义Shader中采样Shadow Map 通过CameraDepthTexture计算世界坐标 Ray">
-<meta name="keywords" content="Unity,Ray marching">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="一直觉得体积光之类的效果很酷炫，在shadertoy也看到了很多惊艳的ray marching实现。看了一些文章和Paper相关的内容之后决定在Unity中实现一遍，记录下来。文中都是个人的理解，肯定会有一些错误，希望能有所帮助。   自定义Shader中采样Shadow Map 通过CameraDepthTexture计算世界坐标 Ray Marching 计算scatter  自定义shade">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Unity中实现Post Process Volumetric Lighting">
-<meta property="og:url" content="http://yemi.me/2016/12/04/post-process-volumetric-lighting/index.html">
+<meta property="og:url" content="https://yemi.me/2016/12/04/post-process-volumetric-lighting/index.html">
 <meta property="og:site_name" content="Yemi&#39;s Blog">
-<meta property="og:description" content="一直觉得体积光之类的效果很酷炫，在shadertoy也看到了很多惊艳的ray marching实现。看了一些文章和Paper相关的内容之后决定在Unity中实现一遍，记录下来。文中都是个人的理解，肯定会有一些错误，希望能有所帮助。  Volumetric LightING   自定义Shader中采样Shadow Map 通过CameraDepthTexture计算世界坐标 Ray">
-<meta property="og:locale" content="en">
-<meta property="og:image" content="http://yemi.me/images/161204_volumetric_light.png">
-<meta property="og:updated_time" content="2018-07-21T10:24:52.726Z">
+<meta property="og:description" content="一直觉得体积光之类的效果很酷炫，在shadertoy也看到了很多惊艳的ray marching实现。看了一些文章和Paper相关的内容之后决定在Unity中实现一遍，记录下来。文中都是个人的理解，肯定会有一些错误，希望能有所帮助。   自定义Shader中采样Shadow Map 通过CameraDepthTexture计算世界坐标 Ray Marching 计算scatter  自定义shade">
+<meta property="og:image" content="https://yemi.me/images/161204_volumetric_light.png">
+<meta property="article:published_time" content="2016-12-04T08:11:25.000Z">
+<meta property="article:modified_time" content="2020-02-17T10:12:17.089Z">
+<meta property="article:author" content="yemi">
+<meta property="article:tag" content="Unity">
+<meta property="article:tag" content="Ray marching">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Unity中实现Post Process Volumetric Lighting">
-<meta name="twitter:description" content="一直觉得体积光之类的效果很酷炫，在shadertoy也看到了很多惊艳的ray marching实现。看了一些文章和Paper相关的内容之后决定在Unity中实现一遍，记录下来。文中都是个人的理解，肯定会有一些错误，希望能有所帮助。  Volumetric LightING   自定义Shader中采样Shadow Map 通过CameraDepthTexture计算世界坐标 Ray">
-<meta name="twitter:image" content="http://yemi.me/images/161204_volumetric_light.png">
+<meta name="twitter:image" content="https://yemi.me/images/161204_volumetric_light.png">
     
     
         
@@ -41,15 +41,19 @@
     <!-- title -->
     <title>Unity中实现Post Process Volumetric Lighting</title>
     <!-- styles -->
-    <link rel="stylesheet" href="/css/style.css">
+    
+<link rel="stylesheet" href="/css/style.css">
+
     <!-- rss -->
+
+    <link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet">
     
     
-</head>
+<meta name="generator" content="Hexo 4.2.0"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
 
 <body class="max-width mx-auto px3">
     
-      <div id="header-post">
+      <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="header-post">
   <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
   <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
   <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
@@ -59,7 +63,7 @@
          
           <li><a href="/">Home</a></li>
          
-          <li><a href="https://artwork.yemi.me/">Artworks</a></li>
+          <li><a href="https://artwork.yemi.me/" target="_blank" rel="noopener">Artworks</a></li>
          
           <li><a href="/about/">About</a></li>
          
@@ -71,7 +75,7 @@
         
       </ul>
     </span>
-    <br>
+    <br/>
     <span id="actions">
       <ul>
         
@@ -86,35 +90,31 @@
       <span id="i-top" class="info" style="display:none;">Back to top</span>
       <span id="i-share" class="info" style="display:none;">Share post</span>
     </span>
-    <br>
+    <br/>
     <div id="share" style="display: none">
       <ul>
-  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yemi.me/2016/12/04/post-process-volumetric-lighting/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=http://yemi.me/2016/12/04/post-process-volumetric-lighting/&text=Unity中实现Post Process Volumetric Lighting"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yemi.me/2016/12/04/post-process-volumetric-lighting/&title=Unity中实现Post Process Volumetric Lighting"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yemi.me/2016/12/04/post-process-volumetric-lighting/&is_video=false&description=Unity中实现Post Process Volumetric Lighting"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=Unity中实现Post Process Volumetric Lighting&body=Check out this article: http://yemi.me/2016/12/04/post-process-volumetric-lighting/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=http://yemi.me/2016/12/04/post-process-volumetric-lighting/&title=Unity中实现Post Process Volumetric Lighting"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=http://yemi.me/2016/12/04/post-process-volumetric-lighting/&title=Unity中实现Post Process Volumetric Lighting"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yemi.me/2016/12/04/post-process-volumetric-lighting/&title=Unity中实现Post Process Volumetric Lighting"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=http://yemi.me/2016/12/04/post-process-volumetric-lighting/&title=Unity中实现Post Process Volumetric Lighting"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yemi.me/2016/12/04/post-process-volumetric-lighting/&name=Unity中实现Post Process Volumetric Lighting&description=&lt;p&gt;一直觉得体积光之类的效果很酷炫，在shadertoy也看到了很多惊艳的ray marching实现。看了一些文章和Paper相关的内容之后决定在Unity中实现一遍，记录下来。文中都是个人的理解，肯定会有一些错误，希望能有所帮助。&lt;/p&gt;
-&lt;figure&gt;
-&lt;img src=&#34;/images/161204_volumetric_light.png&#34; alt=&#34;Volumetric LightING&#34;&gt;&lt;figcaption&gt;Volumetric LightING&lt;/figcaption&gt;
-&lt;/figure&gt;
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://yemi.me/2016/12/04/post-process-volumetric-lighting/" target="_blank" rel="noopener"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://yemi.me/2016/12/04/post-process-volumetric-lighting/&text=Unity中实现Post Process Volumetric Lighting" target="_blank" rel="noopener"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://yemi.me/2016/12/04/post-process-volumetric-lighting/&title=Unity中实现Post Process Volumetric Lighting" target="_blank" rel="noopener"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://yemi.me/2016/12/04/post-process-volumetric-lighting/&is_video=false&description=Unity中实现Post Process Volumetric Lighting" target="_blank" rel="noopener"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Unity中实现Post Process Volumetric Lighting&body=Check out this article: https://yemi.me/2016/12/04/post-process-volumetric-lighting/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://yemi.me/2016/12/04/post-process-volumetric-lighting/&title=Unity中实现Post Process Volumetric Lighting" target="_blank" rel="noopener"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://yemi.me/2016/12/04/post-process-volumetric-lighting/&title=Unity中实现Post Process Volumetric Lighting" target="_blank" rel="noopener"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://yemi.me/2016/12/04/post-process-volumetric-lighting/&title=Unity中实现Post Process Volumetric Lighting" target="_blank" rel="noopener"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://yemi.me/2016/12/04/post-process-volumetric-lighting/&title=Unity中实现Post Process Volumetric Lighting" target="_blank" rel="noopener"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://yemi.me/2016/12/04/post-process-volumetric-lighting/&name=Unity中实现Post Process Volumetric Lighting&description=&lt;p&gt;一直觉得体积光之类的效果很酷炫，在shadertoy也看到了很多惊艳的ray marching实现。看了一些文章和Paper相关的内容之后决定在Unity中实现一遍，记录下来。文中都是个人的理解，肯定会有一些错误，希望能有所帮助。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/161204_volumetric_light.png&#34; alt=&#34;Volumetric LightING&#34;&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;自定义Shader中采样Shadow Map&lt;/li&gt;
 &lt;li&gt;通过CameraDepthTexture计算世界坐标&lt;/li&gt;
 &lt;li&gt;Ray Marching 计算scatter&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2 id=&#34;自定义shader中采样shadow-map&#34;&gt;自定义shader中采样shadow Map&lt;/h2&gt;
-&lt;h3 id=&#34;关于shadowmap&#34;&gt;关于shadowmap&lt;/h3&gt;
-&lt;p&gt;在unity中，每个开启投射阴影的光源都会计算一张shadowMap。shadowMap可以用于实现screen space shadow。简单的说对于screen space的一个像素我们可以通过这个像素的深度值来获取该像素的世界坐标，要判断这个像素是不是在阴影之中，就是该点朝光源方向（平行光就是光源方向，点光源就是光源位置）是否被其他物体阻挡，然而在shader中发射一条射线进行碰撞检测是不现实的。而shadowmap的实现方式是在光源位置渲染整个场景，记录下深度信息储存在shadowmap中。 如果屏幕空间的一个像素P1，其对应世界坐标映射在shadowmap的点P2。如果P1的深度值大于P2的深度值，则P1处于阴影之中。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+&lt;h2 id=&#34;自定义shader中采样shadow-Map&#34;&gt;&lt;a href=&#34;#自定义shader中采样shadow-Map&#34; class=&#34;headerlink&#34; title=&#34;自定义shader中采样shadow Map&#34;&gt;&lt;/a&gt;自定义shader中采样shadow Map&lt;/h2&gt;&lt;h3 id=&#34;关于shadowmap&#34;&gt;&lt;a href=&#34;#关于shadowmap&#34; class=&#34;headerlink&#34; title=&#34;关于shadowmap&#34;&gt;&lt;/a&gt;关于shadowmap&lt;/h3&gt;&lt;p&gt;在unity中，每个开启投射阴影的光源都会计算一张shadowMap。shadowMap可以用于实现screen space shadow。简单的说对于screen space的一个像素我们可以通过这个像素的深度值来获取该像素的世界坐标，要判断这个像素是不是在阴影之中，就是该点朝光源方向（平行光就是光源方向，点光源就是光源位置）是否被其他物体阻挡，然而在shader中发射一条射线进行碰撞检测是不现实的。而shadowmap的实现方式是在光源位置渲染整个场景，记录下深度信息储存在shadowmap中。&lt;br&gt;如果屏幕空间的一个像素P1，其对应世界坐标映射在shadowmap的点P2。如果P1的深度值大于P2的深度值，则P1处于阴影之中。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
     <div id="toc">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#自定义shader中采样shadow-map"><span class="toc-number">1.</span> <span class="toc-text">自定义shader中采样shadow Map</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#关于shadowmap"><span class="toc-number">1.1.</span> <span class="toc-text">关于shadowmap</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#在shader中获取shadowmap"><span class="toc-number">1.2.</span> <span class="toc-text">在shader中获取shadowmap</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#采样shadowmap"><span class="toc-number">1.3.</span> <span class="toc-text">采样shadowMap</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#通过cameradepthtexture计算世界坐标"><span class="toc-number">2.</span> <span class="toc-text">通过CameraDepthTexture计算世界坐标</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ray-marching-计算scatter"><span class="toc-number">3.</span> <span class="toc-text">Ray Marching 计算scatter</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#自定义shader中采样shadow-Map"><span class="toc-number">1.</span> <span class="toc-text">自定义shader中采样shadow Map</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#关于shadowmap"><span class="toc-number">1.1.</span> <span class="toc-text">关于shadowmap</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#在shader中获取shadowmap"><span class="toc-number">1.2.</span> <span class="toc-text">在shader中获取shadowmap</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#采样shadowMap"><span class="toc-number">1.3.</span> <span class="toc-text">采样shadowMap</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#通过CameraDepthTexture计算世界坐标"><span class="toc-number">2.</span> <span class="toc-text">通过CameraDepthTexture计算世界坐标</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Ray-Marching-计算scatter"><span class="toc-number">3.</span> <span class="toc-text">Ray Marching 计算scatter</span></a></li></ol>
     </div>
   </span>
 </div>
@@ -122,7 +122,7 @@
     
     <div class="content index my4">
         
-        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
   <header>
     
     <h1 class="posttitle" itemprop="name headline">
@@ -132,7 +132,7 @@
 
 
     <div class="meta">
-      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
         <span itemprop="name">Yemi's Blog</span>
       </span>
       
@@ -144,7 +144,7 @@
       
     <div class="article-tag">
         <i class="fas fa-tag"></i>
-        <a class="tag-link" href="/tags/Ray-marching/">Ray marching</a>, <a class="tag-link" href="/tags/Unity/">Unity</a>
+        <a class="tag-link" href="/tags/Ray-marching/" rel="tag">Ray marching</a>, <a class="tag-link" href="/tags/Unity/" rel="tag">Unity</a>
     </div>
 
 
@@ -153,54 +153,42 @@
   
 
   <div class="content" itemprop="articleBody">
-    <p>&#x4E00;&#x76F4;&#x89C9;&#x5F97;&#x4F53;&#x79EF;&#x5149;&#x4E4B;&#x7C7B;&#x7684;&#x6548;&#x679C;&#x5F88;&#x9177;&#x70AB;&#xFF0C;&#x5728;shadertoy&#x4E5F;&#x770B;&#x5230;&#x4E86;&#x5F88;&#x591A;&#x60CA;&#x8273;&#x7684;ray marching&#x5B9E;&#x73B0;&#x3002;&#x770B;&#x4E86;&#x4E00;&#x4E9B;&#x6587;&#x7AE0;&#x548C;Paper&#x76F8;&#x5173;&#x7684;&#x5185;&#x5BB9;&#x4E4B;&#x540E;&#x51B3;&#x5B9A;&#x5728;Unity&#x4E2D;&#x5B9E;&#x73B0;&#x4E00;&#x904D;&#xFF0C;&#x8BB0;&#x5F55;&#x4E0B;&#x6765;&#x3002;&#x6587;&#x4E2D;&#x90FD;&#x662F;&#x4E2A;&#x4EBA;&#x7684;&#x7406;&#x89E3;&#xFF0C;&#x80AF;&#x5B9A;&#x4F1A;&#x6709;&#x4E00;&#x4E9B;&#x9519;&#x8BEF;&#xFF0C;&#x5E0C;&#x671B;&#x80FD;&#x6709;&#x6240;&#x5E2E;&#x52A9;&#x3002;</p>
-<figure>
-<img src="/images/161204_volumetric_light.png" alt="Volumetric LightING"><figcaption>Volumetric LightING</figcaption>
-</figure>
+    <p>一直觉得体积光之类的效果很酷炫，在shadertoy也看到了很多惊艳的ray marching实现。看了一些文章和Paper相关的内容之后决定在Unity中实现一遍，记录下来。文中都是个人的理解，肯定会有一些错误，希望能有所帮助。</p>
+<p><img src="/images/161204_volumetric_light.png" alt="Volumetric LightING"></p>
 <ul>
-<li>&#x81EA;&#x5B9A;&#x4E49;Shader&#x4E2D;&#x91C7;&#x6837;Shadow Map</li>
-<li>&#x901A;&#x8FC7;CameraDepthTexture&#x8BA1;&#x7B97;&#x4E16;&#x754C;&#x5750;&#x6807;</li>
-<li>Ray Marching &#x8BA1;&#x7B97;scatter</li>
+<li>自定义Shader中采样Shadow Map</li>
+<li>通过CameraDepthTexture计算世界坐标</li>
+<li>Ray Marching 计算scatter</li>
 </ul>
-<h2 id="&#x81EA;&#x5B9A;&#x4E49;shader&#x4E2D;&#x91C7;&#x6837;shadow-map">&#x81EA;&#x5B9A;&#x4E49;shader&#x4E2D;&#x91C7;&#x6837;shadow Map</h2>
-<h3 id="&#x5173;&#x4E8E;shadowmap">&#x5173;&#x4E8E;shadowmap</h3>
-<p>&#x5728;unity&#x4E2D;&#xFF0C;&#x6BCF;&#x4E2A;&#x5F00;&#x542F;&#x6295;&#x5C04;&#x9634;&#x5F71;&#x7684;&#x5149;&#x6E90;&#x90FD;&#x4F1A;&#x8BA1;&#x7B97;&#x4E00;&#x5F20;shadowMap&#x3002;shadowMap&#x53EF;&#x4EE5;&#x7528;&#x4E8E;&#x5B9E;&#x73B0;screen space shadow&#x3002;&#x7B80;&#x5355;&#x7684;&#x8BF4;&#x5BF9;&#x4E8E;screen space&#x7684;&#x4E00;&#x4E2A;&#x50CF;&#x7D20;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x8FD9;&#x4E2A;&#x50CF;&#x7D20;&#x7684;&#x6DF1;&#x5EA6;&#x503C;&#x6765;&#x83B7;&#x53D6;&#x8BE5;&#x50CF;&#x7D20;&#x7684;&#x4E16;&#x754C;&#x5750;&#x6807;&#xFF0C;&#x8981;&#x5224;&#x65AD;&#x8FD9;&#x4E2A;&#x50CF;&#x7D20;&#x662F;&#x4E0D;&#x662F;&#x5728;&#x9634;&#x5F71;&#x4E4B;&#x4E2D;&#xFF0C;&#x5C31;&#x662F;&#x8BE5;&#x70B9;&#x671D;&#x5149;&#x6E90;&#x65B9;&#x5411;&#xFF08;&#x5E73;&#x884C;&#x5149;&#x5C31;&#x662F;&#x5149;&#x6E90;&#x65B9;&#x5411;&#xFF0C;&#x70B9;&#x5149;&#x6E90;&#x5C31;&#x662F;&#x5149;&#x6E90;&#x4F4D;&#x7F6E;&#xFF09;&#x662F;&#x5426;&#x88AB;&#x5176;&#x4ED6;&#x7269;&#x4F53;&#x963B;&#x6321;&#xFF0C;&#x7136;&#x800C;&#x5728;shader&#x4E2D;&#x53D1;&#x5C04;&#x4E00;&#x6761;&#x5C04;&#x7EBF;&#x8FDB;&#x884C;&#x78B0;&#x649E;&#x68C0;&#x6D4B;&#x662F;&#x4E0D;&#x73B0;&#x5B9E;&#x7684;&#x3002;&#x800C;shadowmap&#x7684;&#x5B9E;&#x73B0;&#x65B9;&#x5F0F;&#x662F;&#x5728;&#x5149;&#x6E90;&#x4F4D;&#x7F6E;&#x6E32;&#x67D3;&#x6574;&#x4E2A;&#x573A;&#x666F;&#xFF0C;&#x8BB0;&#x5F55;&#x4E0B;&#x6DF1;&#x5EA6;&#x4FE1;&#x606F;&#x50A8;&#x5B58;&#x5728;shadowmap&#x4E2D;&#x3002; &#x5982;&#x679C;&#x5C4F;&#x5E55;&#x7A7A;&#x95F4;&#x7684;&#x4E00;&#x4E2A;&#x50CF;&#x7D20;P1&#xFF0C;&#x5176;&#x5BF9;&#x5E94;&#x4E16;&#x754C;&#x5750;&#x6807;&#x6620;&#x5C04;&#x5728;shadowmap&#x7684;&#x70B9;P2&#x3002;&#x5982;&#x679C;P1&#x7684;&#x6DF1;&#x5EA6;&#x503C;&#x5927;&#x4E8E;P2&#x7684;&#x6DF1;&#x5EA6;&#x503C;&#xFF0C;&#x5219;P1&#x5904;&#x4E8E;&#x9634;&#x5F71;&#x4E4B;&#x4E2D;&#x3002;</p>
+<h2 id="自定义shader中采样shadow-Map"><a href="#自定义shader中采样shadow-Map" class="headerlink" title="自定义shader中采样shadow Map"></a>自定义shader中采样shadow Map</h2><h3 id="关于shadowmap"><a href="#关于shadowmap" class="headerlink" title="关于shadowmap"></a>关于shadowmap</h3><p>在unity中，每个开启投射阴影的光源都会计算一张shadowMap。shadowMap可以用于实现screen space shadow。简单的说对于screen space的一个像素我们可以通过这个像素的深度值来获取该像素的世界坐标，要判断这个像素是不是在阴影之中，就是该点朝光源方向（平行光就是光源方向，点光源就是光源位置）是否被其他物体阻挡，然而在shader中发射一条射线进行碰撞检测是不现实的。而shadowmap的实现方式是在光源位置渲染整个场景，记录下深度信息储存在shadowmap中。<br>如果屏幕空间的一个像素P1，其对应世界坐标映射在shadowmap的点P2。如果P1的深度值大于P2的深度值，则P1处于阴影之中。</p>
 <a id="more"></a>
-<p>&#x6E32;&#x67D3;shadowmap&#x8981;&#x5C3D;&#x53EF;&#x80FD;&#x628A;&#x4E3B;&#x6444;&#x50CF;&#x673A;&#x89C6;&#x690E;&#x4F53;&#x5185;&#x7684;&#x5BF9;&#x8C61;&#x5168;&#x90E8;&#x5305;&#x62EC;&#x5728;&#x5185;&#x90E8;&#xFF0C;&#x8FD9;&#x6837;&#x6240;&#x6709;&#x7684;&#x50CF;&#x7D20;&#x624D;&#x80FD;&#x5728;shadowmap&#x4E2D;&#x627E;&#x5230;&#x5BF9;&#x5E94;&#x7684;&#x70B9;&#x3002;&#x5982;&#x679C;&#x4E00;&#x4E2A;&#x70B9;&#x5728;&#x5C4F;&#x5E55;&#x7A7A;&#x95F4;&#x4E2D;&#x4F46;&#x662F;&#x5176;&#x5BF9;&#x5E94;&#x7684;&#x4E16;&#x754C;&#x5750;&#x6807;&#x4E0D;&#x5728;shadowmap&#x4E2D;&#x4E00;&#x822C;&#x8BBE;&#x5B9A;&#x5176;&#x4E0D;&#x5728;&#x9634;&#x5F71;&#x4E2D;&#x3002;&#x5728;&#x5149;&#x6E90;&#x5904;&#x6E32;&#x67D3;&#x573A;&#x666F;&#x7684;&#x89C6;&#x9525;&#x8981;&#x5305;&#x62EC;&#x6240;&#x6709;&#x5BF9;&#x8C61;&#x7684;&#x540C;&#x65F6;&#x53C8;&#x4E0D;&#x80FD;&#x592A;&#x5927;&#x3002;&#x592A;&#x5927;&#x5728;&#x76F8;&#x540C;&#x5927;&#x5C0F;&#x7684;shadowmap&#x60C5;&#x51B5;&#x4E0B;&#x4F1A;&#x5BFC;&#x81F4;&#x9634;&#x5F71;&#x7684;&#x7CBE;&#x5EA6;&#x964D;&#x4F4E;&#x3002;</p>
-<p>&#x5177;&#x4F53;&#x7684;shadowmap&#x6E32;&#x67D3;&#x6709;&#x8BB8;&#x591A;&#x4E0D;&#x540C;&#x7684;&#x5B9E;&#x73B0;&#x65B9;&#x5F0F;&#xFF0C;Cascaded Shadow Maps&#x53EF;&#x4EE5;&#x89E3;&#x51B3;&#x4E00;&#x4E9B;ShadowMap&#x7684;&#x7CBE;&#x5EA6;&#x95EE;&#x9898;&#x3002;&#x5177;&#x4F53;&#x5982;&#x4F55;&#x9009;&#x53D6;&#x5149;&#x6E90;&#x4F4D;&#x7F6E;&#x7684;&#x89C6;&#x690E;&#x4F53;&#x53EF;&#x4EE5;&#x9605;&#x8BFB;<a href="http://blog.csdn.net/zjull/article/details/11740505" target="_blank" rel="noopener">&#x57FA;&#x4E8E;Shadow Map&#x7684;&#x9634;&#x5F71;&#x5B9E;&#x73B0;</a>&#x3002;</p>
-<h3 id="&#x5728;shader&#x4E2D;&#x83B7;&#x53D6;shadowmap">&#x5728;shader&#x4E2D;&#x83B7;&#x53D6;shadowmap</h3>
-<p>&#x5728;shader&#x4E2D;&#x53EF;&#x4EE5;&#x901A;&#x8FC7; <code>_CameraDepthTexture</code>&#x76F4;&#x63A5;&#x83B7;&#x53D6;&#x5230;&#x5F53;&#x524D;&#x7684;&#x6DF1;&#x5EA6;&#x56FE;&#x8FDB;&#x884C;&#x91C7;&#x6837;&#xFF0C;&#x7136;&#x800C;untiy&#x6CA1;&#x6709;&#x76F4;&#x63A5;&#x63D0;&#x4F9B;&#x8FD9;&#x6837;&#x7684;&#x5BF9;&#x8C61;&#xFF0C;&#x901A;&#x8FC7;&#x5176;&#x4ED6;&#x65B9;&#x5F0F;&#x83B7;&#x53D6;&#x5230;shadowmap&#x3002; <a href="https://docs.unity3d.com/Manual/SL-BuiltinMacros.html" target="_blank" rel="noopener">Unity SL-BuiltinMacros</a>&#x4E2D;&#x63D0;&#x4F9B;&#x4E86;&#x65B9;&#x6CD5;&#x6765;&#x5BF9;shadowmap&#x8FDB;&#x884C;&#x91C7;&#x6837;&#xFF0C;&#x4F46;&#x5E76;&#x6CA1;&#x6709;&#x5177;&#x4F53;&#x7684;&#x4F7F;&#x7528;&#x65B9;&#x6CD5;&#x3002;</p>
+
+<p>渲染shadowmap要尽可能把主摄像机视椎体内的对象全部包括在内部，这样所有的像素才能在shadowmap中找到对应的点。如果一个点在屏幕空间中但是其对应的世界坐标不在shadowmap中一般设定其不在阴影中。在光源处渲染场景的视锥要包括所有对象的同时又不能太大。太大在相同大小的shadowmap情况下会导致阴影的精度降低。</p>
+<p>具体的shadowmap渲染有许多不同的实现方式，Cascaded Shadow Maps可以解决一些ShadowMap的精度问题。具体如何选取光源位置的视椎体可以阅读<a href="http://blog.csdn.net/zjull/article/details/11740505" target="_blank" rel="noopener">基于Shadow Map的阴影实现</a>。</p>
+<h3 id="在shader中获取shadowmap"><a href="#在shader中获取shadowmap" class="headerlink" title="在shader中获取shadowmap"></a>在shader中获取shadowmap</h3><p>在shader中可以通过 <code>_CameraDepthTexture</code>直接获取到当前的深度图进行采样，然而untiy没有直接提供这样的对象，通过其他方式获取到shadowmap。<br><a href="https://docs.unity3d.com/Manual/SL-BuiltinMacros.html" target="_blank" rel="noopener">Unity SL-BuiltinMacros</a>中提供了方法来对shadowmap进行采样，但并没有具体的使用方法。</p>
 <table>
-<colgroup>
-<col style="width: 41%">
-<col style="width: 58%">
-</colgroup>
 <thead>
-<tr class="header">
+<tr>
 <th><strong>Macro:</strong></th>
 <th><strong>Use:</strong></th>
 </tr>
 </thead>
-<tbody>
-<tr class="odd">
+<tbody><tr>
 <td>UNITY_DECLARE_SHADOWMAP(tex)</td>
-<td>Declares a shadowmap Texture variable with name &#x201C;tex&#x201D;.</td>
+<td>Declares a shadowmap Texture variable with name “tex”.</td>
 </tr>
-<tr class="even">
+<tr>
 <td>UNITY_SAMPLE_SHADOW(tex,uv)</td>
-<td>Samples shadowmap Texture &#x201C;tex&#x201D; at given &#x201C;uv&#x201D; coordinate (XY components are Texture location, Z component is depth to compare with). Returns single float value with the shadow term in 0..1 range.</td>
+<td>Samples shadowmap Texture “tex” at given “uv” coordinate (XY components are Texture location, Z component is depth to compare with). Returns single float value with the shadow term in 0..1 range.</td>
 </tr>
-</tbody>
-</table>
-<p>&#x7ECF;&#x8FC7;&#x4E86;&#x4E00;&#x756A;&#xFF08;&#x6F2B;&#x957F;&#xFF09;&#x641C;&#x7D22;&#x4E4B;&#x540E;&#x7EC8;&#x4E8E;&#x627E;&#x5230;&#x4E86;&#x4F7F;&#x7528;&#x7684;&#x65B9;&#x5F0F;&#xFF0C;&#x8981;&#x901A;&#x8FC7;unity&#x63D0;&#x4F9B;&#x7684;command buffer&#x628A;&#x5149;&#x6E90;&#x7684;shadowmap Texture &#x4F20;&#x9012;&#x7ED9;shader&#x3002;</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">private Light m_light;</span><br><span class="line">private CommandBuffer m_cbShadowMap;</span><br><span class="line">...</span><br><span class="line">void OnRenderObject()</span><br><span class="line">    {</span><br><span class="line">        if (m_light == null) m_light = GetComponent&lt;Light&gt;();</span><br><span class="line">        if (m_cbShadowMap == null)</span><br><span class="line">        {</span><br><span class="line">            m_cbShadowMap = new CommandBuffer();</span><br><span class="line">            m_cbShadowMap.name = &quot;ShadowMap&quot;;</span><br><span class="line">            m_cbShadowMap.SetGlobalTexture(&quot;_DirectionalLightShadowMap&quot;, new RenderTargetIdentifier(BuiltinRenderTextureType.CurrentActive));</span><br><span class="line">        }</span><br><span class="line">        if (m_light.GetCommandBuffers(LightEvent.AfterShadowMap).Length == 0)</span><br><span class="line">        {</span><br><span class="line">            m_light.AddCommandBuffer(LightEvent.AfterShadowMap, m_cbShadowMap);</span><br><span class="line">        }</span><br><span class="line">    }</span><br></pre></td></tr></table></figure>
-<p>&#x5728;LightEvent.AfterShadowMap&#x65F6;&#x628A;&#x8BE5;&#x5149;&#x6E90;&#x7684;rendertexure &#x8BBE;&#x7F6E;&#x4E3A;&#x5168;&#x5C40;&#x53D8;&#x91CF; <code>_DirectionalLightShadowMap</code>&#xFF0C;&#x8FD9;&#x6837;&#x5C31;&#x80FD;&#x5728;shader&#x4E2D;&#x83B7;&#x53D6;shadowmap&#x4E86;<code>sampler2D _DirectionalLightShadowMap;</code></p>
-<h3 id="&#x91C7;&#x6837;shadowmap">&#x91C7;&#x6837;shadowMap</h3>
-<p>&#x5F85;&#x7EED;</p>
-<h2 id="&#x901A;&#x8FC7;cameradepthtexture&#x8BA1;&#x7B97;&#x4E16;&#x754C;&#x5750;&#x6807;">&#x901A;&#x8FC7;CameraDepthTexture&#x8BA1;&#x7B97;&#x4E16;&#x754C;&#x5750;&#x6807;</h2>
-<p>&#x5F85;&#x7EED;</p>
-<h2 id="ray-marching-&#x8BA1;&#x7B97;scatter">Ray Marching &#x8BA1;&#x7B97;scatter</h2>
-<p>&#x5F85;&#x7EED;</p>
+</tbody></table>
+<p>经过了一番（漫长）搜索之后终于找到了使用的方式，要通过unity提供的command buffer把光源的shadowmap Texture 传递给shader。</p>
+<figure class="highlight c#"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> Light m_light;</span><br><span class="line"><span class="keyword">private</span> CommandBuffer m_cbShadowMap;</span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">OnRenderObject</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        <span class="keyword">if</span> (m_light == <span class="literal">null</span>) m_light = GetComponent&lt;Light&gt;();</span><br><span class="line">        <span class="keyword">if</span> (m_cbShadowMap == <span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            m_cbShadowMap = <span class="keyword">new</span> CommandBuffer();</span><br><span class="line">            m_cbShadowMap.name = <span class="string">"ShadowMap"</span>;</span><br><span class="line">            m_cbShadowMap.SetGlobalTexture(<span class="string">"_DirectionalLightShadowMap"</span>, <span class="keyword">new</span> RenderTargetIdentifier(BuiltinRenderTextureType.CurrentActive));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (m_light.GetCommandBuffers(LightEvent.AfterShadowMap).Length == <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            m_light.AddCommandBuffer(LightEvent.AfterShadowMap, m_cbShadowMap);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>在LightEvent.AfterShadowMap时把该光源的rendertexure 设置为全局变量 <code>_DirectionalLightShadowMap</code>，这样就能在shader中获取shadowmap了<code>sampler2D _DirectionalLightShadowMap;</code></p>
+<h3 id="采样shadowMap"><a href="#采样shadowMap" class="headerlink" title="采样shadowMap"></a>采样shadowMap</h3><p>待续</p>
+<h2 id="通过CameraDepthTexture计算世界坐标"><a href="#通过CameraDepthTexture计算世界坐标" class="headerlink" title="通过CameraDepthTexture计算世界坐标"></a>通过CameraDepthTexture计算世界坐标</h2><p>待续</p>
+<h2 id="Ray-Marching-计算scatter"><a href="#Ray-Marching-计算scatter" class="headerlink" title="Ray Marching 计算scatter"></a>Ray Marching 计算scatter</h2><p>待续</p>
 
   </div>
 </article>
@@ -223,7 +211,7 @@
          
           <li><a href="/">Home</a></li>
          
-          <li><a href="https://artwork.yemi.me/">Artworks</a></li>
+          <li><a href="https://artwork.yemi.me/" target="_blank" rel="noopener">Artworks</a></li>
          
           <li><a href="/about/">About</a></li>
          
@@ -237,32 +225,28 @@
     </div>
 
     <div id="toc-footer" style="display: none">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#自定义shader中采样shadow-map"><span class="toc-number">1.</span> <span class="toc-text">自定义shader中采样shadow Map</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#关于shadowmap"><span class="toc-number">1.1.</span> <span class="toc-text">关于shadowmap</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#在shader中获取shadowmap"><span class="toc-number">1.2.</span> <span class="toc-text">在shader中获取shadowmap</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#采样shadowmap"><span class="toc-number">1.3.</span> <span class="toc-text">采样shadowMap</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#通过cameradepthtexture计算世界坐标"><span class="toc-number">2.</span> <span class="toc-text">通过CameraDepthTexture计算世界坐标</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ray-marching-计算scatter"><span class="toc-number">3.</span> <span class="toc-text">Ray Marching 计算scatter</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#自定义shader中采样shadow-Map"><span class="toc-number">1.</span> <span class="toc-text">自定义shader中采样shadow Map</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#关于shadowmap"><span class="toc-number">1.1.</span> <span class="toc-text">关于shadowmap</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#在shader中获取shadowmap"><span class="toc-number">1.2.</span> <span class="toc-text">在shader中获取shadowmap</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#采样shadowMap"><span class="toc-number">1.3.</span> <span class="toc-text">采样shadowMap</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#通过CameraDepthTexture计算世界坐标"><span class="toc-number">2.</span> <span class="toc-text">通过CameraDepthTexture计算世界坐标</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Ray-Marching-计算scatter"><span class="toc-number">3.</span> <span class="toc-text">Ray Marching 计算scatter</span></a></li></ol>
     </div>
 
     <div id="share-footer" style="display: none">
       <ul>
-  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yemi.me/2016/12/04/post-process-volumetric-lighting/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=http://yemi.me/2016/12/04/post-process-volumetric-lighting/&text=Unity中实现Post Process Volumetric Lighting"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yemi.me/2016/12/04/post-process-volumetric-lighting/&title=Unity中实现Post Process Volumetric Lighting"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yemi.me/2016/12/04/post-process-volumetric-lighting/&is_video=false&description=Unity中实现Post Process Volumetric Lighting"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=Unity中实现Post Process Volumetric Lighting&body=Check out this article: http://yemi.me/2016/12/04/post-process-volumetric-lighting/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=http://yemi.me/2016/12/04/post-process-volumetric-lighting/&title=Unity中实现Post Process Volumetric Lighting"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=http://yemi.me/2016/12/04/post-process-volumetric-lighting/&title=Unity中实现Post Process Volumetric Lighting"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yemi.me/2016/12/04/post-process-volumetric-lighting/&title=Unity中实现Post Process Volumetric Lighting"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=http://yemi.me/2016/12/04/post-process-volumetric-lighting/&title=Unity中实现Post Process Volumetric Lighting"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yemi.me/2016/12/04/post-process-volumetric-lighting/&name=Unity中实现Post Process Volumetric Lighting&description=&lt;p&gt;一直觉得体积光之类的效果很酷炫，在shadertoy也看到了很多惊艳的ray marching实现。看了一些文章和Paper相关的内容之后决定在Unity中实现一遍，记录下来。文中都是个人的理解，肯定会有一些错误，希望能有所帮助。&lt;/p&gt;
-&lt;figure&gt;
-&lt;img src=&#34;/images/161204_volumetric_light.png&#34; alt=&#34;Volumetric LightING&#34;&gt;&lt;figcaption&gt;Volumetric LightING&lt;/figcaption&gt;
-&lt;/figure&gt;
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://yemi.me/2016/12/04/post-process-volumetric-lighting/" target="_blank" rel="noopener"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://yemi.me/2016/12/04/post-process-volumetric-lighting/&text=Unity中实现Post Process Volumetric Lighting" target="_blank" rel="noopener"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://yemi.me/2016/12/04/post-process-volumetric-lighting/&title=Unity中实现Post Process Volumetric Lighting" target="_blank" rel="noopener"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://yemi.me/2016/12/04/post-process-volumetric-lighting/&is_video=false&description=Unity中实现Post Process Volumetric Lighting" target="_blank" rel="noopener"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Unity中实现Post Process Volumetric Lighting&body=Check out this article: https://yemi.me/2016/12/04/post-process-volumetric-lighting/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://yemi.me/2016/12/04/post-process-volumetric-lighting/&title=Unity中实现Post Process Volumetric Lighting" target="_blank" rel="noopener"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://yemi.me/2016/12/04/post-process-volumetric-lighting/&title=Unity中实现Post Process Volumetric Lighting" target="_blank" rel="noopener"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://yemi.me/2016/12/04/post-process-volumetric-lighting/&title=Unity中实现Post Process Volumetric Lighting" target="_blank" rel="noopener"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://yemi.me/2016/12/04/post-process-volumetric-lighting/&title=Unity中实现Post Process Volumetric Lighting" target="_blank" rel="noopener"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://yemi.me/2016/12/04/post-process-volumetric-lighting/&name=Unity中实现Post Process Volumetric Lighting&description=&lt;p&gt;一直觉得体积光之类的效果很酷炫，在shadertoy也看到了很多惊艳的ray marching实现。看了一些文章和Paper相关的内容之后决定在Unity中实现一遍，记录下来。文中都是个人的理解，肯定会有一些错误，希望能有所帮助。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/images/161204_volumetric_light.png&#34; alt=&#34;Volumetric LightING&#34;&gt;&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;自定义Shader中采样Shadow Map&lt;/li&gt;
 &lt;li&gt;通过CameraDepthTexture计算世界坐标&lt;/li&gt;
 &lt;li&gt;Ray Marching 计算scatter&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2 id=&#34;自定义shader中采样shadow-map&#34;&gt;自定义shader中采样shadow Map&lt;/h2&gt;
-&lt;h3 id=&#34;关于shadowmap&#34;&gt;关于shadowmap&lt;/h3&gt;
-&lt;p&gt;在unity中，每个开启投射阴影的光源都会计算一张shadowMap。shadowMap可以用于实现screen space shadow。简单的说对于screen space的一个像素我们可以通过这个像素的深度值来获取该像素的世界坐标，要判断这个像素是不是在阴影之中，就是该点朝光源方向（平行光就是光源方向，点光源就是光源位置）是否被其他物体阻挡，然而在shader中发射一条射线进行碰撞检测是不现实的。而shadowmap的实现方式是在光源位置渲染整个场景，记录下深度信息储存在shadowmap中。 如果屏幕空间的一个像素P1，其对应世界坐标映射在shadowmap的点P2。如果P1的深度值大于P2的深度值，则P1处于阴影之中。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+&lt;h2 id=&#34;自定义shader中采样shadow-Map&#34;&gt;&lt;a href=&#34;#自定义shader中采样shadow-Map&#34; class=&#34;headerlink&#34; title=&#34;自定义shader中采样shadow Map&#34;&gt;&lt;/a&gt;自定义shader中采样shadow Map&lt;/h2&gt;&lt;h3 id=&#34;关于shadowmap&#34;&gt;&lt;a href=&#34;#关于shadowmap&#34; class=&#34;headerlink&#34; title=&#34;关于shadowmap&#34;&gt;&lt;/a&gt;关于shadowmap&lt;/h3&gt;&lt;p&gt;在unity中，每个开启投射阴影的光源都会计算一张shadowMap。shadowMap可以用于实现screen space shadow。简单的说对于screen space的一个像素我们可以通过这个像素的深度值来获取该像素的世界坐标，要判断这个像素是不是在阴影之中，就是该点朝光源方向（平行光就是光源方向，点光源就是光源位置）是否被其他物体阻挡，然而在shader中发射一条射线进行碰撞检测是不现实的。而shadowmap的实现方式是在光源位置渲染整个场景，记录下深度信息储存在shadowmap中。&lt;br&gt;如果屏幕空间的一个像素P1，其对应世界坐标映射在shadowmap的点P2。如果P1的深度值大于P2的深度值，则P1处于阴影之中。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -280,7 +264,7 @@
     
     <footer id="footer">
   <div class="footer-left">
-    Copyright &copy; 2019 yemi
+    Copyright &copy; 2020 yemi
   </div>
   <div class="footer-right">
     <nav>
@@ -288,7 +272,7 @@
          
           <li><a href="/">Home</a></li>
          
-          <li><a href="https://artwork.yemi.me/">Artworks</a></li>
+          <li><a href="https://artwork.yemi.me/" target="_blank" rel="noopener">Artworks</a></li>
          
           <li><a href="/about/">About</a></li>
          
@@ -301,18 +285,28 @@
       </ul>
     </nav>
   </div>
-</footer>
+</footer><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 
 </body>
 </html>
 <!-- styles -->
+
 <link rel="stylesheet" href="/lib/font-awesome/css/fontawesome-all.min.css">
+
+
 <link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
 
+
 <!-- jquery -->
+
 <script src="/lib/jquery/jquery.min.js"></script>
+
+
 <script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+
+
 <script src="/js/main.js"></script>
+
 <!-- search -->
 
 <!-- Google Analytics -->

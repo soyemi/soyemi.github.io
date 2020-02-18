@@ -1,23 +1,24 @@
 <!DOCTYPE html>
 <html lang=en>
-<head><meta name="generator" content="Hexo 3.8.0">
-    <!-- so meta -->
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!-- so meta -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="description" content="&amp;#x6700;&amp;#x8FD1;&amp;#x5728;&amp;#x7528;C#&amp;#x5199;&amp;#x4E00;&amp;#x4E2A;&amp;#x57FA;&amp;#x4E8E;&amp;#x56FE;&amp;#x5F62;API&amp;#x7684;UI&amp;#x5E93;&amp;#xFF0C;&amp;#x5E95;&amp;#x5C42;&amp;#x7528;&amp;#x7684;&amp;#x662F;Managed&amp;#x7684;DX&amp;#x5E93;SharpDX&amp;#x3002;&amp;">
-<meta name="keywords" content="C#,DirectX,SharpDX">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="最近在用C#写一个基于图形API的UI库，底层用的是Managed的DX库SharpDX。由于UI绘制会在每一个UI事件重绘，更新Buffer变得十分的频繁。在调试的过程中时不时会遇到一个C#的System.AccessViolationException。这个异常是用了Intptr指针在非托管层调用时越界导致的，搜索了很久最后还是自己思考下想通了。 调用的接口是DeviceContext.Upd">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SharpDX中的Buffer更新">
-<meta property="og:url" content="http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/index.html">
+<meta property="og:url" content="https://yemi.me/2018/01/30/buffer-updating-on-sharpdx/index.html">
 <meta property="og:site_name" content="Yemi&#39;s Blog">
-<meta property="og:description" content="&amp;#x6700;&amp;#x8FD1;&amp;#x5728;&amp;#x7528;C#&amp;#x5199;&amp;#x4E00;&amp;#x4E2A;&amp;#x57FA;&amp;#x4E8E;&amp;#x56FE;&amp;#x5F62;API&amp;#x7684;UI&amp;#x5E93;&amp;#xFF0C;&amp;#x5E95;&amp;#x5C42;&amp;#x7528;&amp;#x7684;&amp;#x662F;Managed&amp;#x7684;DX&amp;#x5E93;SharpDX&amp;#x3002;&amp;">
-<meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2018-07-21T10:24:52.715Z">
+<meta property="og:description" content="最近在用C#写一个基于图形API的UI库，底层用的是Managed的DX库SharpDX。由于UI绘制会在每一个UI事件重绘，更新Buffer变得十分的频繁。在调试的过程中时不时会遇到一个C#的System.AccessViolationException。这个异常是用了Intptr指针在非托管层调用时越界导致的，搜索了很久最后还是自己思考下想通了。 调用的接口是DeviceContext.Upd">
+<meta property="article:published_time" content="2018-01-29T18:04:00.000Z">
+<meta property="article:modified_time" content="2020-02-17T10:09:02.209Z">
+<meta property="article:author" content="yemi">
+<meta property="article:tag" content="C#">
+<meta property="article:tag" content="DirectX">
+<meta property="article:tag" content="SharpDX">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="SharpDX中的Buffer更新">
-<meta name="twitter:description" content="&amp;#x6700;&amp;#x8FD1;&amp;#x5728;&amp;#x7528;C#&amp;#x5199;&amp;#x4E00;&amp;#x4E2A;&amp;#x57FA;&amp;#x4E8E;&amp;#x56FE;&amp;#x5F62;API&amp;#x7684;UI&amp;#x5E93;&amp;#xFF0C;&amp;#x5E95;&amp;#x5C42;&amp;#x7528;&amp;#x7684;&amp;#x662F;Managed&amp;#x7684;DX&amp;#x5E93;SharpDX&amp;#x3002;&amp;">
     
     
         
@@ -39,15 +40,19 @@
     <!-- title -->
     <title>SharpDX中的Buffer更新</title>
     <!-- styles -->
-    <link rel="stylesheet" href="/css/style.css">
+    
+<link rel="stylesheet" href="/css/style.css">
+
     <!-- rss -->
+
+    <link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet">
     
     
-</head>
+<meta name="generator" content="Hexo 4.2.0"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
 
 <body class="max-width mx-auto px3">
     
-      <div id="header-post">
+      <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="header-post">
   <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
   <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
   <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
@@ -57,7 +62,7 @@
          
           <li><a href="/">Home</a></li>
          
-          <li><a href="https://artwork.yemi.me/">Artworks</a></li>
+          <li><a href="https://artwork.yemi.me/" target="_blank" rel="noopener">Artworks</a></li>
          
           <li><a href="/about/">About</a></li>
          
@@ -69,7 +74,7 @@
         
       </ul>
     </span>
-    <br>
+    <br/>
     <span id="actions">
       <ul>
         
@@ -86,19 +91,19 @@
       <span id="i-top" class="info" style="display:none;">Back to top</span>
       <span id="i-share" class="info" style="display:none;">Share post</span>
     </span>
-    <br>
+    <br/>
     <div id="share" style="display: none">
       <ul>
-  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&text=SharpDX中的Buffer更新"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&title=SharpDX中的Buffer更新"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&is_video=false&description=SharpDX中的Buffer更新"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=SharpDX中的Buffer更新&body=Check out this article: http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&title=SharpDX中的Buffer更新"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&title=SharpDX中的Buffer更新"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&title=SharpDX中的Buffer更新"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&title=SharpDX中的Buffer更新"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&name=SharpDX中的Buffer更新&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://yemi.me/2018/01/30/buffer-updating-on-sharpdx/" target="_blank" rel="noopener"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&text=SharpDX中的Buffer更新" target="_blank" rel="noopener"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&title=SharpDX中的Buffer更新" target="_blank" rel="noopener"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&is_video=false&description=SharpDX中的Buffer更新" target="_blank" rel="noopener"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=SharpDX中的Buffer更新&body=Check out this article: https://yemi.me/2018/01/30/buffer-updating-on-sharpdx/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&title=SharpDX中的Buffer更新" target="_blank" rel="noopener"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&title=SharpDX中的Buffer更新" target="_blank" rel="noopener"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&title=SharpDX中的Buffer更新" target="_blank" rel="noopener"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&title=SharpDX中的Buffer更新" target="_blank" rel="noopener"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&name=SharpDX中的Buffer更新&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -111,7 +116,7 @@
     
     <div class="content index my4">
         
-        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
   <header>
     
     <h1 class="posttitle" itemprop="name headline">
@@ -121,7 +126,7 @@
 
 
     <div class="meta">
-      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
         <span itemprop="name">Yemi's Blog</span>
       </span>
       
@@ -133,7 +138,7 @@
       
     <div class="article-tag">
         <i class="fas fa-tag"></i>
-        <a class="tag-link" href="/tags/C/">C#</a>, <a class="tag-link" href="/tags/DirectX/">DirectX</a>, <a class="tag-link" href="/tags/SharpDX/">SharpDX</a>
+        <a class="tag-link" href="/tags/C/" rel="tag">C#</a>, <a class="tag-link" href="/tags/DirectX/" rel="tag">DirectX</a>, <a class="tag-link" href="/tags/SharpDX/" rel="tag">SharpDX</a>
     </div>
 
 
@@ -142,11 +147,12 @@
   
 
   <div class="content" itemprop="articleBody">
-    <p>&#x6700;&#x8FD1;&#x5728;&#x7528;C#&#x5199;&#x4E00;&#x4E2A;&#x57FA;&#x4E8E;&#x56FE;&#x5F62;API&#x7684;UI&#x5E93;&#xFF0C;&#x5E95;&#x5C42;&#x7528;&#x7684;&#x662F;Managed&#x7684;DX&#x5E93;SharpDX&#x3002;&#x7531;&#x4E8E;UI&#x7ED8;&#x5236;&#x4F1A;&#x5728;&#x6BCF;&#x4E00;&#x4E2A;UI&#x4E8B;&#x4EF6;&#x91CD;&#x7ED8;&#xFF0C;&#x66F4;&#x65B0;Buffer&#x53D8;&#x5F97;&#x5341;&#x5206;&#x7684;&#x9891;&#x7E41;&#x3002;&#x5728;&#x8C03;&#x8BD5;&#x7684;&#x8FC7;&#x7A0B;&#x4E2D;&#x65F6;&#x4E0D;&#x65F6;&#x4F1A;&#x9047;&#x5230;&#x4E00;&#x4E2A;C#&#x7684;<code>System.AccessViolationException</code>&#x3002;&#x8FD9;&#x4E2A;&#x5F02;&#x5E38;&#x662F;&#x7528;&#x4E86;<code>Intptr</code>&#x6307;&#x9488;&#x5728;&#x975E;&#x6258;&#x7BA1;&#x5C42;&#x8C03;&#x7528;&#x65F6;&#x8D8A;&#x754C;&#x5BFC;&#x81F4;&#x7684;&#xFF0C;&#x641C;&#x7D22;&#x4E86;&#x5F88;&#x4E45;&#x6700;&#x540E;&#x8FD8;&#x662F;&#x81EA;&#x5DF1;&#x601D;&#x8003;&#x4E0B;&#x60F3;&#x901A;&#x4E86;&#x3002;</p>
-<p>&#x8C03;&#x7528;&#x7684;&#x63A5;&#x53E3;&#x662F;<code>DeviceContext.UpdateSubresources</code>&#xFF0C;&#x5728;SharpDX&#x4E2D;&#x7684;&#x4EE3;&#x7801;&#x5982;&#x4E0B;&#x3002;</p>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> rawbuffer = buffer.GetRawObject() <span class="keyword">as</span> Buffer;</span><br><span class="line"><span class="keyword">if</span> (rawbuffer == <span class="literal">null</span>) <span class="keyword">throw</span> <span class="keyword">new</span> Exception();</span><br><span class="line"><span class="keyword">var</span> pinnedptr = GCHandle.Alloc(data, GCHandleType.Pinned);</span><br><span class="line">m_obj.UpdateSubresourceSafe(<span class="keyword">new</span> DataBox()</span><br><span class="line">{</span><br><span class="line">  DataPointer = pinnedptr.AddrOfPinnedObject()</span><br><span class="line">},rawbuffer,subresources);</span><br><span class="line">pinnedptr.Free();</span><br></pre></td></tr></table></figure>
-<p>&#x5176;&#x4E2D;<code>data</code>&#x662F;&#x4E00;&#x4E2A;&#x6570;&#x7EC4;&#xFF0C;<code>rawbuffer</code>&#x662F;&#x4E00;&#x4E2A;vertexBuffer&#x3002;&#x6211;&#x4EEC;&#x5148;&#x4F7F;&#x7528;<code>GCHandler</code>&#x628A;&#x6570;&#x7EC4;&#x7684;&#x5185;&#x5B58;&#x4F4D;&#x7F6E;&#x56FA;&#x5B9A;&#x4F4F;&#xFF0C;&#x7136;&#x540E;&#x5C06;&#x6307;&#x9488;&#x4F20;&#x9012;&#x7ED9;DX,&#x4ECE;&#x6307;&#x9488;&#x4F4D;&#x7F6E;&#x62F7;&#x8D1D;&#x6570;&#x636E;&#x5230;VertexBuffer&#x4E2D;&#xFF0C;&#x6700;&#x540E;&#x91CA;&#x653E;Pin&#x4F4F;&#x7684;&#x6570;&#x7EC4;&#x3002;&#x4E4B;&#x524D;&#x5728;&#x5199;&#x4EE3;&#x7801;&#x7684;&#x65F6;&#x5019;&#x5E76;&#x6CA1;&#x6709;&#x8003;&#x8651;&#x592A;&#x591A;&#xFF0C;&#x5FFD;&#x7565;&#x4E86;&#x8FD9;&#x91CC;&#x7684;&#x66F4;&#x65B0;Buffer&#x5E76;&#x6CA1;&#x6709;&#x4F20;&#x9012;&#x62F7;&#x8D1D;&#x7684;&#x5730;&#x5740;&#x957F;&#x5EA6;&#x7684;&#x53C2;&#x6570;&#x3002;&#x4E5F;&#x5C31;&#x662F;&#x8BF4;&#x62F7;&#x8D1D;&#x6570;&#x636E;&#x7684;&#x65F6;&#x5019;&#x662F;&#x6309;&#x7167;DX&#x4E2D;Buffer&#x7684;&#x5927;&#x5C0F;&#x6765;&#x8FDB;&#x884C;&#x590D;&#x5236;&#x7684;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x8FD9;&#x4E2A;data&#x5BF9;&#x8C61;&#x7684;&#x5927;&#x5C0F;&#x3002;&#x8FD9;&#x6837;&#x7531;&#x4E8E;data&#x5728;&#x6258;&#x7BA1;&#x5185;&#x5B58;&#x4E2D;&#xFF0C;&#x5F53;Buffer&#x7684;&#x5927;&#x5C0F;&#x5927;&#x4E8E;data&#x7684;&#x5927;&#x5C0F;&#x65F6;&#xFF0C;&#x62F7;&#x8D1D;&#x7684;&#x6307;&#x9488;&#x5C31;&#x4F1A;&#x8D8A;&#x754C;&#xFF0C;&#x4ECE;&#x800C;&#x629B;&#x51FA;&#x5F02;&#x5E38;&#x3002;</p>
-<p>&#x56DE;&#x5934;&#x6765;&#x770B;DirectX 11&#x4E2D;&#x7684;Buffer&#x5728;&#x521B;&#x5EFA;Buffer&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x6709;&#x4E00;&#x4E2A;&#x53C2;&#x6570;&#x662F;Usage&#xFF0C;&#x8FD9;&#x91CC;&#x6211;&#x4EEC;&#x53EA;&#x8BA8;&#x8BBA;<code>D3D11_USAGE_DEFAULT</code>&#x548C;<code>D3D11_USAGE_DYNAMIC</code>&#x3002;&#x5728;Default&#x7684;Buffer&#x53EF;&#x4F7F;&#x7528;<code>UpdateSubresources</code>&#x7684;&#x63A5;&#x53E3;&#x6765;&#x66F4;&#x65B0;Buffer&#x6570;&#x636E;&#xFF0C;&#x540C;&#x65F6;&#x8FD9;&#x4E2A;&#x66F4;&#x65B0;&#x53EA;&#x80FD;&#x662F;&#x4E00;&#x6B21;&#x6027;&#x66F4;&#x65B0;&#x6574;&#x4E2A;Buffer&#xFF0C;&#x5C31;&#x662F;&#x4E0A;&#x9762;&#x8BF4;&#x5230;&#x7684;&#x60C5;&#x51B5;&#xFF0C;&#x4E0D;&#x80FD;&#x53EA;&#x66F4;&#x65B0;&#x90E8;&#x5206;&#x3002;&#x800C;&#x5BF9;&#x4E8E;&#x9700;&#x8981;&#x9891;&#x7E41;&#x52A8;&#x6001;&#x66F4;&#x65B0;&#x7684;Buffer&#x8BBE;&#x7F6E;&#x4E3A;<code>D3D11_USAGE_DYNAMIC</code>&#xFF0C;&#x56FE;&#x5F62;API&#x4F1A;&#x8FDB;&#x884C;&#x6027;&#x80FD;&#x4F18;&#x5316;&#xFF0C;&#x540C;&#x65F6;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;<code>Map</code>&#x548C;<code>UnMap</code>&#x6765;&#x66F4;&#x65B0;Buffer&#x6570;&#x636E;&#x3002;</p>
+    <p>最近在用C#写一个基于图形API的UI库，底层用的是Managed的DX库SharpDX。由于UI绘制会在每一个UI事件重绘，更新Buffer变得十分的频繁。在调试的过程中时不时会遇到一个C#的<code>System.AccessViolationException</code>。这个异常是用了<code>Intptr</code>指针在非托管层调用时越界导致的，搜索了很久最后还是自己思考下想通了。</p>
+<p>调用的接口是<code>DeviceContext.UpdateSubresources</code>，在SharpDX中的代码如下。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> rawbuffer = buffer.GetRawObject() <span class="keyword">as</span> Buffer;</span><br><span class="line"><span class="keyword">if</span> (rawbuffer == <span class="literal">null</span>) <span class="keyword">throw</span> <span class="keyword">new</span> Exception();</span><br><span class="line"><span class="keyword">var</span> pinnedptr = GCHandle.Alloc(data, GCHandleType.Pinned);</span><br><span class="line">m_obj.UpdateSubresourceSafe(<span class="keyword">new</span> DataBox()</span><br><span class="line">&#123;</span><br><span class="line">  DataPointer = pinnedptr.AddrOfPinnedObject()</span><br><span class="line">&#125;,rawbuffer,subresources);</span><br><span class="line">pinnedptr.Free();</span><br></pre></td></tr></table></figure>
+
+<p>其中<code>data</code>是一个数组，<code>rawbuffer</code>是一个vertexBuffer。我们先使用<code>GCHandler</code>把数组的内存位置固定住，然后将指针传递给DX,从指针位置拷贝数据到VertexBuffer中，最后释放Pin住的数组。之前在写代码的时候并没有考虑太多，忽略了这里的更新Buffer并没有传递拷贝的地址长度的参数。也就是说拷贝数据的时候是按照DX中Buffer的大小来进行复制的，而不是这个data对象的大小。这样由于data在托管内存中，当Buffer的大小大于data的大小时，拷贝的指针就会越界，从而抛出异常。</p>
+<p>回头来看DirectX 11中的Buffer在创建Buffer的时候，有一个参数是Usage，这里我们只讨论<code>D3D11_USAGE_DEFAULT</code>和<code>D3D11_USAGE_DYNAMIC</code>。在Default的Buffer可使用<code>UpdateSubresources</code>的接口来更新Buffer数据，同时这个更新只能是一次性更新整个Buffer，就是上面说到的情况，不能只更新部分。而对于需要频繁动态更新的Buffer设置为<code>D3D11_USAGE_DYNAMIC</code>，图形API会进行性能优化，同时可以使用<code>Map</code>和<code>UnMap</code>来更新Buffer数据。 </p>
 
   </div>
 </article>
@@ -169,7 +175,7 @@
          
           <li><a href="/">Home</a></li>
          
-          <li><a href="https://artwork.yemi.me/">Artworks</a></li>
+          <li><a href="https://artwork.yemi.me/" target="_blank" rel="noopener">Artworks</a></li>
          
           <li><a href="/about/">About</a></li>
          
@@ -188,16 +194,16 @@
 
     <div id="share-footer" style="display: none">
       <ul>
-  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&text=SharpDX中的Buffer更新"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&title=SharpDX中的Buffer更新"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&is_video=false&description=SharpDX中的Buffer更新"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=SharpDX中的Buffer更新&body=Check out this article: http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&title=SharpDX中的Buffer更新"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&title=SharpDX中的Buffer更新"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&title=SharpDX中的Buffer更新"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&title=SharpDX中的Buffer更新"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&name=SharpDX中的Buffer更新&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://yemi.me/2018/01/30/buffer-updating-on-sharpdx/" target="_blank" rel="noopener"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&text=SharpDX中的Buffer更新" target="_blank" rel="noopener"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&title=SharpDX中的Buffer更新" target="_blank" rel="noopener"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&is_video=false&description=SharpDX中的Buffer更新" target="_blank" rel="noopener"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=SharpDX中的Buffer更新&body=Check out this article: https://yemi.me/2018/01/30/buffer-updating-on-sharpdx/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&title=SharpDX中的Buffer更新" target="_blank" rel="noopener"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&title=SharpDX中的Buffer更新" target="_blank" rel="noopener"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&title=SharpDX中的Buffer更新" target="_blank" rel="noopener"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&title=SharpDX中的Buffer更新" target="_blank" rel="noopener"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://yemi.me/2018/01/30/buffer-updating-on-sharpdx/&name=SharpDX中的Buffer更新&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -215,7 +221,7 @@
     
     <footer id="footer">
   <div class="footer-left">
-    Copyright &copy; 2019 yemi
+    Copyright &copy; 2020 yemi
   </div>
   <div class="footer-right">
     <nav>
@@ -223,7 +229,7 @@
          
           <li><a href="/">Home</a></li>
          
-          <li><a href="https://artwork.yemi.me/">Artworks</a></li>
+          <li><a href="https://artwork.yemi.me/" target="_blank" rel="noopener">Artworks</a></li>
          
           <li><a href="/about/">About</a></li>
          
@@ -236,18 +242,28 @@
       </ul>
     </nav>
   </div>
-</footer>
+</footer><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 
 </body>
 </html>
 <!-- styles -->
+
 <link rel="stylesheet" href="/lib/font-awesome/css/fontawesome-all.min.css">
+
+
 <link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
 
+
 <!-- jquery -->
+
 <script src="/lib/jquery/jquery.min.js"></script>
+
+
 <script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+
+
 <script src="/js/main.js"></script>
+
 <!-- search -->
 
 <!-- Google Analytics -->

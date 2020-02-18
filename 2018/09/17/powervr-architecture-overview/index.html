@@ -1,28 +1,30 @@
 <!DOCTYPE html>
 <html lang=en>
-<head><meta name="generator" content="Hexo 3.8.0">
-    <!-- so meta -->
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!-- so meta -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="description" content="&amp;#x6700;&amp;#x8FD1;&amp;#x5728;&amp;#x770B;&amp;#x79FB;&amp;#x52A8;GPU&amp;#x4F18;&amp;#x5316;&amp;#x7684;&amp;#x65F6;&amp;#x5019;&amp;#x5BF9;TiledBased GPU&amp;#x6709;&amp;#x4E00;&amp;#x4E9B;&amp;#x7591;&amp;#x60D1;&amp;#xFF0C;&amp;#x7279;&amp;#x522B;&amp;#x662F;&amp;#x5E38;&amp;#x8BF4">
-<meta name="keywords" content="PowerVR,GPU,Architecture,Optimization">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="最近在看移动GPU优化的时候对TiledBased GPU有一些疑惑，特别是常说的Alpha-Blend比Alpha-Test在移动GPU上快的奇特性质，于是找了powerVR相关的文档来阅读，也做个记录。 Imagination的powerVR架构的GPU之前主要是iOS手机系列的GPU供应商，而苹果自从17年宣布要逐步放弃使用imagination的GPU技术转而自主研发GPU开始，power">
 <meta property="og:type" content="article">
 <meta property="og:title" content="PowerVR GPU架构与优化建议">
-<meta property="og:url" content="http://yemi.me/2018/09/17/powervr-architecture-overview/index.html">
+<meta property="og:url" content="https://yemi.me/2018/09/17/powervr-architecture-overview/index.html">
 <meta property="og:site_name" content="Yemi&#39;s Blog">
-<meta property="og:description" content="&amp;#x6700;&amp;#x8FD1;&amp;#x5728;&amp;#x770B;&amp;#x79FB;&amp;#x52A8;GPU&amp;#x4F18;&amp;#x5316;&amp;#x7684;&amp;#x65F6;&amp;#x5019;&amp;#x5BF9;TiledBased GPU&amp;#x6709;&amp;#x4E00;&amp;#x4E9B;&amp;#x7591;&amp;#x60D1;&amp;#xFF0C;&amp;#x7279;&amp;#x522B;&amp;#x662F;&amp;#x5E38;&amp;#x8BF4">
-<meta property="og:locale" content="en">
-<meta property="og:image" content="http://yemi.me/images/pvr/a1811ea4.png">
-<meta property="og:image" content="http://yemi.me/images/pvr/781b2ded.png">
-<meta property="og:image" content="http://yemi.me/images/pvr/2c5b488b.png">
-<meta property="og:image" content="http://yemi.me/images/pvr/69ec7ef0.png">
-<meta property="og:updated_time" content="2018-09-16T16:42:48.968Z">
+<meta property="og:description" content="最近在看移动GPU优化的时候对TiledBased GPU有一些疑惑，特别是常说的Alpha-Blend比Alpha-Test在移动GPU上快的奇特性质，于是找了powerVR相关的文档来阅读，也做个记录。 Imagination的powerVR架构的GPU之前主要是iOS手机系列的GPU供应商，而苹果自从17年宣布要逐步放弃使用imagination的GPU技术转而自主研发GPU开始，power">
+<meta property="og:image" content="https://yemi.me/images/pvr/a1811ea4.png">
+<meta property="og:image" content="https://yemi.me/images/pvr/781b2ded.png">
+<meta property="og:image" content="https://yemi.me/images/pvr/2c5b488b.png">
+<meta property="og:image" content="https://yemi.me/images/pvr/69ec7ef0.png">
+<meta property="article:published_time" content="2018-09-16T16:05:10.000Z">
+<meta property="article:modified_time" content="2020-02-17T10:12:19.853Z">
+<meta property="article:author" content="yemi">
+<meta property="article:tag" content="PowerVR">
+<meta property="article:tag" content="GPU">
+<meta property="article:tag" content="Architecture">
+<meta property="article:tag" content="Optimization">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="PowerVR GPU架构与优化建议">
-<meta name="twitter:description" content="&amp;#x6700;&amp;#x8FD1;&amp;#x5728;&amp;#x770B;&amp;#x79FB;&amp;#x52A8;GPU&amp;#x4F18;&amp;#x5316;&amp;#x7684;&amp;#x65F6;&amp;#x5019;&amp;#x5BF9;TiledBased GPU&amp;#x6709;&amp;#x4E00;&amp;#x4E9B;&amp;#x7591;&amp;#x60D1;&amp;#xFF0C;&amp;#x7279;&amp;#x522B;&amp;#x662F;&amp;#x5E38;&amp;#x8BF4">
-<meta name="twitter:image" content="http://yemi.me/images/pvr/a1811ea4.png">
+<meta name="twitter:image" content="https://yemi.me/images/pvr/a1811ea4.png">
     
     
         
@@ -44,15 +46,19 @@
     <!-- title -->
     <title>PowerVR GPU架构与优化建议</title>
     <!-- styles -->
-    <link rel="stylesheet" href="/css/style.css">
+    
+<link rel="stylesheet" href="/css/style.css">
+
     <!-- rss -->
+
+    <link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet">
     
     
-</head>
+<meta name="generator" content="Hexo 4.2.0"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
 
 <body class="max-width mx-auto px3">
     
-      <div id="header-post">
+      <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="header-post">
   <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
   <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
   <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
@@ -62,7 +68,7 @@
          
           <li><a href="/">Home</a></li>
          
-          <li><a href="https://artwork.yemi.me/">Artworks</a></li>
+          <li><a href="https://artwork.yemi.me/" target="_blank" rel="noopener">Artworks</a></li>
          
           <li><a href="/about/">About</a></li>
          
@@ -74,7 +80,7 @@
         
       </ul>
     </span>
-    <br>
+    <br/>
     <span id="actions">
       <ul>
         
@@ -91,24 +97,24 @@
       <span id="i-top" class="info" style="display:none;">Back to top</span>
       <span id="i-share" class="info" style="display:none;">Share post</span>
     </span>
-    <br>
+    <br/>
     <div id="share" style="display: none">
       <ul>
-  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yemi.me/2018/09/17/powervr-architecture-overview/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=http://yemi.me/2018/09/17/powervr-architecture-overview/&text=PowerVR GPU架构与优化建议"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yemi.me/2018/09/17/powervr-architecture-overview/&title=PowerVR GPU架构与优化建议"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yemi.me/2018/09/17/powervr-architecture-overview/&is_video=false&description=PowerVR GPU架构与优化建议"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=PowerVR GPU架构与优化建议&body=Check out this article: http://yemi.me/2018/09/17/powervr-architecture-overview/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=http://yemi.me/2018/09/17/powervr-architecture-overview/&title=PowerVR GPU架构与优化建议"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=http://yemi.me/2018/09/17/powervr-architecture-overview/&title=PowerVR GPU架构与优化建议"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yemi.me/2018/09/17/powervr-architecture-overview/&title=PowerVR GPU架构与优化建议"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=http://yemi.me/2018/09/17/powervr-architecture-overview/&title=PowerVR GPU架构与优化建议"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yemi.me/2018/09/17/powervr-architecture-overview/&name=PowerVR GPU架构与优化建议&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://yemi.me/2018/09/17/powervr-architecture-overview/" target="_blank" rel="noopener"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://yemi.me/2018/09/17/powervr-architecture-overview/&text=PowerVR GPU架构与优化建议" target="_blank" rel="noopener"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://yemi.me/2018/09/17/powervr-architecture-overview/&title=PowerVR GPU架构与优化建议" target="_blank" rel="noopener"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://yemi.me/2018/09/17/powervr-architecture-overview/&is_video=false&description=PowerVR GPU架构与优化建议" target="_blank" rel="noopener"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=PowerVR GPU架构与优化建议&body=Check out this article: https://yemi.me/2018/09/17/powervr-architecture-overview/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://yemi.me/2018/09/17/powervr-architecture-overview/&title=PowerVR GPU架构与优化建议" target="_blank" rel="noopener"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://yemi.me/2018/09/17/powervr-architecture-overview/&title=PowerVR GPU架构与优化建议" target="_blank" rel="noopener"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://yemi.me/2018/09/17/powervr-architecture-overview/&title=PowerVR GPU架构与优化建议" target="_blank" rel="noopener"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://yemi.me/2018/09/17/powervr-architecture-overview/&title=PowerVR GPU架构与优化建议" target="_blank" rel="noopener"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://yemi.me/2018/09/17/powervr-architecture-overview/&name=PowerVR GPU架构与优化建议&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
     <div id="toc">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#主流图形架构"><span class="toc-number">1.</span> <span class="toc-text">主流图形架构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#imr"><span class="toc-number">1.1.</span> <span class="toc-text">IMR</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#tbr"><span class="toc-number">1.2.</span> <span class="toc-text">TBR</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#tbdr"><span class="toc-number">1.3.</span> <span class="toc-text">TBDR</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关于powervr-架构"><span class="toc-number">2.</span> <span class="toc-text">关于PowerVR 架构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#verte-processing-tiler"><span class="toc-number">2.1.</span> <span class="toc-text">Verte Processing (Tiler)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#per-tile-rasterization-render"><span class="toc-number">2.2.</span> <span class="toc-text">Per-Tile Rasterization (Render)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#powervr-shader-engine"><span class="toc-number">2.3.</span> <span class="toc-text">PowerVR Shader Engine</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#hsr-efficiency"><span class="toc-number">2.4.</span> <span class="toc-text">HSR Efficiency</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#性能优化建议"><span class="toc-number">3.</span> <span class="toc-text">性能优化建议</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#对drawcall进行排序"><span class="toc-number">3.1.</span> <span class="toc-text">对drawcall进行排序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#始终进行clear操作"><span class="toc-number">3.2.</span> <span class="toc-text">始终进行Clear操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#不要在每一帧开始绘制之后更新buffer"><span class="toc-number">3.3.</span> <span class="toc-text">不要在每一帧开始绘制之后更新Buffer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用压缩贴图和mipmapping"><span class="toc-number">3.4.</span> <span class="toc-text">使用压缩贴图和Mipmapping</span></a></li></ol></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#主流图形架构"><span class="toc-number">1.</span> <span class="toc-text">主流图形架构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#IMR"><span class="toc-number">1.1.</span> <span class="toc-text">IMR</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TBR"><span class="toc-number">1.2.</span> <span class="toc-text">TBR</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TBDR"><span class="toc-number">1.3.</span> <span class="toc-text">TBDR</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关于PowerVR-架构"><span class="toc-number">2.</span> <span class="toc-text">关于PowerVR 架构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Verte-Processing-Tiler"><span class="toc-number">2.1.</span> <span class="toc-text">Verte Processing (Tiler)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Per-Tile-Rasterization-Render"><span class="toc-number">2.2.</span> <span class="toc-text">Per-Tile Rasterization (Render)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PowerVR-Shader-Engine"><span class="toc-number">2.3.</span> <span class="toc-text">PowerVR Shader Engine</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HSR-Efficiency"><span class="toc-number">2.4.</span> <span class="toc-text">HSR Efficiency</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#性能优化建议"><span class="toc-number">3.</span> <span class="toc-text">性能优化建议</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#对drawcall进行排序"><span class="toc-number">3.1.</span> <span class="toc-text">对drawcall进行排序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#始终进行Clear操作"><span class="toc-number">3.2.</span> <span class="toc-text">始终进行Clear操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#不要在每一帧开始绘制之后更新Buffer"><span class="toc-number">3.3.</span> <span class="toc-text">不要在每一帧开始绘制之后更新Buffer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用压缩贴图和Mipmapping"><span class="toc-number">3.4.</span> <span class="toc-text">使用压缩贴图和Mipmapping</span></a></li></ol></li></ol>
     </div>
   </span>
 </div>
@@ -116,7 +122,7 @@
     
     <div class="content index my4">
         
-        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
   <header>
     
     <h1 class="posttitle" itemprop="name headline">
@@ -126,7 +132,7 @@
 
 
     <div class="meta">
-      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
         <span itemprop="name">Yemi's Blog</span>
       </span>
       
@@ -138,7 +144,7 @@
       
     <div class="article-tag">
         <i class="fas fa-tag"></i>
-        <a class="tag-link" href="/tags/Architecture/">Architecture</a>, <a class="tag-link" href="/tags/GPU/">GPU</a>, <a class="tag-link" href="/tags/Optimization/">Optimization</a>, <a class="tag-link" href="/tags/PowerVR/">PowerVR</a>
+        <a class="tag-link" href="/tags/Architecture/" rel="tag">Architecture</a>, <a class="tag-link" href="/tags/GPU/" rel="tag">GPU</a>, <a class="tag-link" href="/tags/Optimization/" rel="tag">Optimization</a>, <a class="tag-link" href="/tags/PowerVR/" rel="tag">PowerVR</a>
     </div>
 
 
@@ -147,78 +153,56 @@
   
 
   <div class="content" itemprop="articleBody">
-    <p>&#x6700;&#x8FD1;&#x5728;&#x770B;&#x79FB;&#x52A8;GPU&#x4F18;&#x5316;&#x7684;&#x65F6;&#x5019;&#x5BF9;TiledBased GPU&#x6709;&#x4E00;&#x4E9B;&#x7591;&#x60D1;&#xFF0C;&#x7279;&#x522B;&#x662F;&#x5E38;&#x8BF4;&#x7684;Alpha-Blend&#x6BD4;Alpha-Test&#x5728;&#x79FB;&#x52A8;GPU&#x4E0A;&#x5FEB;&#x7684;&#x5947;&#x7279;&#x6027;&#x8D28;&#xFF0C;&#x4E8E;&#x662F;&#x627E;&#x4E86;powerVR&#x76F8;&#x5173;&#x7684;&#x6587;&#x6863;&#x6765;&#x9605;&#x8BFB;&#xFF0C;&#x4E5F;&#x505A;&#x4E2A;&#x8BB0;&#x5F55;&#x3002;</p>
-<p>Imagination&#x7684;powerVR&#x67B6;&#x6784;&#x7684;GPU&#x4E4B;&#x524D;&#x4E3B;&#x8981;&#x662F;iOS&#x624B;&#x673A;&#x7CFB;&#x5217;&#x7684;GPU&#x4F9B;&#x5E94;&#x5546;&#xFF0C;&#x800C;&#x82F9;&#x679C;&#x81EA;&#x4ECE;17&#x5E74;&#x5BA3;&#x5E03;&#x8981;&#x9010;&#x6B65;&#x653E;&#x5F03;&#x4F7F;&#x7528;imagination&#x7684;GPU&#x6280;&#x672F;&#x8F6C;&#x800C;&#x81EA;&#x4E3B;&#x7814;&#x53D1;GPU&#x5F00;&#x59CB;&#xFF0C;powerVR&#x67B6;&#x6784;&#x5C31;&#x4F3C;&#x4E4E;&#x524D;&#x9014;&#x672A;&#x535C;&#x3002;Apple A11&#x5904;&#x7406;&#x5668;&#x5F00;&#x59CB;&#x5230;&#x6700;&#x65B0;&#x7684;iphone XS &#x4F7F;&#x7528;&#x7684;A12&#x5904;&#x7406;&#x5668;&#xFF0C;&#x90FD;&#x662F;&#x82F9;&#x679C;&#x81EA;&#x7814;&#x7684;GPU&#xFF0C;&#x76F8;&#x6BD4;&#x8D77;&#x4E4B;&#x524D;&#x7684;powerVR&#x7684;GPU&#x6709;&#x5DE8;&#x5927;&#x7684;&#x6027;&#x80FD;&#x63D0;&#x5347;&#x3002;&#x867D;&#x7136;&#x82F9;&#x679C;&#x8F6C;&#x5411;&#x4E86;&#x81EA;&#x7814;GPU&#xFF0C;&#x4F46;&#x4F3C;&#x4E4E;&#x5176;&#x67B6;&#x6784;&#x8FD8;&#x662F;&#x7EE7;&#x627F;&#x4E8E;PVR&#xFF0C;&#x76F8;&#x5E94;&#x7684;TBDR&#x4E5F;&#x662F;&#x4FDD;&#x7559;&#x7684;&#xFF0C;&#x6240;&#x4EE5;powerVR&#x67B6;&#x6784;&#x76F8;&#x5173;&#x7684;&#x77E5;&#x8BC6;&#x5BF9;&#x4E8E;iOS&#x7684;GPU&#x5F00;&#x53D1;&#x4F9D;&#x65E7;&#x8FD8;&#x662F;&#x6709;&#x7528;&#x7684;&#x3002;&#x540C;&#x65F6;Metal2&#x63D0;&#x4F9B;&#x4E86;&#x4E00;&#x4E9B;&#x65B0;&#x7684;feature&#x5982;<code>Imageblocks</code>,<code>Raster Order Groups</code>&#x7B49;&#x65B0;feature&#xFF0C;&#x8FD9;&#x90E8;&#x5206;&#x662F;Apple&#x5BF9;TBDR&#x67B6;&#x6784;&#x7684;&#x52A0;&#x5F3A;&#x4E0E;&#x4F18;&#x5316;&#xFF0C;&#x5177;&#x4F53;&#x7684;&#x6587;&#x6863;&#x53EF;&#x4EE5;&#x770B;<a href="https://developer.apple.com/documentation/metal/mtldevice/ios_and_tvos_devices/about_gpu_family_4" target="_blank" rel="noopener">&#x8FD9;&#x91CC;</a>&#x3002;</p>
-<h2 id="&#x4E3B;&#x6D41;&#x56FE;&#x5F62;&#x67B6;&#x6784;">&#x4E3B;&#x6D41;&#x56FE;&#x5F62;&#x67B6;&#x6784;</h2>
-<ul>
+    <p>最近在看移动GPU优化的时候对TiledBased GPU有一些疑惑，特别是常说的Alpha-Blend比Alpha-Test在移动GPU上快的奇特性质，于是找了powerVR相关的文档来阅读，也做个记录。</p>
+<p>Imagination的powerVR架构的GPU之前主要是iOS手机系列的GPU供应商，而苹果自从17年宣布要逐步放弃使用imagination的GPU技术转而自主研发GPU开始，powerVR架构就似乎前途未卜。Apple A11处理器开始到最新的iphone XS 使用的A12处理器，都是苹果自研的GPU，相比起之前的powerVR的GPU有巨大的性能提升。虽然苹果转向了自研GPU，但似乎其架构还是继承于PVR，相应的TBDR也是保留的，所以powerVR架构相关的知识对于iOS的GPU开发依旧还是有用的。同时Metal2提供了一些新的feature如<code>Imageblocks</code>,<code>Raster Order Groups</code>等新feature，这部分是Apple对TBDR架构的加强与优化，具体的文档可以看<a href="https://developer.apple.com/documentation/metal/mtldevice/ios_and_tvos_devices/about_gpu_family_4" target="_blank" rel="noopener">这里</a>。</p>
+<h2 id="主流图形架构"><a href="#主流图形架构" class="headerlink" title="主流图形架构"></a>主流图形架构</h2><ul>
 <li>Immediate Mode Renderer(IMR)</li>
 <li>Tile Based Renderer(TBR)</li>
 <li>Tile Based Deferred Renderer(TBDR)</li>
 </ul>
 <p><strong>Unified and Non-unified shader architecture</strong></p>
-<figure>
-<img src="/images/pvr/a1811ea4.png" alt="shader architecture"><figcaption>shader architecture</figcaption>
-</figure>
-<p>&#x975E;&#x7EDF;&#x4E00;&#x7684;&#x7740;&#x8272;&#x5668;&#x67B6;&#x6784;&#x4E0A;Vertex Shader&#x8981;&#x7B49;&#x5F85;Fragment Shader&#x6267;&#x884C;&#x5B8C;&#x540E;&#x624D;&#x80FD;push&#x5904;&#x7406;&#x5B8C;&#x7684;&#x9876;&#x70B9;&#x6570;&#x636E;&#x4E22;&#x7ED9;FS&#x5355;&#x5143;&#x3002; &#x800C;&#x7EDF;&#x4E00;&#x7684;&#x7740;&#x8272;&#x5668;&#x67B6;&#x6784;&#xFF0C;&#x5904;&#x7406;&#x4F1A;&#x51CF;&#x5C11;&#x7B49;&#x5F85;&#x65F6;&#x95F4;&#xFF0C;&#x63D0;&#x5347;&#x6027;&#x80FD;&#x3002;PowerVR&#x5168;&#x90E8;&#x91C7;&#x7528;&#x7684;&#x90FD;&#x662F;Unified Shader Architecture.</p>
+<p><img src="/images/pvr/a1811ea4.png" alt="shader architecture"></p>
+<p>非统一的着色器架构上Vertex Shader要等待Fragment Shader执行完后才能push处理完的顶点数据丢给FS单元。<br>而统一的着色器架构，处理会减少等待时间，提升性能。PowerVR全部采用的都是Unified Shader Architecture.</p>
 <p><strong>Overdraw</strong></p>
-<p>&#x7531;&#x4E8E;geometry&#x63D0;&#x4EA4;&#x987A;&#x5E8F;&#x7684;&#x4E0D;&#x540C;&#xFF0C;&#x4F1A;&#x6709;&#x4E00;&#x4E9B;fragment&#x4F1A;&#x88AB;&#x91CD;&#x590D;&#x7ED8;&#x5236;&#x3002; &#x4E3A;&#x4E86;&#x51CF;&#x5C11;overdraw&#x7684;&#x60C5;&#x5F62;&#xFF0C;&#x56FE;&#x5F62;&#x8BA1;&#x7B97;&#x6838;&#x5FC3;&#x4F1A;&#x8FDB;&#x884C;Early-Z testing&#x7684;&#x64CD;&#x4F5C;&#x4EE5;&#x51CF;&#x5C11;Overdraw&#x3002;</p>
-<h3 id="imr">IMR</h3>
-<figure>
-<img src="/images/pvr/781b2ded.png" alt="IMR Pipeline"><figcaption>IMR Pipeline</figcaption>
-</figure>
-<p>&#x6BCF;&#x4E00;&#x4E2A;&#x6E32;&#x67D3;&#x5BF9;&#x8C61;/drawcall&#x5B8C;&#x6210;&#x4E86;&#x6574;&#x4E2A;&#x6E32;&#x67D3;&#x7BA1;&#x7EBF;&#x6D41;&#x7A0B;&#x5199;&#x5165;frameBuffer&#x624D;&#x4F1A;&#x5F00;&#x59CB;&#x6E32;&#x67D3;&#x4E0B;&#x4E00;&#x4E2A;&#x5BF9;&#x8C61;/drawcall&#x3002;&#x5728;IMR&#x6A21;&#x5F0F;&#x4E0B;&#xFF0C;Early-Z test&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x5C06;&#x6DF1;&#x5EA6;&#x6D4B;&#x8BD5;&#x7684;&#x51E0;&#x4F55;&#x56FE;&#x5143;&#x8DF3;&#x8FC7;&#x4EE5;&#x63D0;&#x5347;&#x6027;&#x80FD;&#xFF0C;&#x4F46;&#x662F;Early-Z test&#x4F9D;&#x8D56;&#x6E32;&#x67D3;&#x7ED8;&#x5236;&#x5BF9;&#x8C61;&#x7684;&#x63D0;&#x4EA4;&#x987A;&#x5E8F;&#x662F;&#x4ECE;&#x524D;&#x5F80;&#x540E;&#x7684;&#x3002;</p>
-<p>&#x540C;&#x65F6;&#x6BCF;&#x4E00;&#x6B21;&#x6E32;&#x67D3;&#x5B8C;&#x7684;color&#x4E0E;depth&#x6570;&#x636E;&#x8BFB;&#x53D6;&#x5199;&#x56DE;&#x5230;colorbuffer&#x4E0E;depth/stencil buffer&#x662F;&#x90FD;&#x4F1A;&#x4EA7;&#x751F;&#x5F88;&#x5927;&#x7684;&#x5E26;&#x5BBD;&#x6D88;&#x8017;&#x3002;&#x666E;&#x901A;&#x7684;Read-Modify-Write&#x90FD;&#x662F;&#x5728;system memory&#x4E0E;GPU&#x4E4B;&#x95F4;&#x4F20;&#x8F93;&#x6570;&#x636E;&#xFF0C;&#x5982;ZWrite/Write,Blend&#x8FD9;&#x4E9B;&#x3002;&#x6240;&#x4EE5;IMR&#x7684;&#x67B6;&#x6784;&#x4F1A;&#x6709;&#x4E00;&#x4E2A;&#x5F88;&#x5927;&#x663E;&#x5B58;cache&#x6765;&#x4F18;&#x5316;&#x8FD9;&#x90E8;&#x5206;&#x5927;&#x91CF;&#x7684;&#x5185;&#x5B58;&#x5E26;&#x5BBD;&#x6D88;&#x8017;&#x3002;</p>
-<h3 id="tbr">TBR</h3>
-<figure>
-<img src="/images/pvr/2c5b488b.png" alt="TBR Pipeline"><figcaption>TBR Pipeline</figcaption>
-</figure>
-<p>&#x6574;&#x4E2A;&#x5149;&#x6805;&#x5316;&#x548C;fragment&#x5904;&#x7406;&#x4F1A;&#x88AB;&#x5206;&#x4E3A;&#x4E00;&#x4E2A;&#x4E2A;Tile&#x8FDB;&#x884C;&#x5904;&#x7406;&#xFF0C;&#x901A;&#x5E38;&#x4E3A;16&#xD7;16&#x5927;&#x5C0F;&#x7684;Tile&#x3002;</p>
-<p>TBR&#x7684;&#x7ED3;&#x6784;&#x6DFB;&#x52A0;&#x4E86;on-chip buffers&#x7528;&#x6765;&#x50A8;&#x5B58;tiling&#x540E;&#x7684;Depth Buffer&#x548C;Color buffer&#x3002;&#x539F;&#x5148;IMR&#x67B6;&#x6784;&#x4E2D;&#x5BF9;&#x4E3B;&#x5B58;&#x4E2D;color/depth buffer&#x8FDB;&#x884C;Read-Modify-Write&#x7684;&#x64CD;&#x4F5C;&#x53D8;&#x6210;&#x76F4;&#x63A5;&#x5728;GPU&#x4E2D;&#x7684;&#x9AD8;&#x901F;&#x5185;&#x5B58;&#x64CD;&#x4F5C;&#xFF0C;&#x51CF;&#x5C11;&#x4E86;&#x6700;&#x5F71;&#x54CD;&#x6027;&#x80FD;&#x7684;&#x7CFB;&#x7EDF;&#x5185;&#x5B58;&#x4F20;&#x8F93;&#x7684;&#x5F00;&#x9500;&#x3002;</p>
-<p>&#x867D;&#x7136;TBR&#x51CF;&#x5C11;&#x4E86;IMR&#x7684;&#x5E26;&#x5BBD;&#x5F00;&#x9500;&#xFF0C;&#x4F46;&#x662F;&#x4F9D;&#x7136;&#x6CA1;&#x6709;&#x89E3;&#x51B3;overdraw&#x7684;&#x95EE;&#x9898;&#x3002;</p>
-<h3 id="tbdr">TBDR</h3>
-<p>PowerVR&#x7684;&#x6E32;&#x67D3;&#x67B6;&#x6784; Tile Based Deferred Rendering(TBDR)</p>
-<p>&#x6570;&#x636E;&#x4ECE;&#x5185;&#x5B58;&#x5230;GPU&#x4E4B;&#x95F4;&#x7684;&#x4F20;&#x8F93;&#x662F;&#x6700;&#x5927;&#x7684;&#x6027;&#x80FD;&#x6D88;&#x8017;&#xFF0C;powerVR&#x67B6;&#x6784;&#x7684;TBDR&#xFF0C;on-chip buffer&#x90FD;&#x4E3A;&#x4E86;&#x8BE5;&#x76EE;&#x6807;&#x800C;&#x4F18;&#x5316;&#x3002;</p>
-<p>TBDR &#x67B6;&#x6784;&#x5173;&#x6CE8;&#x4E8E;&#x5728;&#x6E32;&#x67D3;&#x7BA1;&#x7EBF;&#x4E2D;&#x5C3D;&#x53EF;&#x80FD;&#x79FB;&#x9664;&#x5197;&#x4F59;&#x7684;&#x64CD;&#x4F5C;&#x4E0E;&#x8BA1;&#x7B97;&#xFF0C;&#x6700;&#x5C0F;&#x5316;&#x5185;&#x5B58;&#x5E26;&#x5BBD;&#x548C;&#x80FD;&#x8017;&#x540C;&#x65F6;&#x63D0;&#x5347;&#x7BA1;&#x7EBF;&#x5904;&#x7406;&#x7684;&#x541E;&#x5410;&#x91CF;&#x3002;</p>
-<figure>
-<img src="/images/pvr/69ec7ef0.png" alt="TBDR Pipeline"><figcaption>TBDR Pipeline</figcaption>
-</figure>
-<p>TBDR&#x5C06;&#x6BCF;&#x4E2A;Tiler&#x7684;&#x6E32;&#x67D3;&#x8FC7;&#x7A0B;&#x62C6;&#x5206;&#x4E3A;&#x4E24;&#x4E2A;&#x6B65;&#x9AA4;&#xFF0C;&#x4E00;&#x4E2A;&#x662F;Hidden Surface Removal(HSR)&#x548C; deferred pixel shading&#x3002;</p>
-<p>TBDR&#x4F1A;&#x5C3D;&#x53EF;&#x80FD;&#x5730;&#x5EF6;&#x8FDF;pixel shading&#x7684;&#x65F6;&#x95F4;&#xFF0C;&#x76F4;&#x5230;&#x6240;&#x6709;&#x5149;&#x6805;&#x5316;&#x540E;&#x7684;fragment&#x5B8C;&#x6210;&#x4E86;DepthTest&#x548C;HSR&#x3002;&#x5BF9;&#x4E8E;&#x4E00;&#x4E2A;&#x573A;&#x666F;&#x4E2D;&#x5168;&#x662F;&#x4E0D;&#x900F;&#x660E;&#x51E0;&#x4F55;&#x56FE;&#x5143;&#x7684;&#x6E32;&#x67D3;&#x753B;&#x9762;&#x6765;&#x8BF4;&#x3002;&#x6BCF;&#x4E00;&#x4E2A;&#x5149;&#x6805;&#x5316;&#x5B8C;&#x7684;fragment patch&#x4F1A;&#x7ECF;&#x8FC7;HSR&#x548C;Depth test&#xFF0C;&#x5728;&#x6240;&#x6709;triangle&#x5B8C;&#x6210;&#x4E86;raster&#x4E4B;&#x540E;&#xFF0C;&#x6700;&#x540E;&#x7559;&#x4E0B;&#x6765;&#x7684;fragment&#x4F1A;&#x7559;&#x4E0B;&#x6765;&#x6267;&#x884C;pixel shading&#x3002;&#x4E5F;&#x5C31;&#x662F;&#x5728;&#x8FD9;&#x79CD;&#x60C5;&#x51B5;&#x4E0B;tile&#x4E2D;&#x7684;&#x6BCF;&#x4E00;&#x4E2A;&#x50CF;&#x7D20;&#x53EA;&#x6267;&#x884C;&#x4E00;&#x6B21;pixel shader&#x3002;</p>
-<p>&#x5982;&#x679C;&#x6E32;&#x67D3;&#x6D41;&#x7A0B;&#x4E2D;&#x6709;alpha test/blend/pixel depth write&#xFF0C;&#x5C31;&#x4F1A;&#x963B;&#x65AD;deferred shading&#xFF0C;&#x56E0;&#x4E3A;&#x8FD9;&#x4E2A;&#x65F6;&#x5019;&#x9700;&#x8981;&#x6267;&#x884C;shading&#xFF0C;&#x624D;&#x80FD;&#x6B63;&#x786E;&#x8FDB;&#x884C;&#x540E;&#x7EED;fragment&#x7684;&#x8BA1;&#x7B97;&#x3002;</p>
+<p>由于geometry提交顺序的不同，会有一些fragment会被重复绘制。<br>为了减少overdraw的情形，图形计算核心会进行Early-Z testing的操作以减少Overdraw。</p>
+<h3 id="IMR"><a href="#IMR" class="headerlink" title="IMR"></a>IMR</h3><p><img src="/images/pvr/781b2ded.png" alt="IMR Pipeline"></p>
+<p>每一个渲染对象/drawcall完成了整个渲染管线流程写入frameBuffer才会开始渲染下一个对象/drawcall。在IMR模式下，Early-Z test可以直接将深度测试的几何图元跳过以提升性能，但是Early-Z test依赖渲染绘制对象的提交顺序是从前往后的。</p>
+<p>同时每一次渲染完的color与depth数据读取写回到colorbuffer与depth/stencil buffer是都会产生很大的带宽消耗。普通的Read-Modify-Write都是在system memory与GPU之间传输数据，如ZWrite/Write,Blend这些。所以IMR的架构会有一个很大显存cache来优化这部分大量的内存带宽消耗。</p>
+<h3 id="TBR"><a href="#TBR" class="headerlink" title="TBR"></a>TBR</h3><p><img src="/images/pvr/2c5b488b.png" alt="TBR Pipeline"></p>
+<p>整个光栅化和fragment处理会被分为一个个Tile进行处理，通常为16×16大小的Tile。</p>
+<p>TBR的结构添加了on-chip buffers用来储存tiling后的Depth Buffer和Color buffer。原先IMR架构中对主存中color/depth buffer进行Read-Modify-Write的操作变成直接在GPU中的高速内存操作，减少了最影响性能的系统内存传输的开销。</p>
+<p>虽然TBR减少了IMR的带宽开销，但是依然没有解决overdraw的问题。</p>
+<h3 id="TBDR"><a href="#TBDR" class="headerlink" title="TBDR"></a>TBDR</h3><p>PowerVR的渲染架构 Tile Based Deferred Rendering(TBDR)</p>
+<p>数据从内存到GPU之间的传输是最大的性能消耗，powerVR架构的TBDR，on-chip buffer都为了该目标而优化。</p>
+<p>TBDR 架构关注于在渲染管线中尽可能移除冗余的操作与计算，最小化内存带宽和能耗同时提升管线处理的吞吐量。</p>
+<p><img src="/images/pvr/69ec7ef0.png" alt="TBDR Pipeline"></p>
+<p>TBDR将每个Tiler的渲染过程拆分为两个步骤，一个是Hidden Surface Removal(HSR)和 deferred pixel shading。</p>
+<p>TBDR会尽可能地延迟pixel shading的时间，直到所有光栅化后的fragment完成了DepthTest和HSR。对于一个场景中全是不透明几何图元的渲染画面来说。每一个光栅化完的fragment patch会经过HSR和Depth test，在所有triangle完成了raster之后，最后留下来的fragment会留下来执行pixel shading。也就是在这种情况下tile中的每一个像素只执行一次pixel shader。</p>
+<p>如果渲染流程中有alpha test/blend/pixel depth write，就会阻断deferred shading，因为这个时候需要执行shading，才能正确进行后续fragment的计算。</p>
 <ul>
-<li>Alpha Test&#x9700;&#x8981;&#x6267;&#x884C;shading &#x7B97;&#x51FA;&#x5F53;&#x524D;fragment&#x7684;alpha&#xFF0C;&#x5224;&#x65AD;&#x8BE5;fragment&#x662F;&#x5426;&#x88AB;&#x4E22;&#x5F03;&#x3002;</li>
-<li>Alpha Blend &#x9700;&#x8981;&#x8BFB;&#x53D6;framebuffer&#x4E2D;&#x5F53;&#x524D;&#x50CF;&#x7D20;&#x4E4B;&#x524D;&#x7684;&#x989C;&#x8272;&#x3002;</li>
-<li>Pixel Depth write&#x4F1A;&#x5F71;&#x54CD;&#x5230;&#x540E;&#x7EED;fragment&#x7684;HSR&#x4E0E;Depth test&#x3002;</li>
+<li>Alpha Test需要执行shading 算出当前fragment的alpha，判断该fragment是否被丢弃。</li>
+<li>Alpha Blend 需要读取framebuffer中当前像素之前的颜色。</li>
+<li>Pixel Depth write会影响到后续fragment的HSR与Depth test。</li>
 </ul>
-<p>&#x8FD9;&#x4E09;&#x79CD;&#x60C5;&#x51B5;&#x4E0B;Pixel Depth Write&#xFF0C;&#x56E0;&#x4E3A;&#x4F1A;&#x5F71;&#x54CD;&#x5230;&#x540E;&#x7EED;fragment HSR/Depth&#xFF0C;&#x6240;&#x4EE5;&#x8FD9;&#x4E2A;&#x65F6;&#x5019;&#x4E00;&#x5B9A;&#x8981;&#x6267;&#x884C;&#x8BE5;&#x50CF;&#x7D20;&#x7684;shading&#xFF0C;&#x6253;&#x4E71;&#x4E86;&#x539F;&#x5148;deferred&#x7684;&#x6D41;&#x7A0B;&#x3002;&#x5177;&#x4F53;&#x8981;&#x770B;GPU&#x5B9E;&#x73B0;&#x65F6;&#x65F6;&#x628A;&#x6574;&#x4E2A;HSR&#x6B65;&#x9AA4;&#x79EF;&#x7D2F;&#x7684;fragment&#x90FD;shading&#x6389;&#x8FD8;&#x662F;&#x53EA;&#x628A;&#x5F53;&#x524D;fragment shading&#x6389;&#x3002;</p>
-<p>&#x800C;&#x5BF9;&#x4E8E;AlphaBlend&#x6765;&#x8BF4;&#xFF0C;&#x5B83;&#x5E76;&#x4E0D;&#x4E00;&#x5B9A;&#x8981;&#x6253;&#x65AD;deferred shading&#x3002; &#x9047;&#x5230;blending&#x7684;fragment&#xFF0C;&#x53EF;&#x4EE5;&#x628A;&#x8BE5;fragment&#x50CF;&#x7D20;&#x4F4D;&#x7F6E;&#x7684;&#x6240;&#x6709;fragment&#x6309;&#x987A;&#x5E8F;&#x4FDD;&#x7559;&#x5728;&#x5217;&#x8868;&#x4E2D;&#xFF0C;&#x7B49;&#x5230;shading&#x65F6;&#x6309;&#x987A;&#x5E8F;&#x8BA1;&#x7B97;blend&#x3002; &#x4F46;&#x8FD9;&#x6837;&#x5C31;&#x4F1A;&#x589E;&#x52A0;pixel shading&#x7684;&#x6B21;&#x6570;&#x3002;&#x5177;&#x4F53;&#x7684;&#x5B9E;&#x73B0;&#x8FD8;&#x662F;&#x8981;&#x53C2;&#x7167;GPU&#x7684;&#x5B9E;&#x73B0;&#x65B9;&#x5F0F;&#xFF0C;&#x7531;&#x4E8E;&#x4F7F;&#x7528;TBR&#xFF0C;Blend&#x7684;&#x5F00;&#x9500;&#x76F8;&#x5BF9;&#x6BD4;IMR&#x8FD8;&#x662F;&#x964D;&#x4F4E;&#x4E86;&#x5F88;&#x591A;&#x3002;</p>
-<p>Alpha-Test&#x7684;&#x60C5;&#x51B5;&#x662F;&#x548C;Pixel Depth Write&#x7C7B;&#x4F3C;&#xFF0C;&#x7531;&#x4E8E;Alpha Test&#x5931;&#x8D25;fragment&#x4F1A;&#x88AB;&#x4E22;&#x5F03;&#xFF0C;&#x5982;&#x679C;&#x5176;&#x5F00;&#x542F;&#x4E86;DepthWrite&#xFF0C;&#x90A3;&#x4E48;&#x5C31;&#x4E00;&#x5B9A;&#x8981;&#x6267;&#x884C;shading&#x3002;&#x56E0;&#x4E3A;alpha-test&#x4F1A;&#x5F71;&#x54CD;&#x540E;&#x7EED;fragment&#x7684;HSR/Z-Test&#x7684;&#x6D41;&#x7A0B;&#x3002;&#x5982;&#x679C;&#x6CA1;&#x6709;&#x5F00;&#x542F;depth Write&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x548C;Blend&#x4E00;&#x6837;&#x4FDD;&#x7559;&#x540E;&#x7EED;&#x6240;&#x6709;fragment&#x7684;&#x65B9;&#x5F0F;&#x6765;&#x5EF6;&#x8FDF;shading&#x3002;&#x4F46;&#x662F;&#x8FD9;&#x4E2A;&#x65F6;&#x5019;&#x540E;&#x7EED;&#x8BE5;&#x4F4D;&#x7F6E;&#x7684;fragment patch&#x90FD;&#x662F;&#x4E0D;&#x80FD;&#x88AB;&#x79FB;&#x51FA;shading&#x5217;&#x8868;&#x7684;&#xFF0C;&#x5EF6;&#x8FDF;shading&#x4E5F;&#x6CA1;&#x6709;&#x610F;&#x4E49;&#x4E86;&#x3002;</p>
-<h2 id="&#x5173;&#x4E8E;powervr-&#x67B6;&#x6784;">&#x5173;&#x4E8E;PowerVR &#x67B6;&#x6784;</h2>
-<p><strong>Vector&#x5904;&#x7406;&#x5355;&#x5143;</strong></p>
-<p>&#x9AD8;&#x6548;&#x8BA1;&#x7B97;&#x5355;&#x5143;&#xFF0C;&#x540C;&#x65F6;&#x8BA1;&#x7B97;3&#x5230;4&#x4E2A;&#x5143;&#x7D20;&#x3002;&#x5982;&#x679C;&#x4E00;&#x4E2A;&#x8BA1;&#x7B97;&#x7684;&#x503C;&#x5C0F;&#x4E8E;4&#x4E2A;&#xFF0C;&#x90A3;&#x4E48;&#x5176;&#x4ED6;&#x7684;&#x8BA1;&#x7B97;&#x4F1A;&#x88AB;&#x6D6A;&#x8D39;&#x3002;&#x53EA;&#x5BF9;&#x4E00;&#x4E2A;&#x5143;&#x7D20;&#x8FDB;&#x884C;&#x8BA1;&#x7B97;&#x65F6;&#xFF0C;&#x6548;&#x7387;&#x4F1A;&#x964D;&#x4F4E;&#x5230;25%&#xFF0C;&#x9020;&#x6210;&#x8BA1;&#x7B97;&#x548C;&#x7535;&#x80FD;&#x7684;&#x6D6A;&#x8D39;&#xFF0C;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x5408;&#x5E76;vector&#x6765;&#x4F18;&#x5316;&#x3002;</p>
-<p><strong>Scalar&#x5904;&#x7406;&#x5355;&#x5143;</strong></p>
-<p>&#x6807;&#x91CF;&#x8BA1;&#x7B97;&#x5355;&#x5143;&#x66F4;&#x52A0;&#x7075;&#x6D3B;&#xFF0C;&#x4E0D;&#x9700;&#x8981;&#x586B;&#x5145;&#x5176;&#x4ED6;&#x7684;&#x4F4D;&#x5BBD;&#x6570;&#x636E;&#x3002;&#x6BCF;&#x4E00;&#x4E2A;&#x786C;&#x4EF6;tick&#x6BD4;&#x8D77;&#x975E;&#x5411;&#x91CF;&#x5316;&#x4F18;&#x5316;&#x7684;&#x4EE3;&#x7801;&#x80FD;&#x5904;&#x7406;&#x66F4;&#x591A;&#x6709;&#x6548;&#x7684;&#x6570;&#x636E;&#x503C;&#x3002;</p>
-<h3 id="verte-processing-tiler">Verte Processing (Tiler)</h3>
-<p>Tile Accelerator(TA)&#x8BA1;&#x7B97;&#x6BCF;&#x4E2A;transform&#x540E;&#x7684;&#x56FE;&#x5143;&#x5C5E;&#x4E8E;&#x54EA;&#x4E2A;tile&#x3002; &#x8BA1;&#x7B97;&#x5B8C;&#x540E;&#xFF0C;per-tile&#x961F;&#x5217;&#x4F1A;&#x66F4;&#x65B0;&#x3002;&#x53D8;&#x6362;&#x540E;&#x7684;&#x51E0;&#x4F55;&#x4F53;&#x548C;tile list&#x4F1A;&#x88AB;&#x50A8;&#x5B58;&#x5728;Parameter Buffer(PB)&#x4E2D;&#x3002;PB&#x88AB;&#x50A8;&#x5B58;&#x5728;&#x7CFB;&#x7EDF;&#x5185;&#x5B58;&#x4E2D;&#x3002;</p>
-<h3 id="per-tile-rasterization-render">Per-Tile Rasterization (Render)</h3>
-<p>Image Sythesis Processor(ISP)&#x83B7;&#x53D6;&#x5F53;&#x524D;tile&#x7684;primitive&#x6570;&#x636E;&#xFF0C;&#x8FDB;&#x884C;HSR&#xFF0C;&#x540C;&#x65F6;&#x8FDB;&#x884C;Z-Test&#x548C;Stencil Test&#x3002;ISP&#x53EA;&#x5904;&#x7406;ScreenSpace Position&#xFF0C;&#x548C;vertex data&#x3002;</p>
-<p>&#x63A5;&#x4E0B;&#x6765;&#x662F;Texture and Shading Processor (TSP)&#xFF0C;&#x5904;&#x7406;fragment shaders&#x548C;visible pixels&#x3002;&#x5F53;Tile&#x7684;&#x6E32;&#x67D3;&#x7ED3;&#x675F;&#x4E4B;&#x540E;&#xFF0C;color data&#x4F1A;&#x88AB;&#x5199;&#x56DE;&#x5230;&#x4E3B;&#x5B58;&#x4E2D;&#x7684;framebuffer&#x4E2D;&#x3002;&#x76F4;&#x5230;&#x6240;&#x6709;&#x7684;tile&#x90FD;&#x5B8C;&#x6210;&#x6E32;&#x67D3;&#x540E;&#xFF0C;&#x6574;&#x4E2A;frameBuffer&#x5C31;&#x5B8C;&#x6210;&#x4E86;&#x3002;</p>
-<h3 id="powervr-shader-engine">PowerVR Shader Engine</h3>
-<p>massive multi-threaded and multi-tasking approah.</p>
-<h3 id="hsr-efficiency">HSR Efficiency</h3>
-<p>Early-Z testing &#x9700;&#x8981;&#x6309;&#x4ECE;&#x524D;&#x5F80;&#x540E;&#x987A;&#x5E8F;&#x63D0;&#x4EA4;opaque&#x5BF9;&#x8C61;&#x7684;draw call&#xFF0C;&#x9700;&#x8981;&#x8FDB;&#x884C;&#x6392;&#x5E8F;&#x4F1A;&#x6709;&#x989D;&#x5916;&#x7684;overhead&#x3002;&#x5F53;&#x7269;&#x4F53;&#x6709;intersection&#x65F6;&#xFF0C;Eearly-Z testing&#x5E76;&#x4E0D;&#x80FD;&#x79FB;&#x9664;&#x6240;&#x6709;&#x7684;overdraw&#xFF0C;&#x540C;&#x65F6;&#x5BF9;draw call&#x8FDB;&#x884C;&#x6392;&#x5E8F;&#x53EF;&#x80FD;&#x4F1A;&#x9020;&#x6210;pipeline &#x72B6;&#x6001;&#x6539;&#x53D8;&#x4EA7;&#x751F;&#x7684;overhead&#x3002; PowerVR &#x7684;HSR&#x5C3D;&#x53EF;&#x80FD;&#x51CF;&#x5C11;&#x4E86;fragment shading&#x7684;&#x6570;&#x91CF;&#x3002;</p>
-<h2 id="&#x6027;&#x80FD;&#x4F18;&#x5316;&#x5EFA;&#x8BAE;">&#x6027;&#x80FD;&#x4F18;&#x5316;&#x5EFA;&#x8BAE;</h2>
-<h3 id="&#x5BF9;drawcall&#x8FDB;&#x884C;&#x6392;&#x5E8F;">&#x5BF9;drawcall&#x8FDB;&#x884C;&#x6392;&#x5E8F;</h3>
-<p>&#x5BF9;&#x4E8E;TBDR&#x67B6;&#x6784;&#x6765;&#x8BF4;&#xFF0C;&#x6240;&#x6709;&#x7684;drawcall &#x6309;&#x7167; opaque - alpha-tested - blended&#x8FDB;&#x884C;&#x6392;&#x5E8F;&#x4F1A;&#x6700;&#x5927;&#x7A0B;&#x5EA6;&#x5229;&#x7528;HSR&#x51CF;&#x5C11;overdraw&#x3002;&#x5BF9;&#x4E8E;&#x6709;blend&#x7684;pixel&#x6765;&#x8BF4;&#xFF0C;&#x540E;&#x7EED;&#x6240;&#x6709;&#x76F8;&#x540C;&#x4F4D;&#x7F6E;&#x7684;pixel&#x90FD;&#x9700;&#x8981;&#x8FDB;&#x884C;pixel shading&#xFF0C;&#x800C;alpha-test&#x5728;&#x5B8C;&#x6210;&#x540E;&#x7684;&#x50CF;&#x7D20;&#x8FD8;&#x662F;&#x53EF;&#x4EE5;&#x7EE7;&#x7EED;&#x8FDB;&#x884C;HSR&#x7684;&#x4F18;&#x5316;&#x3002;&#x6240;&#x4EE5;&#x6BD4;&#x5148;blend&#x63D0;&#x4EA4;alpha-test&#x53EF;&#x4EE5;&#x5C3D;&#x53EF;&#x80FD;&#x51CF;&#x5C11;overdraw&#x3002;</p>
-<h3 id="&#x59CB;&#x7EC8;&#x8FDB;&#x884C;clear&#x64CD;&#x4F5C;">&#x59CB;&#x7EC8;&#x8FDB;&#x884C;Clear&#x64CD;&#x4F5C;</h3>
-<p>&#x5728;IMR&#x67B6;&#x6784;&#x4E2D;&#xFF0C;&#x8FDB;&#x884C;Clear&#x64CD;&#x4F5C;&#x9700;&#x8981;&#x5BF9;fragment buffer&#x6BCF;&#x4E2A;&#x50CF;&#x7D20;&#x8BBE;&#x7F6E;&#x4E00;&#x904D;&#x503C;&#x3002;&#x5982;&#x679C;&#x786E;&#x8BA4;&#x753B;&#x9762;&#x4F1A;&#x88AB;&#x5B8C;&#x5168;&#x91CD;&#x7ED8;&#x8986;&#x76D6;&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x4E0D;&#x8FDB;&#x884C;Clear&#x64CD;&#x4F5C;&#x4F1A;&#x6709;&#x51CF;&#x5C11;&#x8FD9;&#x90E8;&#x5206;&#x7684;&#x6027;&#x80FD;&#x5F00;&#x9500;&#x3002;&#x800C;&#x5728;&#x79FB;&#x52A8;&#x5E73;&#x53F0;&#x7684;GPU&#x4E0A;&#x5E76;&#x4E0D;&#x662F;&#x8FD9;&#x6837;&#xFF0C;&#x7531;&#x4E8E;&#x79FB;&#x52A8;&#x5E73;&#x53F0;&#x4E3A;&#x4E86;&#x51CF;&#x5C11;&#x5185;&#x5B58;&#x4E0E;GPU&#x95F4;&#x7684;&#x5E26;&#x5BBD;&#x6D88;&#x8017;&#xFF0C;frameBuffer&#x662F;&#x5206;&#x5757;&#x5B58;&#x5728;on-chip memory&#x4E2D;&#x7684;&#x3002;&#x5728;&#x6574;&#x4E2A;&#x6E32;&#x67D3;&#x8FC7;&#x7A0B;&#x7ED3;&#x675F;&#x540E;&#x5C06;&#x6240;&#x6709;&#x7684;tiled framebuffer &#x62F7;&#x8D1D;&#x5230;&#x4E3B;&#x5B58;&#x4E2D;&#x7684;framebuffer&#x4E2D;&#x3002;&#x5982;&#x679C;&#x4E0D;&#x8FDB;&#x884C;clear&#xFF0C;&#x800C;&#x5728;&#x4E0A;&#x4E00;&#x5E27;&#x7684;buffer&#x4E0A;&#x91CD;&#x65B0;&#x7ED8;&#x5236;&#xFF0C;&#x9700;&#x8981;&#x5728;&#x6BCF;&#x4E2A;tiled frameBuffer&#x5F00;&#x59CB;&#x7ED8;&#x5236;&#x4E4B;&#x524D;&#x4ECE;&#x4E3B;&#x5B58;&#x518D;&#x540C;&#x6B65;&#x5230;on-chip&#x7684;&#x5185;&#x5B58;&#x4E2D;&#x3002;&#x8FD9;&#x4E00;&#x90E8;&#x5206;&#x4F1A;&#x6709;&#x5F88;&#x5927;&#x7684;overhead&#x3002;</p>
-<h3 id="&#x4E0D;&#x8981;&#x5728;&#x6BCF;&#x4E00;&#x5E27;&#x5F00;&#x59CB;&#x7ED8;&#x5236;&#x4E4B;&#x540E;&#x66F4;&#x65B0;buffer">&#x4E0D;&#x8981;&#x5728;&#x6BCF;&#x4E00;&#x5E27;&#x5F00;&#x59CB;&#x7ED8;&#x5236;&#x4E4B;&#x540E;&#x66F4;&#x65B0;Buffer</h3>
-<p>&#x7531;&#x4E8E;GPU&#x7ED8;&#x5236;&#x91C7;&#x7528;&#x7684;&#x662F;&#x53CC;&#x7F13;&#x51B2;&#x7ED8;&#x5236;&#xFF0C;&#x5F53;&#x524D;&#x5E27;&#x63D0;&#x4EA4;&#x7684;draw call&#x4F1A;&#x5728;&#x4E0B;&#x4E00;&#x5E27;&#x8FDB;&#x884C;&#x7ED8;&#x5236;&#xFF0C;&#x800C;&#x5F53;&#x524D;&#x5E27;&#x7ED8;&#x5236;&#x4E0A;&#x4E00;&#x5E27;&#x63D0;&#x4EA4;&#x7684;draw call&#x3002;&#x5982;&#x679C;&#x5728;&#x5E27;&#x4E2D;&#x95F4;&#x66F4;&#x65B0;buffer&#xFF0C;&#x800C;&#x8FD9;&#x4E2A;buffer&#x5728;&#x4E0A;&#x4E00;&#x5E27;&#x63D0;&#x4EA4;&#x7684;drawcall&#x4E2D;&#x88AB;&#x4F7F;&#x7528;&#xFF0C;&#x6709;&#x53EF;&#x80FD;&#x5F53;&#x524D;&#x5E27;&#x66F4;&#x65B0;&#x7684;buffer&#x6B63;&#x5728;GPU&#x4E2D;&#x6E32;&#x67D3;&#xFF0C;&#x800C;&#x6B64;&#x65F6;&#x9A71;&#x52A8;&#x5C42;&#x5C06;&#x590D;&#x5236;&#x4E00;&#x4EFD;buffer&#x6765;&#x8FDB;&#x884C;&#x6570;&#x636E;&#x7684;&#x66F4;&#x65B0;&#x6216;&#x8005;&#x7B49;&#x5F85;&#x5F53;&#x524D;&#x7ED8;&#x5236;&#x547D;&#x4EE4;&#x5B8C;&#x6210;&#x518D;&#x8FDB;&#x884C;&#x66F4;&#x65B0;&#x3002;&#x8FD9;&#x4E24;&#x79CD;&#x60C5;&#x51B5;&#x4E00;&#x79CD;&#x4F1A;&#x9020;&#x6210;&#x9A71;&#x52A8;&#x5C42;&#x7684;overhead&#xFF0C;&#x800C;&#x53E6;&#x4E00;&#x79CD;&#x4F1A;&#x9020;&#x6210;CPU&#x7684;&#x963B;&#x585E;&#x3002;</p>
-<h3 id="&#x4F7F;&#x7528;&#x538B;&#x7F29;&#x8D34;&#x56FE;&#x548C;mipmapping">&#x4F7F;&#x7528;&#x538B;&#x7F29;&#x8D34;&#x56FE;&#x548C;Mipmapping</h3>
-<p>&#x4F7F;&#x7528;&#x538B;&#x7F29;&#x7684;&#x8D34;&#x56FE;&#x683C;&#x5F0F;&#x4F1A;&#x51CF;&#x5C11;&#x4F20;&#x8F93;&#x7684;&#x5E26;&#x5BBD;&#xFF0C;&#x4ECE;&#x800C;&#x63D0;&#x5347;&#x6027;&#x80FD;&#x3002;&#x540C;&#x65F6;&#x7531;&#x4E8E;&#x5728;TileBased&#x67B6;&#x6784;&#x4E0B;&#xFF0C;&#x90E8;&#x5206;&#x6309;&#x5757;&#x538B;&#x7F29;&#x7684;&#x8D34;&#x56FE;&#x538B;&#x7F29;&#x683C;&#x5F0F;&#x53EF;&#x4EE5;&#x548C;FrameBuffer&#x7684;Tile&#x8FDB;&#x884C;&#x5339;&#x914D;&#xFF0C;&#x5176;&#x7ED3;&#x6784;&#x5BF9;&#x4E8E;&#x8D34;&#x56FE;&#x7F13;&#x5B58;&#x6765;&#x8BF4;&#x66F4;&#x52A0;&#x53CB;&#x597D;&#x3002;</p>
-<p>&#x5C3D;&#x53EF;&#x80FD;&#x4F7F;&#x7528;Mipmapping&#xFF0C;&#x9996;&#x5148;&#x4F7F;&#x7528;mipmap&#xFF0C;&#x5BF9;&#x4E8E;&#x8F83;&#x8FDC;&#x4EE5;&#x53CA;&#x8F83;&#x5C0F;&#x7684;&#x8D34;&#x56FE;&#x7269;&#x4F53;&#x4F1A;&#x6709;&#x66F4;&#x597D;&#x7684;&#x6297;&#x952F;&#x9F7F;&#x6548;&#x679C;&#xFF0C;&#x51CF;&#x5C11;&#x753B;&#x9762;&#x7684;&#x95EA;&#x70C1;&#x4EE5;&#x63D0;&#x5347;&#x753B;&#x9762;&#x6548;&#x679C;&#x3002;&#x5176;&#x6B21;&#x4F7F;&#x7528;&#x5728;&#x91C7;&#x6837;&#x8D34;&#x56FE;&#x65F6;&#xFF0C;&#x5BF9;&#x4E8E;&#x4E0D;&#x540C;&#x5927;&#x5C0F;&#x7684;&#x7269;&#x4F53;&#x9009;&#x7528;&#x5176;&#x5927;&#x5C0F;&#x76F8;&#x5BF9;&#x5E94;&#x5C42;&#x7EA7;&#x7684;&#x8D34;&#x56FE;&#x5230;&#x5BF9;&#x5E94;&#x7684;TextureCache&#x80FD;&#x6709;&#x6548;&#x51CF;&#x5C11;&#x8D34;&#x56FE;&#x7F13;&#x5B58;missing&#x7684;&#x51E0;&#x7387;&#x4EE5;&#x63D0;&#x5347;&#x8D34;&#x56FE;&#x91C7;&#x6837;&#x7684;&#x6548;&#x7387;&#x3002;&#x540C;&#x65F6;&#x7531;&#x4E8E;&#x6709;&#x4E0D;&#x540C;&#x5C42;&#x7EA7;&#x7684;&#x8D34;&#x56FE;&#xFF0C;&#x4F1A;&#x5927;&#x91CF;&#x51CF;&#x5C11;&#x6BCF;&#x6B21;&#x5C06;&#x8D34;&#x56FE;&#x4ECE;&#x5185;&#x5B58;&#x590D;&#x5236;&#x5230;GPU&#x7684;&#x5E26;&#x5BBD;&#x6D88;&#x8017;&#xFF0C;&#x540C;&#x65F6;&#x4F7F;&#x7528;Mipmap&#x53EA;&#x4F1A;&#x589E;&#x52A0;33%&#x7684;&#x5185;&#x5B58;&#x6D88;&#x8017;&#x3002;</p>
+<p>这三种情况下Pixel Depth Write，因为会影响到后续fragment HSR/Depth，所以这个时候一定要执行该像素的shading，打乱了原先deferred的流程。具体要看GPU实现时时把整个HSR步骤积累的fragment都shading掉还是只把当前fragment shading掉。</p>
+<p>而对于AlphaBlend来说，它并不一定要打断deferred shading。<br>遇到blending的fragment，可以把该fragment像素位置的所有fragment按顺序保留在列表中，等到shading时按顺序计算blend。<br>但这样就会增加pixel shading的次数。具体的实现还是要参照GPU的实现方式，由于使用TBR，Blend的开销相对比IMR还是降低了很多。</p>
+<p>Alpha-Test的情况是和Pixel Depth Write类似，由于Alpha Test失败fragment会被丢弃，如果其开启了DepthWrite，那么就一定要执行shading。因为alpha-test会影响后续fragment的HSR/Z-Test的流程。如果没有开启depth Write，也可以和Blend一样保留后续所有fragment的方式来延迟shading。但是这个时候后续该位置的fragment patch都是不能被移出shading列表的，延迟shading也没有意义了。</p>
+<h2 id="关于PowerVR-架构"><a href="#关于PowerVR-架构" class="headerlink" title="关于PowerVR 架构"></a>关于PowerVR 架构</h2><p><strong>Vector处理单元</strong></p>
+<p>高效计算单元，同时计算3到4个元素。如果一个计算的值小于4个，那么其他的计算会被浪费。只对一个元素进行计算时，效率会降低到25%，造成计算和电能的浪费，可以通过合并vector来优化。</p>
+<p><strong>Scalar处理单元</strong></p>
+<p>标量计算单元更加灵活，不需要填充其他的位宽数据。每一个硬件tick比起非向量化优化的代码能处理更多有效的数据值。</p>
+<h3 id="Verte-Processing-Tiler"><a href="#Verte-Processing-Tiler" class="headerlink" title="Verte Processing (Tiler)"></a>Verte Processing (Tiler)</h3><p>Tile Accelerator(TA)计算每个transform后的图元属于哪个tile。<br>计算完后，per-tile队列会更新。变换后的几何体和tile list会被储存在Parameter Buffer(PB)中。PB被储存在系统内存中。</p>
+<h3 id="Per-Tile-Rasterization-Render"><a href="#Per-Tile-Rasterization-Render" class="headerlink" title="Per-Tile Rasterization (Render)"></a>Per-Tile Rasterization (Render)</h3><p>Image Sythesis Processor(ISP)获取当前tile的primitive数据，进行HSR，同时进行Z-Test和Stencil Test。ISP只处理ScreenSpace Position，和vertex data。</p>
+<p>接下来是Texture and Shading Processor (TSP)，处理fragment shaders和visible pixels。当Tile的渲染结束之后，color data会被写回到主存中的framebuffer中。直到所有的tile都完成渲染后，整个frameBuffer就完成了。</p>
+<h3 id="PowerVR-Shader-Engine"><a href="#PowerVR-Shader-Engine" class="headerlink" title="PowerVR Shader Engine"></a>PowerVR Shader Engine</h3><p>massive multi-threaded and multi-tasking approah.</p>
+<h3 id="HSR-Efficiency"><a href="#HSR-Efficiency" class="headerlink" title="HSR Efficiency"></a>HSR Efficiency</h3><p>Early-Z testing 需要按从前往后顺序提交opaque对象的draw call，需要进行排序会有额外的overhead。当物体有intersection时，Eearly-Z testing并不能移除所有的overdraw，同时对draw call进行排序可能会造成pipeline 状态改变产生的overhead。<br>PowerVR 的HSR尽可能减少了fragment shading的数量。</p>
+<h2 id="性能优化建议"><a href="#性能优化建议" class="headerlink" title="性能优化建议"></a>性能优化建议</h2><h3 id="对drawcall进行排序"><a href="#对drawcall进行排序" class="headerlink" title="对drawcall进行排序"></a>对drawcall进行排序</h3><p>对于TBDR架构来说，所有的drawcall 按照 opaque - alpha-tested - blended进行排序会最大程度利用HSR减少overdraw。对于有blend的pixel来说，后续所有相同位置的pixel都需要进行pixel shading，而alpha-test在完成后的像素还是可以继续进行HSR的优化。所以比先blend提交alpha-test可以尽可能减少overdraw。</p>
+<h3 id="始终进行Clear操作"><a href="#始终进行Clear操作" class="headerlink" title="始终进行Clear操作"></a>始终进行Clear操作</h3><p>在IMR架构中，进行Clear操作需要对fragment buffer每个像素设置一遍值。如果确认画面会被完全重绘覆盖的情况下，不进行Clear操作会有减少这部分的性能开销。而在移动平台的GPU上并不是这样，由于移动平台为了减少内存与GPU间的带宽消耗，frameBuffer是分块存在on-chip memory中的。在整个渲染过程结束后将所有的tiled framebuffer 拷贝到主存中的framebuffer中。如果不进行clear，而在上一帧的buffer上重新绘制，需要在每个tiled frameBuffer开始绘制之前从主存再同步到on-chip的内存中。这一部分会有很大的overhead。</p>
+<h3 id="不要在每一帧开始绘制之后更新Buffer"><a href="#不要在每一帧开始绘制之后更新Buffer" class="headerlink" title="不要在每一帧开始绘制之后更新Buffer"></a>不要在每一帧开始绘制之后更新Buffer</h3><p>由于GPU绘制采用的是双缓冲绘制，当前帧提交的draw call会在下一帧进行绘制，而当前帧绘制上一帧提交的draw call。如果在帧中间更新buffer，而这个buffer在上一帧提交的drawcall中被使用，有可能当前帧更新的buffer正在GPU中渲染，而此时驱动层将复制一份buffer来进行数据的更新或者等待当前绘制命令完成再进行更新。这两种情况一种会造成驱动层的overhead，而另一种会造成CPU的阻塞。</p>
+<h3 id="使用压缩贴图和Mipmapping"><a href="#使用压缩贴图和Mipmapping" class="headerlink" title="使用压缩贴图和Mipmapping"></a>使用压缩贴图和Mipmapping</h3><p>使用压缩的贴图格式会减少传输的带宽，从而提升性能。同时由于在TileBased架构下，部分按块压缩的贴图压缩格式可以和FrameBuffer的Tile进行匹配，其结构对于贴图缓存来说更加友好。</p>
+<p>尽可能使用Mipmapping，首先使用mipmap，对于较远以及较小的贴图物体会有更好的抗锯齿效果，减少画面的闪烁以提升画面效果。其次使用在采样贴图时，对于不同大小的物体选用其大小相对应层级的贴图到对应的TextureCache能有效减少贴图缓存missing的几率以提升贴图采样的效率。同时由于有不同层级的贴图，会大量减少每次将贴图从内存复制到GPU的带宽消耗，同时使用Mipmap只会增加33%的内存消耗。</p>
 <hr>
-<p>Reference</p>
+<p>Reference </p>
 <p><a href="https://www.imgtec.com/developers/downloads/download-info/powervr-hardware-architecture-overview/" target="_blank" rel="noopener">powervr-hardware-architecture-overview</a></p>
 <p><a href="https://www.imgtec.com/developers/downloads/download-info/powervr-performance-recommendations-the-golden-rules/" target="_blank" rel="noopener">powervr-performance-recommendations-the-golden-rules</a></p>
 <p><a href="https://developer.apple.com/documentation/metal/mtldevice/ios_and_tvos_devices/about_gpu_family_4" target="_blank" rel="noopener">Apple Development Document-About GPU Family 4</a></p>
@@ -244,7 +228,7 @@
          
           <li><a href="/">Home</a></li>
          
-          <li><a href="https://artwork.yemi.me/">Artworks</a></li>
+          <li><a href="https://artwork.yemi.me/" target="_blank" rel="noopener">Artworks</a></li>
          
           <li><a href="/about/">About</a></li>
          
@@ -258,21 +242,21 @@
     </div>
 
     <div id="toc-footer" style="display: none">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#主流图形架构"><span class="toc-number">1.</span> <span class="toc-text">主流图形架构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#imr"><span class="toc-number">1.1.</span> <span class="toc-text">IMR</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#tbr"><span class="toc-number">1.2.</span> <span class="toc-text">TBR</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#tbdr"><span class="toc-number">1.3.</span> <span class="toc-text">TBDR</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关于powervr-架构"><span class="toc-number">2.</span> <span class="toc-text">关于PowerVR 架构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#verte-processing-tiler"><span class="toc-number">2.1.</span> <span class="toc-text">Verte Processing (Tiler)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#per-tile-rasterization-render"><span class="toc-number">2.2.</span> <span class="toc-text">Per-Tile Rasterization (Render)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#powervr-shader-engine"><span class="toc-number">2.3.</span> <span class="toc-text">PowerVR Shader Engine</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#hsr-efficiency"><span class="toc-number">2.4.</span> <span class="toc-text">HSR Efficiency</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#性能优化建议"><span class="toc-number">3.</span> <span class="toc-text">性能优化建议</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#对drawcall进行排序"><span class="toc-number">3.1.</span> <span class="toc-text">对drawcall进行排序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#始终进行clear操作"><span class="toc-number">3.2.</span> <span class="toc-text">始终进行Clear操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#不要在每一帧开始绘制之后更新buffer"><span class="toc-number">3.3.</span> <span class="toc-text">不要在每一帧开始绘制之后更新Buffer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用压缩贴图和mipmapping"><span class="toc-number">3.4.</span> <span class="toc-text">使用压缩贴图和Mipmapping</span></a></li></ol></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#主流图形架构"><span class="toc-number">1.</span> <span class="toc-text">主流图形架构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#IMR"><span class="toc-number">1.1.</span> <span class="toc-text">IMR</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TBR"><span class="toc-number">1.2.</span> <span class="toc-text">TBR</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TBDR"><span class="toc-number">1.3.</span> <span class="toc-text">TBDR</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关于PowerVR-架构"><span class="toc-number">2.</span> <span class="toc-text">关于PowerVR 架构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Verte-Processing-Tiler"><span class="toc-number">2.1.</span> <span class="toc-text">Verte Processing (Tiler)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Per-Tile-Rasterization-Render"><span class="toc-number">2.2.</span> <span class="toc-text">Per-Tile Rasterization (Render)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PowerVR-Shader-Engine"><span class="toc-number">2.3.</span> <span class="toc-text">PowerVR Shader Engine</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HSR-Efficiency"><span class="toc-number">2.4.</span> <span class="toc-text">HSR Efficiency</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#性能优化建议"><span class="toc-number">3.</span> <span class="toc-text">性能优化建议</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#对drawcall进行排序"><span class="toc-number">3.1.</span> <span class="toc-text">对drawcall进行排序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#始终进行Clear操作"><span class="toc-number">3.2.</span> <span class="toc-text">始终进行Clear操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#不要在每一帧开始绘制之后更新Buffer"><span class="toc-number">3.3.</span> <span class="toc-text">不要在每一帧开始绘制之后更新Buffer</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用压缩贴图和Mipmapping"><span class="toc-number">3.4.</span> <span class="toc-text">使用压缩贴图和Mipmapping</span></a></li></ol></li></ol>
     </div>
 
     <div id="share-footer" style="display: none">
       <ul>
-  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yemi.me/2018/09/17/powervr-architecture-overview/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=http://yemi.me/2018/09/17/powervr-architecture-overview/&text=PowerVR GPU架构与优化建议"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yemi.me/2018/09/17/powervr-architecture-overview/&title=PowerVR GPU架构与优化建议"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yemi.me/2018/09/17/powervr-architecture-overview/&is_video=false&description=PowerVR GPU架构与优化建议"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=PowerVR GPU架构与优化建议&body=Check out this article: http://yemi.me/2018/09/17/powervr-architecture-overview/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=http://yemi.me/2018/09/17/powervr-architecture-overview/&title=PowerVR GPU架构与优化建议"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=http://yemi.me/2018/09/17/powervr-architecture-overview/&title=PowerVR GPU架构与优化建议"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yemi.me/2018/09/17/powervr-architecture-overview/&title=PowerVR GPU架构与优化建议"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=http://yemi.me/2018/09/17/powervr-architecture-overview/&title=PowerVR GPU架构与优化建议"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yemi.me/2018/09/17/powervr-architecture-overview/&name=PowerVR GPU架构与优化建议&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://yemi.me/2018/09/17/powervr-architecture-overview/" target="_blank" rel="noopener"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://yemi.me/2018/09/17/powervr-architecture-overview/&text=PowerVR GPU架构与优化建议" target="_blank" rel="noopener"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://yemi.me/2018/09/17/powervr-architecture-overview/&title=PowerVR GPU架构与优化建议" target="_blank" rel="noopener"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://yemi.me/2018/09/17/powervr-architecture-overview/&is_video=false&description=PowerVR GPU架构与优化建议" target="_blank" rel="noopener"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=PowerVR GPU架构与优化建议&body=Check out this article: https://yemi.me/2018/09/17/powervr-architecture-overview/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://yemi.me/2018/09/17/powervr-architecture-overview/&title=PowerVR GPU架构与优化建议" target="_blank" rel="noopener"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://yemi.me/2018/09/17/powervr-architecture-overview/&title=PowerVR GPU架构与优化建议" target="_blank" rel="noopener"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://yemi.me/2018/09/17/powervr-architecture-overview/&title=PowerVR GPU架构与优化建议" target="_blank" rel="noopener"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://yemi.me/2018/09/17/powervr-architecture-overview/&title=PowerVR GPU架构与优化建议" target="_blank" rel="noopener"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://yemi.me/2018/09/17/powervr-architecture-overview/&name=PowerVR GPU架构与优化建议&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -290,7 +274,7 @@
     
     <footer id="footer">
   <div class="footer-left">
-    Copyright &copy; 2019 yemi
+    Copyright &copy; 2020 yemi
   </div>
   <div class="footer-right">
     <nav>
@@ -298,7 +282,7 @@
          
           <li><a href="/">Home</a></li>
          
-          <li><a href="https://artwork.yemi.me/">Artworks</a></li>
+          <li><a href="https://artwork.yemi.me/" target="_blank" rel="noopener">Artworks</a></li>
          
           <li><a href="/about/">About</a></li>
          
@@ -311,18 +295,28 @@
       </ul>
     </nav>
   </div>
-</footer>
+</footer><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 
 </body>
 </html>
 <!-- styles -->
+
 <link rel="stylesheet" href="/lib/font-awesome/css/fontawesome-all.min.css">
+
+
 <link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
 
+
 <!-- jquery -->
+
 <script src="/lib/jquery/jquery.min.js"></script>
+
+
 <script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+
+
 <script src="/js/main.js"></script>
+
 <!-- search -->
 
 <!-- Google Analytics -->

@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html lang=en>
-<head><meta name="generator" content="Hexo 3.8.0">
-    <!-- so meta -->
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!-- so meta -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
     <meta name="description" content="DirectX11中有两种渲染方式，Immediate Rendering与Deferred Rendering。这里的延迟渲染与 实时渲染中的延迟渲染不是同一种概念，DX中的Deferred Context是在图像api层面绘制指令DrawCall的延迟，而实时渲染中的Deferred Rendering是利用GBuffer对渲染对象进行延迟着色。Deferred Context可以用来实现多线">
-<meta name="keywords" content="DirectX,C++">
 <meta property="og:type" content="article">
 <meta property="og:title" content="DirectX-DeferredContext与multipass rendering">
-<meta property="og:url" content="http://yemi.me/2017/09/11/directx-note-2/index.html">
+<meta property="og:url" content="https://yemi.me/2017/09/11/directx-note-2/index.html">
 <meta property="og:site_name" content="Yemi&#39;s Blog">
 <meta property="og:description" content="DirectX11中有两种渲染方式，Immediate Rendering与Deferred Rendering。这里的延迟渲染与 实时渲染中的延迟渲染不是同一种概念，DX中的Deferred Context是在图像api层面绘制指令DrawCall的延迟，而实时渲染中的Deferred Rendering是利用GBuffer对渲染对象进行延迟着色。Deferred Context可以用来实现多线">
-<meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2018-07-21T10:24:52.720Z">
+<meta property="article:published_time" content="2017-09-10T16:34:22.000Z">
+<meta property="article:modified_time" content="2020-02-17T10:11:54.321Z">
+<meta property="article:author" content="yemi">
+<meta property="article:tag" content="DirectX">
+<meta property="article:tag" content="C++">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="DirectX-DeferredContext与multipass rendering">
-<meta name="twitter:description" content="DirectX11中有两种渲染方式，Immediate Rendering与Deferred Rendering。这里的延迟渲染与 实时渲染中的延迟渲染不是同一种概念，DX中的Deferred Context是在图像api层面绘制指令DrawCall的延迟，而实时渲染中的Deferred Rendering是利用GBuffer对渲染对象进行延迟着色。Deferred Context可以用来实现多线">
     
     
         
@@ -39,15 +39,19 @@
     <!-- title -->
     <title>DirectX-DeferredContext与multipass rendering</title>
     <!-- styles -->
-    <link rel="stylesheet" href="/css/style.css">
+    
+<link rel="stylesheet" href="/css/style.css">
+
     <!-- rss -->
+
+    <link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet">
     
     
-</head>
+<meta name="generator" content="Hexo 4.2.0"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
 
 <body class="max-width mx-auto px3">
     
-      <div id="header-post">
+      <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="header-post">
   <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
   <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
   <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
@@ -57,7 +61,7 @@
          
           <li><a href="/">Home</a></li>
          
-          <li><a href="https://artwork.yemi.me/">Artworks</a></li>
+          <li><a href="https://artwork.yemi.me/" target="_blank" rel="noopener">Artworks</a></li>
          
           <li><a href="/about/">About</a></li>
          
@@ -69,7 +73,7 @@
         
       </ul>
     </span>
-    <br>
+    <br/>
     <span id="actions">
       <ul>
         
@@ -86,27 +90,26 @@
       <span id="i-top" class="info" style="display:none;">Back to top</span>
       <span id="i-share" class="info" style="display:none;">Share post</span>
     </span>
-    <br>
+    <br/>
     <div id="share" style="display: none">
       <ul>
-  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yemi.me/2017/09/11/directx-note-2/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=http://yemi.me/2017/09/11/directx-note-2/&text=DirectX-DeferredContext与multipass rendering"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yemi.me/2017/09/11/directx-note-2/&title=DirectX-DeferredContext与multipass rendering"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yemi.me/2017/09/11/directx-note-2/&is_video=false&description=DirectX-DeferredContext与multipass rendering"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=DirectX-DeferredContext与multipass rendering&body=Check out this article: http://yemi.me/2017/09/11/directx-note-2/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=http://yemi.me/2017/09/11/directx-note-2/&title=DirectX-DeferredContext与multipass rendering"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=http://yemi.me/2017/09/11/directx-note-2/&title=DirectX-DeferredContext与multipass rendering"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yemi.me/2017/09/11/directx-note-2/&title=DirectX-DeferredContext与multipass rendering"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=http://yemi.me/2017/09/11/directx-note-2/&title=DirectX-DeferredContext与multipass rendering"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yemi.me/2017/09/11/directx-note-2/&name=DirectX-DeferredContext与multipass rendering&description=&lt;p&gt;DirectX11中有两种渲染方式，Immediate Rendering与Deferred Rendering。这里的延迟渲染与 实时渲染中的延迟渲染不是同一种概念，DX中的Deferred Context是在图像api层面绘制指令DrawCall的延迟，而实时渲染中的Deferred Rendering是利用GBuffer对渲染对象进行延迟着色。Deferred Context可以用来实现多线程渲染，最大程度上利用CPU与GPU的性能。&lt;/p&gt;
-&lt;h2 id=&#34;多线程渲染&#34;&gt;多线程渲染&lt;/h2&gt;
-&lt;p&gt;多线程渲染在我看来强调的是CPU层面的多线程，而GPU的渲染指令都是顺序执行的，而渲染本身由于GPU并行计算的架构始终是多线程的。在游戏运行的过程中，每一帧都有大量繁重的计算，CPU端的逻辑预算和GPU端的绘制。而游戏运行的帧率取决于最慢的一方。对于渲染的流程来说，CPU将绘制的图元数据传递到GPU然后GPU收到绘制指令开始绘制。这一流程是有先后顺序的。每个CPU调用绘制或者是设置渲染状态的命令都需要等待GPU完成后才能执行下一个命令。&lt;/p&gt;
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://yemi.me/2017/09/11/directx-note-2/" target="_blank" rel="noopener"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://yemi.me/2017/09/11/directx-note-2/&text=DirectX-DeferredContext与multipass rendering" target="_blank" rel="noopener"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://yemi.me/2017/09/11/directx-note-2/&title=DirectX-DeferredContext与multipass rendering" target="_blank" rel="noopener"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://yemi.me/2017/09/11/directx-note-2/&is_video=false&description=DirectX-DeferredContext与multipass rendering" target="_blank" rel="noopener"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=DirectX-DeferredContext与multipass rendering&body=Check out this article: https://yemi.me/2017/09/11/directx-note-2/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://yemi.me/2017/09/11/directx-note-2/&title=DirectX-DeferredContext与multipass rendering" target="_blank" rel="noopener"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://yemi.me/2017/09/11/directx-note-2/&title=DirectX-DeferredContext与multipass rendering" target="_blank" rel="noopener"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://yemi.me/2017/09/11/directx-note-2/&title=DirectX-DeferredContext与multipass rendering" target="_blank" rel="noopener"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://yemi.me/2017/09/11/directx-note-2/&title=DirectX-DeferredContext与multipass rendering" target="_blank" rel="noopener"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://yemi.me/2017/09/11/directx-note-2/&name=DirectX-DeferredContext与multipass rendering&description=&lt;p&gt;DirectX11中有两种渲染方式，Immediate Rendering与Deferred Rendering。这里的延迟渲染与 实时渲染中的延迟渲染不是同一种概念，DX中的Deferred Context是在图像api层面绘制指令DrawCall的延迟，而实时渲染中的Deferred Rendering是利用GBuffer对渲染对象进行延迟着色。Deferred Context可以用来实现多线程渲染，最大程度上利用CPU与GPU的性能。&lt;/p&gt;
+&lt;h2 id=&#34;多线程渲染&#34;&gt;&lt;a href=&#34;#多线程渲染&#34; class=&#34;headerlink&#34; title=&#34;多线程渲染&#34;&gt;&lt;/a&gt;多线程渲染&lt;/h2&gt;&lt;p&gt;多线程渲染在我看来强调的是CPU层面的多线程，而GPU的渲染指令都是顺序执行的，而渲染本身由于GPU并行计算的架构始终是多线程的。在游戏运行的过程中，每一帧都有大量繁重的计算，CPU端的逻辑预算和GPU端的绘制。而游戏运行的帧率取决于最慢的一方。对于渲染的流程来说，CPU将绘制的图元数据传递到GPU然后GPU收到绘制指令开始绘制。这一流程是有先后顺序的。每个CPU调用绘制或者是设置渲染状态的命令都需要等待GPU完成后才能执行下一个命令。&lt;/p&gt;
 &lt;p&gt;CPU端的多线程在于可以开启多个线程同时创建好一系列的指令并且做好CPU端的所有准备工作。然后再将这些指令列表顺序提交给GPU。这样就可以减少调用图像指令的同步时间，以减少CPU的时间消耗。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
     <div id="toc">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#多线程渲染"><span class="toc-number">1.</span> <span class="toc-text">多线程渲染</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#multipass渲染"><span class="toc-number">2.</span> <span class="toc-text">Multipass渲染</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#多通道渲染的实现"><span class="toc-number">2.1.</span> <span class="toc-text">多通道渲染的实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#为什么需要多通道渲染"><span class="toc-number">2.2.</span> <span class="toc-text">为什么需要多通道渲染</span></a></li></ol></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#多线程渲染"><span class="toc-number">1.</span> <span class="toc-text">多线程渲染</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Multipass渲染"><span class="toc-number">2.</span> <span class="toc-text">Multipass渲染</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#多通道渲染的实现"><span class="toc-number">2.1.</span> <span class="toc-text">多通道渲染的实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#为什么需要多通道渲染"><span class="toc-number">2.2.</span> <span class="toc-text">为什么需要多通道渲染</span></a></li></ol></li></ol>
     </div>
   </span>
 </div>
@@ -114,7 +117,7 @@
     
     <div class="content index my4">
         
-        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
   <header>
     
     <h1 class="posttitle" itemprop="name headline">
@@ -124,7 +127,7 @@
 
 
     <div class="meta">
-      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
         <span itemprop="name">Yemi's Blog</span>
       </span>
       
@@ -136,7 +139,7 @@
       
     <div class="article-tag">
         <i class="fas fa-tag"></i>
-        <a class="tag-link" href="/tags/C/">C++</a>, <a class="tag-link" href="/tags/DirectX/">DirectX</a>
+        <a class="tag-link" href="/tags/C/" rel="tag">C++</a>, <a class="tag-link" href="/tags/DirectX/" rel="tag">DirectX</a>
     </div>
 
 
@@ -145,25 +148,25 @@
   
 
   <div class="content" itemprop="articleBody">
-    <p>DirectX11&#x4E2D;&#x6709;&#x4E24;&#x79CD;&#x6E32;&#x67D3;&#x65B9;&#x5F0F;&#xFF0C;Immediate Rendering&#x4E0E;Deferred Rendering&#x3002;&#x8FD9;&#x91CC;&#x7684;&#x5EF6;&#x8FDF;&#x6E32;&#x67D3;&#x4E0E; &#x5B9E;&#x65F6;&#x6E32;&#x67D3;&#x4E2D;&#x7684;&#x5EF6;&#x8FDF;&#x6E32;&#x67D3;&#x4E0D;&#x662F;&#x540C;&#x4E00;&#x79CD;&#x6982;&#x5FF5;&#xFF0C;DX&#x4E2D;&#x7684;Deferred Context&#x662F;&#x5728;&#x56FE;&#x50CF;api&#x5C42;&#x9762;&#x7ED8;&#x5236;&#x6307;&#x4EE4;DrawCall&#x7684;&#x5EF6;&#x8FDF;&#xFF0C;&#x800C;&#x5B9E;&#x65F6;&#x6E32;&#x67D3;&#x4E2D;&#x7684;Deferred Rendering&#x662F;&#x5229;&#x7528;GBuffer&#x5BF9;&#x6E32;&#x67D3;&#x5BF9;&#x8C61;&#x8FDB;&#x884C;&#x5EF6;&#x8FDF;&#x7740;&#x8272;&#x3002;Deferred Context&#x53EF;&#x4EE5;&#x7528;&#x6765;&#x5B9E;&#x73B0;&#x591A;&#x7EBF;&#x7A0B;&#x6E32;&#x67D3;&#xFF0C;&#x6700;&#x5927;&#x7A0B;&#x5EA6;&#x4E0A;&#x5229;&#x7528;CPU&#x4E0E;GPU&#x7684;&#x6027;&#x80FD;&#x3002;</p>
-<h2 id="&#x591A;&#x7EBF;&#x7A0B;&#x6E32;&#x67D3;">&#x591A;&#x7EBF;&#x7A0B;&#x6E32;&#x67D3;</h2>
-<p>&#x591A;&#x7EBF;&#x7A0B;&#x6E32;&#x67D3;&#x5728;&#x6211;&#x770B;&#x6765;&#x5F3A;&#x8C03;&#x7684;&#x662F;CPU&#x5C42;&#x9762;&#x7684;&#x591A;&#x7EBF;&#x7A0B;&#xFF0C;&#x800C;GPU&#x7684;&#x6E32;&#x67D3;&#x6307;&#x4EE4;&#x90FD;&#x662F;&#x987A;&#x5E8F;&#x6267;&#x884C;&#x7684;&#xFF0C;&#x800C;&#x6E32;&#x67D3;&#x672C;&#x8EAB;&#x7531;&#x4E8E;GPU&#x5E76;&#x884C;&#x8BA1;&#x7B97;&#x7684;&#x67B6;&#x6784;&#x59CB;&#x7EC8;&#x662F;&#x591A;&#x7EBF;&#x7A0B;&#x7684;&#x3002;&#x5728;&#x6E38;&#x620F;&#x8FD0;&#x884C;&#x7684;&#x8FC7;&#x7A0B;&#x4E2D;&#xFF0C;&#x6BCF;&#x4E00;&#x5E27;&#x90FD;&#x6709;&#x5927;&#x91CF;&#x7E41;&#x91CD;&#x7684;&#x8BA1;&#x7B97;&#xFF0C;CPU&#x7AEF;&#x7684;&#x903B;&#x8F91;&#x9884;&#x7B97;&#x548C;GPU&#x7AEF;&#x7684;&#x7ED8;&#x5236;&#x3002;&#x800C;&#x6E38;&#x620F;&#x8FD0;&#x884C;&#x7684;&#x5E27;&#x7387;&#x53D6;&#x51B3;&#x4E8E;&#x6700;&#x6162;&#x7684;&#x4E00;&#x65B9;&#x3002;&#x5BF9;&#x4E8E;&#x6E32;&#x67D3;&#x7684;&#x6D41;&#x7A0B;&#x6765;&#x8BF4;&#xFF0C;CPU&#x5C06;&#x7ED8;&#x5236;&#x7684;&#x56FE;&#x5143;&#x6570;&#x636E;&#x4F20;&#x9012;&#x5230;GPU&#x7136;&#x540E;GPU&#x6536;&#x5230;&#x7ED8;&#x5236;&#x6307;&#x4EE4;&#x5F00;&#x59CB;&#x7ED8;&#x5236;&#x3002;&#x8FD9;&#x4E00;&#x6D41;&#x7A0B;&#x662F;&#x6709;&#x5148;&#x540E;&#x987A;&#x5E8F;&#x7684;&#x3002;&#x6BCF;&#x4E2A;CPU&#x8C03;&#x7528;&#x7ED8;&#x5236;&#x6216;&#x8005;&#x662F;&#x8BBE;&#x7F6E;&#x6E32;&#x67D3;&#x72B6;&#x6001;&#x7684;&#x547D;&#x4EE4;&#x90FD;&#x9700;&#x8981;&#x7B49;&#x5F85;GPU&#x5B8C;&#x6210;&#x540E;&#x624D;&#x80FD;&#x6267;&#x884C;&#x4E0B;&#x4E00;&#x4E2A;&#x547D;&#x4EE4;&#x3002;</p>
-<p>CPU&#x7AEF;&#x7684;&#x591A;&#x7EBF;&#x7A0B;&#x5728;&#x4E8E;&#x53EF;&#x4EE5;&#x5F00;&#x542F;&#x591A;&#x4E2A;&#x7EBF;&#x7A0B;&#x540C;&#x65F6;&#x521B;&#x5EFA;&#x597D;&#x4E00;&#x7CFB;&#x5217;&#x7684;&#x6307;&#x4EE4;&#x5E76;&#x4E14;&#x505A;&#x597D;CPU&#x7AEF;&#x7684;&#x6240;&#x6709;&#x51C6;&#x5907;&#x5DE5;&#x4F5C;&#x3002;&#x7136;&#x540E;&#x518D;&#x5C06;&#x8FD9;&#x4E9B;&#x6307;&#x4EE4;&#x5217;&#x8868;&#x987A;&#x5E8F;&#x63D0;&#x4EA4;&#x7ED9;GPU&#x3002;&#x8FD9;&#x6837;&#x5C31;&#x53EF;&#x4EE5;&#x51CF;&#x5C11;&#x8C03;&#x7528;&#x56FE;&#x50CF;&#x6307;&#x4EE4;&#x7684;&#x540C;&#x6B65;&#x65F6;&#x95F4;&#xFF0C;&#x4EE5;&#x51CF;&#x5C11;CPU&#x7684;&#x65F6;&#x95F4;&#x6D88;&#x8017;&#x3002;</p>
+    <p>DirectX11中有两种渲染方式，Immediate Rendering与Deferred Rendering。这里的延迟渲染与 实时渲染中的延迟渲染不是同一种概念，DX中的Deferred Context是在图像api层面绘制指令DrawCall的延迟，而实时渲染中的Deferred Rendering是利用GBuffer对渲染对象进行延迟着色。Deferred Context可以用来实现多线程渲染，最大程度上利用CPU与GPU的性能。</p>
+<h2 id="多线程渲染"><a href="#多线程渲染" class="headerlink" title="多线程渲染"></a>多线程渲染</h2><p>多线程渲染在我看来强调的是CPU层面的多线程，而GPU的渲染指令都是顺序执行的，而渲染本身由于GPU并行计算的架构始终是多线程的。在游戏运行的过程中，每一帧都有大量繁重的计算，CPU端的逻辑预算和GPU端的绘制。而游戏运行的帧率取决于最慢的一方。对于渲染的流程来说，CPU将绘制的图元数据传递到GPU然后GPU收到绘制指令开始绘制。这一流程是有先后顺序的。每个CPU调用绘制或者是设置渲染状态的命令都需要等待GPU完成后才能执行下一个命令。</p>
+<p>CPU端的多线程在于可以开启多个线程同时创建好一系列的指令并且做好CPU端的所有准备工作。然后再将这些指令列表顺序提交给GPU。这样就可以减少调用图像指令的同步时间，以减少CPU的时间消耗。</p>
 <a id="more"></a>
-<p>D3D11&#x4E2D;&#x53EF;&#x4EE5;&#x521B;&#x5EFA;&#x591A;&#x4E2A;DeferredContext, &#x53EF;&#x4EE5;&#x5BF9;DeferredContext&#x8C03;&#x7528;&#x6240;&#x6709;&#x7684;&#x6E32;&#x67D3;&#x7BA1;&#x7EBF;&#x72B6;&#x6001;&#x8BBE;&#x7F6E;&#x4EE5;&#x53CA;&#x7ED8;&#x5236;&#x7684;&#x547D;&#x4EE4;&#x3002;&#x7136;&#x540E;&#x5C06;&#x5176;&#x50A8;&#x5B58;&#x5728;&#x4E00;&#x4E2A;Command List&#x4E2D;&#x3002; &#x6700;&#x540E;&#x5728;&#x6267;&#x884C;&#x771F;&#x6B63;&#x7684;&#x7ED8;&#x5236;&#x65F6;&#x4F7F;&#x7528;ImmediateContext&#x6267;&#x884C;CommandList&#x3002;&#x5C31;&#x53EF;&#x4EE5;&#x4E00;&#x6B21;&#x6027;&#x628A;&#x4E00;&#x6279;&#x6B21;&#x6307;&#x4EE4;&#x63D0;&#x4EA4;GPU&#x3002;&#x8FD9;&#x91CC;&#x9700;&#x8981;&#x6CE8;&#x610F;&#x7684;&#x662F;ImmediateContext&#x672C;&#x8EAB;&#x4E0D;&#x662F;&#x7EBF;&#x7A0B;&#x5B89;&#x5168;&#x7684;&#x3002;</p>
-<p>&#x7C7B;&#x4F3C;&#x4E8E;Unity&#x4E2D;&#x7684;CommandBuffer&#x53EF;&#x4EE5;&#x5C06;&#x4E00;&#x7CFB;&#x5217;&#x7ED8;&#x5236;&#x547D;&#x4EE4;&#x63D0;&#x4EA4;&#x7ED9;GPU&#x6267;&#x884C;&#xFF0C;&#x4F46;&#x662F;&#x5728;Unity&#x4E2D;CommandBuffer&#x53EA;&#x662F;&#x5728;&#x4E0A;&#x5C42;&#x5E94;&#x7528;&#x5C42;&#x63D0;&#x4F9B;&#x6E32;&#x67D3;&#x7BA1;&#x7EBF;&#x6269;&#x5C55;&#x7684;&#x80FD;&#x529B;&#x3002;&#x591A;&#x7EBF;&#x7A0B;&#x6E32;&#x67D3;&#x7684;&#x53E6;&#x4E00;&#x4E2A;&#x7528;&#x5904;&#x662F;&#x53EF;&#x4EE5;&#x5C06;&#x6240;&#x6709;&#x7684;&#x7ED8;&#x5236;&#x5206;&#x5272;&#x6210;&#x4E0D;&#x540C;&#x7684;&#x6E32;&#x67D3;&#x4EFB;&#x52A1;&#xFF0C;&#x6BCF;&#x4E2A;&#x4EFB;&#x52A1;&#x5728;&#x5404;&#x81EA;&#x547D;&#x4EE4;&#x5217;&#x8868;&#x4E2D;&#x8FDB;&#x884C;&#x8C03;&#x7528;&#xFF0C;&#x7EF4;&#x62A4;&#x72EC;&#x7ACB;&#x7684;&#x6E32;&#x67D3;&#x7BA1;&#x7EBF;&#x72B6;&#x6001;&#x3002;&#x907F;&#x514D;&#x4E0A;&#x4E00;&#x4E2A;&#x7ED8;&#x5236;&#x6307;&#x4EE4;&#x7684;&#x7BA1;&#x7EBF;&#x72B6;&#x6001;&#x5F71;&#x54CD;&#x5230;&#x540E;&#x7EED;&#x7684;&#x7ED8;&#x5236;&#x3002;</p>
-<h2 id="multipass&#x6E32;&#x67D3;">Multipass&#x6E32;&#x67D3;</h2>
-<p>Multipass(&#x591A;&#x901A;&#x9053;&#x6E32;&#x67D3;&#xFF0C;&#x4E0D;&#x77E5;&#x9053;&#x662F;&#x4E0D;&#x662F;&#x6BD4;&#x8F83;&#x51C6;&#x786E;&#x7684;&#x7FFB;&#x8BD1;)&#x6E32;&#x67D3;&#x662F;&#x4E00;&#x4E2A;&#x66F4;&#x52A0;&#x4E0A;&#x5C42;&#x7684;&#x6982;&#x5FF5;&#x3002;&#x5728;&#x56FE;&#x50CF;API&#x5C42;&#x9762;&#x5E76;&#x6CA1;&#x6709;&#x591A;&#x901A;&#x9053;&#x6E32;&#x67D3;&#x7684;&#x6982;&#x5FF5;&#x3002;OpenGL D3D&#x7B49;&#x7B49;&#x5E95;&#x5C42;API&#x6CA1;&#x6709;&#x76F8;&#x5E94;&#x7684;&#x5BF9;&#x8C61;&#x548C;&#x63A5;&#x53E3;&#xFF0C;&#x5C31;&#x50CF;&#x6211;&#x4EEC;&#x5728;&#x6E38;&#x620F;&#x5F15;&#x64CE;&#x91CC;&#x9762;&#x770B;&#x5230;&#x7684;&#x6750;&#x8D28;Material&#xFF0C;&#x4E5F;&#x662F;&#x5E94;&#x7528;&#x5C42;&#x62BD;&#x8C61;&#x51FA;&#x6765;&#x7684;&#x6982;&#x5FF5;&#x3002;</p>
-<p>&#x5728;Unity ShaderLab&#x7684;&#x8BED;&#x6CD5;&#x4E2D;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x8FD9;&#x6837;&#x5B9A;&#x4E49;&#x4E00;&#x4E2A;Shader&#x3002;Shader&#x4E2D;&#x652F;&#x6301;MultiPass,&#x51E0;&#x4E4E;&#x6240;&#x6709;&#x7684;&#x6E38;&#x620F;&#x5F15;&#x64CE;&#x90FD;&#x652F;&#x6301;MultiPass&#x3002; <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Shader{</span><br><span class="line">    SubShader{</span><br><span class="line">        Pass{</span><br><span class="line">            //Pass 1</span><br><span class="line">        }</span><br><span class="line">        Pass{</span><br><span class="line">            //Pass</span><br><span class="line">        }</span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure></p>
-<p>&#x90A3;&#x4E48;&#x4E3A;&#x4EC0;&#x4E48;&#x9700;&#x8981;&#x591A;&#x901A;&#x9053;&#x6E32;&#x67D3;&#x5462;&#xFF1F;&#x4E4B;&#x524D;&#x548C;&#x8001;&#x5927;&#x8BA8;&#x8BBA;&#x4E4B;&#x540E;&#xFF0C;&#x6709;&#x4E86;&#x4E00;&#x4E9B;&#x66F4;&#x6DF1;&#x7684;&#x7406;&#x89E3;&#x3002;</p>
-<h3 id="&#x591A;&#x901A;&#x9053;&#x6E32;&#x67D3;&#x7684;&#x5B9E;&#x73B0;">&#x591A;&#x901A;&#x9053;&#x6E32;&#x67D3;&#x7684;&#x5B9E;&#x73B0;</h3>
-<p>&#x591A;&#x901A;&#x9053;&#x6E32;&#x67D3;&#x662F;&#x5BF9;&#x56FE;&#x50CF;API&#x7684;&#x7EC4;&#x7EC7;&#x7ED3;&#x6784;&#xFF0C;&#x4F8B;&#x5982;&#x5728;DX11&#x4E2D;&#x6E32;&#x67D3;&#x4E00;&#x4E2A;&#x5BF9;&#x8C61;&#xFF0C;&#x901A;&#x5E38;&#x7684;&#x505A;&#x6CD5;&#x5982;&#x4E0B; <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">deviceContext-&gt;SetVertexBuffer();</span><br><span class="line">deviceContext-&gt;SetIndicesBuffer();</span><br><span class="line">deviceContext-&gt;SetVertexShader();</span><br><span class="line">deviceContext-&gt;SetPixelShader();</span><br><span class="line">deviceContext-&gt;SetPipelineState();</span><br><span class="line"></span><br><span class="line">deviceContext-&gt;DrawIndices(); <span class="comment">//draw call</span></span><br></pre></td></tr></table></figure></p>
-<p>&#x5148;&#x8BBE;&#x7F6E;&#x7ED8;&#x5236;&#x7684;buffer&#x6570;&#x636E;&#x7136;&#x540E;&#x8FDB;&#x884C;&#x8BBE;&#x7F6E;shader&#x6700;&#x540E;&#x8C03;&#x7528;draw call&#x3002;&#x800C;MultiPassShader&#x7684;&#x6D41;&#x7A0B;&#x662F; <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">deviceContext-&gt;SetVertexBuffer();</span><br><span class="line">deviceContext-&gt;SetIndicesBuffer();</span><br><span class="line"></span><br><span class="line">deviceContext-&gt;SetVertexShader();   <span class="comment">//Pass 1</span></span><br><span class="line">deviceContext-&gt;SetPixelShader();    <span class="comment">//Pass 1</span></span><br><span class="line">deviceContext-&gt;SetPipelineState();  <span class="comment">//Pass 1 State</span></span><br><span class="line">deviceContext-&gt;DrawIndices();       <span class="comment">//Pass 1 draw call</span></span><br><span class="line"></span><br><span class="line">deviceContext-&gt;SetVertexShader();   <span class="comment">//Pass 2</span></span><br><span class="line">deviceContext-&gt;SetPixelShader();    <span class="comment">//Pass 2</span></span><br><span class="line">deviceContext-&gt;SetPipelineState();  <span class="comment">//Pass 2 State</span></span><br><span class="line">deviceContext-&gt;DrawIndices();       <span class="comment">//Pass 2 draw call</span></span><br></pre></td></tr></table></figure></p>
-<p>&#x6BCF;&#x4E2A;Pass&#x53EF;&#x4EE5;&#x8BA4;&#x4E3A;&#x662F;&#x4E00;&#x4E2A;&#x591A;&#x5C42;&#x6750;&#x8D28;&#x7684;&#x4E00;&#x5C42;&#xFF0C;&#x5728;&#x6E32;&#x67D3;&#x65F6;&#x5171;&#x7528;&#x6A21;&#x578B;&#x6570;&#x636E;&#x3002;&#x5927;&#x90E8;&#x5206;&#x60C5;&#x51B5;&#x4E0B;&#x6BCF;&#x4E2A;Pass&#x53EF;&#x4EE5;&#x5728;DeferredContext&#x4E2D;&#x7ED8;&#x5236;&#x6700;&#x540E;&#x4F9D;&#x6B21;&#x5C06;CommandList&#x8FDB;&#x884C;&#x7ED8;&#x5236;&#x3002;&#xFF08;&#x5728;&#x8C03;&#x7528;DrawCall&#x7684;&#x65F6;&#x5019;Pass&#x4E4B;&#x95F4;&#x662F;&#x4E00;&#x5B9A;&#x662F;&#x6709;&#x5148;&#x540E;&#x987A;&#x5E8F;&#x7684;&#xFF0C;&#x5728;Unity&#x7684;ShaderLab&#x4E2D;&#x4F7F;&#x7528;&#x7684;&#x662F;<code>Queue</code>&#x8FD9;&#x4E2A;Tag&#x5BF9;Pass&#x7684;&#x8C03;&#x7528;&#x8FDB;&#x884C;&#x6392;&#x5E8F;&#x3002;&#xFF09;</p>
-<p>&#x4E4B;&#x524D;&#x601D;&#x8003;&#x8FC7;&#x4E0A;&#x6BCF;&#x4E2A;Pass&#x53EF;&#x4EE5;&#x8BBE;&#x7F6E;&#x4E0D;&#x540C;&#x7684;RenderTarget&#xFF0C;&#x5982;&#x679C;&#x4E24;&#x4E2A;Pass&#x4E4B;&#x95F4;&#x6CA1;&#x6709;&#x5148;&#x540E;&#x7684;&#x4F9D;&#x8D56;&#x5173;&#x7CFB;&#xFF0C;GPU&#x5E94;&#x8BE5;&#x53EF;&#x4EE5;&#x540C;&#x65F6;&#x8FDB;&#x884C;&#x7ED8;&#x5236;&#x3002;&#x4F46;&#x662F;&#x8FD9;&#x5C42;&#x7684;&#x4F18;&#x60E0;&#x5E94;&#x8BE5;&#x662F;&#x5728;&#x9A71;&#x52A8;&#x5C42;&#x505A;&#x7684;&#x4F18;&#x5316;&#xFF0C;GPU&#x5728;&#x8FDB;&#x884C;&#x4E00;&#x4E2A;Shader&#x7ED8;&#x5236;&#x7684;&#x65F6;&#x5019;&#x662F;&#x4E0D;&#x662F;&#x4F1A;&#x4F7F;&#x7528;&#x6389;&#x6240;&#x6709;&#x7684;Streaming Multiprocessor&#xFF0C;&#x591A;&#x4E2A;Pass&#x80FD;&#x4E0D;&#x80FD;&#x5E76;&#x884C;&#x8BA1;&#x7B97;&#x3002;&#x53EF;&#x80FD;&#x9700;&#x8981;&#x4E86;&#x89E3;&#x66F4;&#x591A;GPU&#x67B6;&#x6784;&#x65B9;&#x9762;&#x7684;&#x77E5;&#x8BC6;&#x3002;</p>
-<h3 id="&#x4E3A;&#x4EC0;&#x4E48;&#x9700;&#x8981;&#x591A;&#x901A;&#x9053;&#x6E32;&#x67D3;">&#x4E3A;&#x4EC0;&#x4E48;&#x9700;&#x8981;&#x591A;&#x901A;&#x9053;&#x6E32;&#x67D3;</h3>
-<p>&#x4E0A;&#x9762;&#x63CF;&#x8FF0;&#x4E86;&#x591A;&#x901A;&#x9053;&#x6E32;&#x67D3;&#x5927;&#x6982;&#x7684;&#x5B9E;&#x73B0;&#x65B9;&#x5F0F;&#xFF0C;&#x901A;&#x5E38;&#x60C5;&#x51B5;&#x4E0B;&#x7684;&#x7740;&#x8272;&#x5668;&#x6548;&#x679C;&#x5176;&#x5B9E;&#x5728;&#x4E00;&#x4E2A;Pass&#x91CC;&#x5C31;&#x53EF;&#x4EE5;&#x5B8C;&#x6210;&#x3002;&#x4F46;&#x662F;&#x5F88;&#x591A;&#x590D;&#x6742;&#x7684;&#x6548;&#x679C;&#x53EF;&#x80FD;&#x9700;&#x8981;&#x5BF9;&#x6E32;&#x67D3;&#x5BF9;&#x8C61;&#x8FDB;&#x884C;&#x591A;&#x6B21;&#x7684;&#x6E32;&#x67D3;&#x6700;&#x540E;&#x624D;&#x80FD;&#x8BA1;&#x7B97;&#x51FA;&#x6700;&#x7EC8;&#x7684;&#x989C;&#x8272;&#x3002;&#x4F8B;&#x5982;&#x4E00;&#x4E9B;&#x5149;&#x7167;&#x8BA1;&#x7B97;&#xFF0C;&#x9634;&#x5F71;&#x8D34;&#x56FE;&#x5B9E;&#x73B0;&#x9634;&#x5F71;&#x7B49;&#x7B49;&#x6548;&#x679C;&#x3002;&#x5728;&#x591A;&#x901A;&#x9053;&#x6E32;&#x67D3;&#x7684;&#x6BCF;&#x4E2A;Pass&#x4E4B;&#x95F4;&#x662F;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;Blend&#x6DF7;&#x5408;&#xFF0C;Stencil&#x6A21;&#x677F;&#x4EE5;&#x53CA;&#x81EA;&#x5B9A;&#x4E49;&#x6DF1;&#x5EA6;&#x6D4B;&#x8BD5;&#x548C;&#x8BA1;&#x7B97;&#x3002;&#x8FD9;&#x6837;&#x5728;&#x4E0D;&#x540C;Pass&#x4E4B;&#x95F4;&#x5C31;&#x53EF;&#x4EE5;&#x4F9D;&#x6B21;&#x628A;&#x6BCF;&#x4E2A;&#x901A;&#x9053;&#x8BA1;&#x7B97;&#x7684;&#x989C;&#x8272;&#x6DF1;&#x5EA6;&#x548C;&#x6A21;&#x677F;&#x8FDB;&#x884C;&#x4E86;&#x6DF7;&#x5408;&#x3002;&#x4E0D;&#x9700;&#x8981;&#x8017;&#x8D39;&#x989D;&#x5916;&#x7684;DrawCall&#x6765;&#x628A;&#x591A;&#x6B21;&#x6E32;&#x67D3;&#x7684;&#x7ED3;&#x679C;&#x8FDB;&#x884C;&#x4E00;&#x4E2A;Merge&#xFF08;&#x7C7B;&#x4F3C;Unity&#x4E2D;&#x7684;Graphics.Bilt&#x64CD;&#x4F5C;&#xFF09;</p>
-<p>&#x591A;&#x901A;&#x9053;&#x6E32;&#x67D3;&#x7684;&#x8BBE;&#x8BA1;&#x65B9;&#x5F0F;&#x4F7F;&#x5F97;&#x591A;&#x4E2A;DrawCall&#x7ED8;&#x5236;&#x7ED3;&#x679C;&#x7684;&#x6DF7;&#x5408;&#x66F4;&#x52A0;&#x7B80;&#x4FBF;&#xFF0C;&#x5B9E;&#x9645;&#x4E0A;&#x5E76;&#x4E0D;&#x4F1A;&#x5728;&#x56FE;&#x50CF;API&#x5C42;&#x9762;&#x63D0;&#x5347;&#x6027;&#x80FD;&#x548C;&#x8FD0;&#x7B97;&#x91CF;&#x3002;</p>
+
+<p>D3D11中可以创建多个DeferredContext, 可以对DeferredContext调用所有的渲染管线状态设置以及绘制的命令。然后将其储存在一个Command List中。 最后在执行真正的绘制时使用ImmediateContext执行CommandList。就可以一次性把一批次指令提交GPU。这里需要注意的是ImmediateContext本身不是线程安全的。</p>
+<p>类似于Unity中的CommandBuffer可以将一系列绘制命令提交给GPU执行，但是在Unity中CommandBuffer只是在上层应用层提供渲染管线扩展的能力。多线程渲染的另一个用处是可以将所有的绘制分割成不同的渲染任务，每个任务在各自命令列表中进行调用，维护独立的渲染管线状态。避免上一个绘制指令的管线状态影响到后续的绘制。</p>
+<h2 id="Multipass渲染"><a href="#Multipass渲染" class="headerlink" title="Multipass渲染"></a>Multipass渲染</h2><p>Multipass(多通道渲染，不知道是不是比较准确的翻译)渲染是一个更加上层的概念。在图像API层面并没有多通道渲染的概念。OpenGL D3D等等底层API没有相应的对象和接口，就像我们在游戏引擎里面看到的材质Material，也是应用层抽象出来的概念。</p>
+<p>在Unity ShaderLab的语法中我们可以这样定义一个Shader。Shader中支持MultiPass,几乎所有的游戏引擎都支持MultiPass。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Shader&#123;</span><br><span class="line">    SubShader&#123;</span><br><span class="line">        Pass&#123;</span><br><span class="line">            &#x2F;&#x2F;Pass 1</span><br><span class="line">        &#125;</span><br><span class="line">        Pass&#123;</span><br><span class="line">            &#x2F;&#x2F;Pass</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那么为什么需要多通道渲染呢？之前和老大讨论之后，有了一些更深的理解。</p>
+<h3 id="多通道渲染的实现"><a href="#多通道渲染的实现" class="headerlink" title="多通道渲染的实现"></a>多通道渲染的实现</h3><p>多通道渲染是对图像API的组织结构，例如在DX11中渲染一个对象，通常的做法如下</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">deviceContext-&gt;SetVertexBuffer();</span><br><span class="line">deviceContext-&gt;SetIndicesBuffer();</span><br><span class="line">deviceContext-&gt;SetVertexShader();</span><br><span class="line">deviceContext-&gt;SetPixelShader();</span><br><span class="line">deviceContext-&gt;SetPipelineState();</span><br><span class="line"></span><br><span class="line">deviceContext-&gt;DrawIndices(); <span class="comment">//draw call</span></span><br></pre></td></tr></table></figure>
+<p>先设置绘制的buffer数据然后进行设置shader最后调用draw call。而MultiPassShader的流程是</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">deviceContext-&gt;SetVertexBuffer();</span><br><span class="line">deviceContext-&gt;SetIndicesBuffer();</span><br><span class="line"></span><br><span class="line">deviceContext-&gt;SetVertexShader();   <span class="comment">//Pass 1</span></span><br><span class="line">deviceContext-&gt;SetPixelShader();    <span class="comment">//Pass 1</span></span><br><span class="line">deviceContext-&gt;SetPipelineState();  <span class="comment">//Pass 1 State</span></span><br><span class="line">deviceContext-&gt;DrawIndices();       <span class="comment">//Pass 1 draw call</span></span><br><span class="line"></span><br><span class="line">deviceContext-&gt;SetVertexShader();   <span class="comment">//Pass 2</span></span><br><span class="line">deviceContext-&gt;SetPixelShader();    <span class="comment">//Pass 2</span></span><br><span class="line">deviceContext-&gt;SetPipelineState();  <span class="comment">//Pass 2 State</span></span><br><span class="line">deviceContext-&gt;DrawIndices();       <span class="comment">//Pass 2 draw call</span></span><br></pre></td></tr></table></figure>
+<p>每个Pass可以认为是一个多层材质的一层，在渲染时共用模型数据。大部分情况下每个Pass可以在DeferredContext中绘制最后依次将CommandList进行绘制。（在调用DrawCall的时候Pass之间是一定是有先后顺序的，在Unity的ShaderLab中使用的是<code>Queue</code>这个Tag对Pass的调用进行排序。）</p>
+<p>之前思考过上每个Pass可以设置不同的RenderTarget，如果两个Pass之间没有先后的依赖关系，GPU应该可以同时进行绘制。但是这层的优惠应该是在驱动层做的优化，GPU在进行一个Shader绘制的时候是不是会使用掉所有的Streaming Multiprocessor，多个Pass能不能并行计算。可能需要了解更多GPU架构方面的知识。</p>
+<h3 id="为什么需要多通道渲染"><a href="#为什么需要多通道渲染" class="headerlink" title="为什么需要多通道渲染"></a>为什么需要多通道渲染</h3><p>上面描述了多通道渲染大概的实现方式，通常情况下的着色器效果其实在一个Pass里就可以完成。但是很多复杂的效果可能需要对渲染对象进行多次的渲染最后才能计算出最终的颜色。例如一些光照计算，阴影贴图实现阴影等等效果。在多通道渲染的每个Pass之间是可以使用Blend混合，Stencil模板以及自定义深度测试和计算。这样在不同Pass之间就可以依次把每个通道计算的颜色深度和模板进行了混合。不需要耗费额外的DrawCall来把多次渲染的结果进行一个Merge（类似Unity中的Graphics.Bilt操作）</p>
+<p>多通道渲染的设计方式使得多个DrawCall绘制结果的混合更加简便，实际上并不会在图像API层面提升性能和运算量。</p>
 
   </div>
 </article>
@@ -186,7 +189,7 @@
          
           <li><a href="/">Home</a></li>
          
-          <li><a href="https://artwork.yemi.me/">Artworks</a></li>
+          <li><a href="https://artwork.yemi.me/" target="_blank" rel="noopener">Artworks</a></li>
          
           <li><a href="/about/">About</a></li>
          
@@ -200,23 +203,22 @@
     </div>
 
     <div id="toc-footer" style="display: none">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#多线程渲染"><span class="toc-number">1.</span> <span class="toc-text">多线程渲染</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#multipass渲染"><span class="toc-number">2.</span> <span class="toc-text">Multipass渲染</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#多通道渲染的实现"><span class="toc-number">2.1.</span> <span class="toc-text">多通道渲染的实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#为什么需要多通道渲染"><span class="toc-number">2.2.</span> <span class="toc-text">为什么需要多通道渲染</span></a></li></ol></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#多线程渲染"><span class="toc-number">1.</span> <span class="toc-text">多线程渲染</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Multipass渲染"><span class="toc-number">2.</span> <span class="toc-text">Multipass渲染</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#多通道渲染的实现"><span class="toc-number">2.1.</span> <span class="toc-text">多通道渲染的实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#为什么需要多通道渲染"><span class="toc-number">2.2.</span> <span class="toc-text">为什么需要多通道渲染</span></a></li></ol></li></ol>
     </div>
 
     <div id="share-footer" style="display: none">
       <ul>
-  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yemi.me/2017/09/11/directx-note-2/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=http://yemi.me/2017/09/11/directx-note-2/&text=DirectX-DeferredContext与multipass rendering"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yemi.me/2017/09/11/directx-note-2/&title=DirectX-DeferredContext与multipass rendering"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yemi.me/2017/09/11/directx-note-2/&is_video=false&description=DirectX-DeferredContext与multipass rendering"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=DirectX-DeferredContext与multipass rendering&body=Check out this article: http://yemi.me/2017/09/11/directx-note-2/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=http://yemi.me/2017/09/11/directx-note-2/&title=DirectX-DeferredContext与multipass rendering"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=http://yemi.me/2017/09/11/directx-note-2/&title=DirectX-DeferredContext与multipass rendering"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yemi.me/2017/09/11/directx-note-2/&title=DirectX-DeferredContext与multipass rendering"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=http://yemi.me/2017/09/11/directx-note-2/&title=DirectX-DeferredContext与multipass rendering"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yemi.me/2017/09/11/directx-note-2/&name=DirectX-DeferredContext与multipass rendering&description=&lt;p&gt;DirectX11中有两种渲染方式，Immediate Rendering与Deferred Rendering。这里的延迟渲染与 实时渲染中的延迟渲染不是同一种概念，DX中的Deferred Context是在图像api层面绘制指令DrawCall的延迟，而实时渲染中的Deferred Rendering是利用GBuffer对渲染对象进行延迟着色。Deferred Context可以用来实现多线程渲染，最大程度上利用CPU与GPU的性能。&lt;/p&gt;
-&lt;h2 id=&#34;多线程渲染&#34;&gt;多线程渲染&lt;/h2&gt;
-&lt;p&gt;多线程渲染在我看来强调的是CPU层面的多线程，而GPU的渲染指令都是顺序执行的，而渲染本身由于GPU并行计算的架构始终是多线程的。在游戏运行的过程中，每一帧都有大量繁重的计算，CPU端的逻辑预算和GPU端的绘制。而游戏运行的帧率取决于最慢的一方。对于渲染的流程来说，CPU将绘制的图元数据传递到GPU然后GPU收到绘制指令开始绘制。这一流程是有先后顺序的。每个CPU调用绘制或者是设置渲染状态的命令都需要等待GPU完成后才能执行下一个命令。&lt;/p&gt;
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://yemi.me/2017/09/11/directx-note-2/" target="_blank" rel="noopener"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://yemi.me/2017/09/11/directx-note-2/&text=DirectX-DeferredContext与multipass rendering" target="_blank" rel="noopener"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://yemi.me/2017/09/11/directx-note-2/&title=DirectX-DeferredContext与multipass rendering" target="_blank" rel="noopener"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://yemi.me/2017/09/11/directx-note-2/&is_video=false&description=DirectX-DeferredContext与multipass rendering" target="_blank" rel="noopener"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=DirectX-DeferredContext与multipass rendering&body=Check out this article: https://yemi.me/2017/09/11/directx-note-2/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://yemi.me/2017/09/11/directx-note-2/&title=DirectX-DeferredContext与multipass rendering" target="_blank" rel="noopener"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://yemi.me/2017/09/11/directx-note-2/&title=DirectX-DeferredContext与multipass rendering" target="_blank" rel="noopener"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://yemi.me/2017/09/11/directx-note-2/&title=DirectX-DeferredContext与multipass rendering" target="_blank" rel="noopener"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://yemi.me/2017/09/11/directx-note-2/&title=DirectX-DeferredContext与multipass rendering" target="_blank" rel="noopener"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://yemi.me/2017/09/11/directx-note-2/&name=DirectX-DeferredContext与multipass rendering&description=&lt;p&gt;DirectX11中有两种渲染方式，Immediate Rendering与Deferred Rendering。这里的延迟渲染与 实时渲染中的延迟渲染不是同一种概念，DX中的Deferred Context是在图像api层面绘制指令DrawCall的延迟，而实时渲染中的Deferred Rendering是利用GBuffer对渲染对象进行延迟着色。Deferred Context可以用来实现多线程渲染，最大程度上利用CPU与GPU的性能。&lt;/p&gt;
+&lt;h2 id=&#34;多线程渲染&#34;&gt;&lt;a href=&#34;#多线程渲染&#34; class=&#34;headerlink&#34; title=&#34;多线程渲染&#34;&gt;&lt;/a&gt;多线程渲染&lt;/h2&gt;&lt;p&gt;多线程渲染在我看来强调的是CPU层面的多线程，而GPU的渲染指令都是顺序执行的，而渲染本身由于GPU并行计算的架构始终是多线程的。在游戏运行的过程中，每一帧都有大量繁重的计算，CPU端的逻辑预算和GPU端的绘制。而游戏运行的帧率取决于最慢的一方。对于渲染的流程来说，CPU将绘制的图元数据传递到GPU然后GPU收到绘制指令开始绘制。这一流程是有先后顺序的。每个CPU调用绘制或者是设置渲染状态的命令都需要等待GPU完成后才能执行下一个命令。&lt;/p&gt;
 &lt;p&gt;CPU端的多线程在于可以开启多个线程同时创建好一系列的指令并且做好CPU端的所有准备工作。然后再将这些指令列表顺序提交给GPU。这样就可以减少调用图像指令的同步时间，以减少CPU的时间消耗。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
@@ -235,7 +237,7 @@
     
     <footer id="footer">
   <div class="footer-left">
-    Copyright &copy; 2019 yemi
+    Copyright &copy; 2020 yemi
   </div>
   <div class="footer-right">
     <nav>
@@ -243,7 +245,7 @@
          
           <li><a href="/">Home</a></li>
          
-          <li><a href="https://artwork.yemi.me/">Artworks</a></li>
+          <li><a href="https://artwork.yemi.me/" target="_blank" rel="noopener">Artworks</a></li>
          
           <li><a href="/about/">About</a></li>
          
@@ -256,18 +258,28 @@
       </ul>
     </nav>
   </div>
-</footer>
+</footer><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 
 </body>
 </html>
 <!-- styles -->
+
 <link rel="stylesheet" href="/lib/font-awesome/css/fontawesome-all.min.css">
+
+
 <link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
 
+
 <!-- jquery -->
+
 <script src="/lib/jquery/jquery.min.js"></script>
+
+
 <script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+
+
 <script src="/js/main.js"></script>
+
 <!-- search -->
 
 <!-- Google Analytics -->

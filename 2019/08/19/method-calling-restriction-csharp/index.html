@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html lang=en>
-<head><meta name="generator" content="Hexo 3.8.0">
-    <!-- so meta -->
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!-- so meta -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="description" content="C#&amp;#x7684;&amp;#x8303;&amp;#x56F4;&amp;#x9650;&amp;#x5B9A;&amp;#x7B26;&amp;#x5728;&amp;#x5927;&amp;#x90E8;&amp;#x5206;&amp;#x60C5;&amp;#x51B5;&amp;#x4E0B;&amp;#xFF0C;&amp;#x80FD;&amp;#x591F;&amp;#x6EE1;&amp;#x8DB3;&amp;#x9700;&amp;#x6C42;&amp;#x3002;&amp;#x4F46;&amp;#x662F;&amp;#x8003;&amp;#x865">
-<meta name="keywords" content="hack,CSharp">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="C#的范围限定符在大部分情况下，能够满足需求。但是考虑这样的情况，我们希望一个类的public方法能够被另外一个类的方法调用，但是又仅限于某些允许的方法来调用。通常的情形是这两个类的调用是单向的，但是又不合适使用嵌套类来定义以及将两个类合并。对于C++来说，有Friend Class的定义来让两个类之间的方法能够相互暴露，而C#并没有类似的实现。在没有语法和语言特性的支持的情况下，我们如果要对方法">
 <meta property="og:type" content="article">
 <meta property="og:title" content="C# 实现友元及方法调用限制">
-<meta property="og:url" content="http://yemi.me/2019/08/19/method-calling-restriction-csharp/index.html">
+<meta property="og:url" content="https://yemi.me/2019/08/19/method-calling-restriction-csharp/index.html">
 <meta property="og:site_name" content="Yemi&#39;s Blog">
-<meta property="og:description" content="C#&amp;#x7684;&amp;#x8303;&amp;#x56F4;&amp;#x9650;&amp;#x5B9A;&amp;#x7B26;&amp;#x5728;&amp;#x5927;&amp;#x90E8;&amp;#x5206;&amp;#x60C5;&amp;#x51B5;&amp;#x4E0B;&amp;#xFF0C;&amp;#x80FD;&amp;#x591F;&amp;#x6EE1;&amp;#x8DB3;&amp;#x9700;&amp;#x6C42;&amp;#x3002;&amp;#x4F46;&amp;#x662F;&amp;#x8003;&amp;#x865">
-<meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-08-19T12:57:57.629Z">
+<meta property="og:description" content="C#的范围限定符在大部分情况下，能够满足需求。但是考虑这样的情况，我们希望一个类的public方法能够被另外一个类的方法调用，但是又仅限于某些允许的方法来调用。通常的情形是这两个类的调用是单向的，但是又不合适使用嵌套类来定义以及将两个类合并。对于C++来说，有Friend Class的定义来让两个类之间的方法能够相互暴露，而C#并没有类似的实现。在没有语法和语言特性的支持的情况下，我们如果要对方法">
+<meta property="article:published_time" content="2019-08-19T02:04:34.000Z">
+<meta property="article:modified_time" content="2020-02-17T10:12:11.213Z">
+<meta property="article:author" content="yemi">
+<meta property="article:tag" content="hack">
+<meta property="article:tag" content="CSharp">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="C# 实现友元及方法调用限制">
-<meta name="twitter:description" content="C#&amp;#x7684;&amp;#x8303;&amp;#x56F4;&amp;#x9650;&amp;#x5B9A;&amp;#x7B26;&amp;#x5728;&amp;#x5927;&amp;#x90E8;&amp;#x5206;&amp;#x60C5;&amp;#x51B5;&amp;#x4E0B;&amp;#xFF0C;&amp;#x80FD;&amp;#x591F;&amp;#x6EE1;&amp;#x8DB3;&amp;#x9700;&amp;#x6C42;&amp;#x3002;&amp;#x4F46;&amp;#x662F;&amp;#x8003;&amp;#x865">
     
     
         
@@ -39,15 +39,19 @@
     <!-- title -->
     <title>C# 实现友元及方法调用限制</title>
     <!-- styles -->
-    <link rel="stylesheet" href="/css/style.css">
+    
+<link rel="stylesheet" href="/css/style.css">
+
     <!-- rss -->
+
+    <link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet">
     
     
-</head>
+<meta name="generator" content="Hexo 4.2.0"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
 
 <body class="max-width mx-auto px3">
     
-      <div id="header-post">
+      <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="header-post">
   <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
   <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
   <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
@@ -57,7 +61,7 @@
          
           <li><a href="/">Home</a></li>
          
-          <li><a href="https://artwork.yemi.me/">Artworks</a></li>
+          <li><a href="https://artwork.yemi.me/" target="_blank" rel="noopener">Artworks</a></li>
          
           <li><a href="/about/">About</a></li>
          
@@ -69,9 +73,11 @@
         
       </ul>
     </span>
-    <br>
+    <br/>
     <span id="actions">
       <ul>
+        
+        <li><a class="icon" href="/2020/02/17/submit-unity-macos-build-to-stream-appstore/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
         
         
         <li><a class="icon" href="/2018/09/27/method-chaining-with-derivation/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
@@ -84,24 +90,24 @@
       <span id="i-top" class="info" style="display:none;">Back to top</span>
       <span id="i-share" class="info" style="display:none;">Share post</span>
     </span>
-    <br>
+    <br/>
     <div id="share" style="display: none">
       <ul>
-  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yemi.me/2019/08/19/method-calling-restriction-csharp/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=http://yemi.me/2019/08/19/method-calling-restriction-csharp/&text=C# 实现友元及方法调用限制"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yemi.me/2019/08/19/method-calling-restriction-csharp/&title=C# 实现友元及方法调用限制"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yemi.me/2019/08/19/method-calling-restriction-csharp/&is_video=false&description=C# 实现友元及方法调用限制"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=C# 实现友元及方法调用限制&body=Check out this article: http://yemi.me/2019/08/19/method-calling-restriction-csharp/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=http://yemi.me/2019/08/19/method-calling-restriction-csharp/&title=C# 实现友元及方法调用限制"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=http://yemi.me/2019/08/19/method-calling-restriction-csharp/&title=C# 实现友元及方法调用限制"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yemi.me/2019/08/19/method-calling-restriction-csharp/&title=C# 实现友元及方法调用限制"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=http://yemi.me/2019/08/19/method-calling-restriction-csharp/&title=C# 实现友元及方法调用限制"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yemi.me/2019/08/19/method-calling-restriction-csharp/&name=C# 实现友元及方法调用限制&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://yemi.me/2019/08/19/method-calling-restriction-csharp/" target="_blank" rel="noopener"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://yemi.me/2019/08/19/method-calling-restriction-csharp/&text=C# 实现友元及方法调用限制" target="_blank" rel="noopener"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://yemi.me/2019/08/19/method-calling-restriction-csharp/&title=C# 实现友元及方法调用限制" target="_blank" rel="noopener"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://yemi.me/2019/08/19/method-calling-restriction-csharp/&is_video=false&description=C# 实现友元及方法调用限制" target="_blank" rel="noopener"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=C# 实现友元及方法调用限制&body=Check out this article: https://yemi.me/2019/08/19/method-calling-restriction-csharp/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://yemi.me/2019/08/19/method-calling-restriction-csharp/&title=C# 实现友元及方法调用限制" target="_blank" rel="noopener"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://yemi.me/2019/08/19/method-calling-restriction-csharp/&title=C# 实现友元及方法调用限制" target="_blank" rel="noopener"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://yemi.me/2019/08/19/method-calling-restriction-csharp/&title=C# 实现友元及方法调用限制" target="_blank" rel="noopener"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://yemi.me/2019/08/19/method-calling-restriction-csharp/&title=C# 实现友元及方法调用限制" target="_blank" rel="noopener"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://yemi.me/2019/08/19/method-calling-restriction-csharp/&name=C# 实现友元及方法调用限制&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
     <div id="toc">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#方法调用限制检测"><span class="toc-number">1.</span> <span class="toc-text">方法调用限制检测</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#快速获取callingmethod"><span class="toc-number">2.</span> <span class="toc-text">快速获取CallingMethod</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用接口隐藏方法"><span class="toc-number">3.</span> <span class="toc-text">使用接口隐藏方法</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#方法调用限制检测"><span class="toc-number">1.</span> <span class="toc-text">方法调用限制检测</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#快速获取CallingMethod"><span class="toc-number">2.</span> <span class="toc-text">快速获取CallingMethod</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用接口隐藏方法"><span class="toc-number">3.</span> <span class="toc-text">使用接口隐藏方法</span></a></li></ol>
     </div>
   </span>
 </div>
@@ -109,7 +115,7 @@
     
     <div class="content index my4">
         
-        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
   <header>
     
     <h1 class="posttitle" itemprop="name headline">
@@ -119,7 +125,7 @@
 
 
     <div class="meta">
-      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
         <span itemprop="name">Yemi's Blog</span>
       </span>
       
@@ -131,7 +137,7 @@
       
     <div class="article-tag">
         <i class="fas fa-tag"></i>
-        <a class="tag-link" href="/tags/CSharp/">CSharp</a>, <a class="tag-link" href="/tags/hack/">hack</a>
+        <a class="tag-link" href="/tags/CSharp/" rel="tag">CSharp</a>, <a class="tag-link" href="/tags/hack/" rel="tag">hack</a>
     </div>
 
 
@@ -140,22 +146,24 @@
   
 
   <div class="content" itemprop="articleBody">
-    <p>C#&#x7684;&#x8303;&#x56F4;&#x9650;&#x5B9A;&#x7B26;&#x5728;&#x5927;&#x90E8;&#x5206;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x80FD;&#x591F;&#x6EE1;&#x8DB3;&#x9700;&#x6C42;&#x3002;&#x4F46;&#x662F;&#x8003;&#x8651;&#x8FD9;&#x6837;&#x7684;&#x60C5;&#x51B5;&#xFF0C;&#x6211;&#x4EEC;&#x5E0C;&#x671B;&#x4E00;&#x4E2A;&#x7C7B;&#x7684;public&#x65B9;&#x6CD5;&#x80FD;&#x591F;&#x88AB;&#x53E6;&#x5916;&#x4E00;&#x4E2A;&#x7C7B;&#x7684;&#x65B9;&#x6CD5;&#x8C03;&#x7528;&#xFF0C;&#x4F46;&#x662F;&#x53C8;&#x4EC5;&#x9650;&#x4E8E;&#x67D0;&#x4E9B;&#x5141;&#x8BB8;&#x7684;&#x65B9;&#x6CD5;&#x6765;&#x8C03;&#x7528;&#x3002;&#x901A;&#x5E38;&#x7684;&#x60C5;&#x5F62;&#x662F;&#x8FD9;&#x4E24;&#x4E2A;&#x7C7B;&#x7684;&#x8C03;&#x7528;&#x662F;&#x5355;&#x5411;&#x7684;&#xFF0C;&#x4F46;&#x662F;&#x53C8;&#x4E0D;&#x5408;&#x9002;&#x4F7F;&#x7528;&#x5D4C;&#x5957;&#x7C7B;&#x6765;&#x5B9A;&#x4E49;&#x4EE5;&#x53CA;&#x5C06;&#x4E24;&#x4E2A;&#x7C7B;&#x5408;&#x5E76;&#x3002; &#x5BF9;&#x4E8E;C++&#x6765;&#x8BF4;&#xFF0C;&#x6709;Friend Class&#x7684;&#x5B9A;&#x4E49;&#x6765;&#x8BA9;&#x4E24;&#x4E2A;&#x7C7B;&#x4E4B;&#x95F4;&#x7684;&#x65B9;&#x6CD5;&#x80FD;&#x591F;&#x76F8;&#x4E92;&#x66B4;&#x9732;&#xFF0C;&#x800C;C#&#x5E76;&#x6CA1;&#x6709;&#x7C7B;&#x4F3C;&#x7684;&#x5B9E;&#x73B0;&#x3002; &#x5728;&#x6CA1;&#x6709;&#x8BED;&#x6CD5;&#x548C;&#x8BED;&#x8A00;&#x7279;&#x6027;&#x7684;&#x652F;&#x6301;&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x6211;&#x4EEC;&#x5982;&#x679C;&#x8981;&#x5BF9;&#x65B9;&#x6CD5;&#x8C03;&#x7528;&#x8FDB;&#x884C;&#x9650;&#x5236;&#xFF0C;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;StackFrame&#x5BF9;&#x8C03;&#x7528;&#x8FDB;&#x884C;&#x68C0;&#x6D4B;&#x3002;</p>
-<p>&#x8003;&#x8651;&#x5982;&#x4E0B;&#x60C5;&#x51B5;&#xFF0C;&#x6211;&#x4EEC;&#x6709;&#x4E09;&#x4E2A;&#x7C7B;<code>A,B,C</code>,&#x6211;&#x4EEC;&#x5E0C;&#x671B;<code>A.CallingValidFromB</code> &#x53EA;&#x80FD;&#x88AB;<code>B</code>&#x7684;&#x65B9;&#x6CD5;&#x8C03;&#x7528;&#xFF0C;&#x800C;&#x5176;&#x4ED6;&#x7C7B;&#x7684;&#x65B9;&#x6CD5;&#x8C03;&#x7528;&#x8BE5;&#x65B9;&#x6CD5;&#x5219;&#x4F1A;&#x62A5;&#x9519;:</p>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">A</span>{</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">CallingValidFromB</span>(<span class="params"></span>)</span>{</span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">B</span>{</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">TestCall</span>(<span class="params"></span>)</span>{</span><br><span class="line">        A.CallingValidFromB(); <span class="comment">//OK </span></span><br><span class="line">    }</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">C</span>{</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">TestCall</span>(<span class="params"></span>)</span>{</span><br><span class="line">        C.CallingValidFromB();<span class="comment">// Error throw exception</span></span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
-<p>&#x5BF9;&#x6B64;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;<code>StackFrame</code>&#x5BF9;&#x65B9;&#x6CD5;&#x8C03;&#x7528;&#x8FDB;&#x884C;&#x5206;&#x6790;&#xFF0C;&#x6765;&#x68C0;&#x6D4B;caller&#x548C;callee&#x662F;&#x5426;&#x6EE1;&#x8DB3;&#x8981;&#x6C42;&#x3002;<code>StackFrame</code>&#x53EF;&#x4EE5;&#x83B7;&#x53D6;&#x5230;&#x6BCF;&#x4E2A;call stack&#x4E2D;&#x7684;&#x6BCF;&#x4E00;&#x6B65;&#x72B6;&#x6001;&#x7684;&#x65B9;&#x6CD5;&#x3002;</p>
-<h2 id="&#x65B9;&#x6CD5;&#x8C03;&#x7528;&#x9650;&#x5236;&#x68C0;&#x6D4B;">&#x65B9;&#x6CD5;&#x8C03;&#x7528;&#x9650;&#x5236;&#x68C0;&#x6D4B;</h2>
-<p><code>RestrictCaller</code>&#x65B9;&#x6CD5;&#x4F1A;&#x5BF9;caller&#x8FDB;&#x884C;&#x6821;&#x9A8C; <figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title">DevTool</span></span><br><span class="line">	{</span><br><span class="line">		<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">bool</span> RestrictCaller&lt;T&gt;(<span class="keyword">params</span> <span class="keyword">string</span>[] methods)</span><br><span class="line">		{</span><br><span class="line">			StackFrame frame1 = <span class="keyword">new</span> StackFrame(<span class="number">1</span>);</span><br><span class="line">			StackFrame frame2 = <span class="keyword">new</span> StackFrame(<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">			<span class="keyword">var</span> callerMethod = frame2.GetMethod();</span><br><span class="line">			<span class="keyword">var</span> callerType = callerMethod.DeclaringType;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">var</span> calleeMethod = frame1.GetMethod();</span><br><span class="line">			<span class="keyword">var</span> calleeType = calleeMethod.DeclaringType;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">var</span> calleeId = <span class="string">$&quot;<span class="subst">{calleeType.FullName}</span>.<span class="subst">{calleeMethod.Name}</span>()&quot;</span>;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">var</span> expectedType = <span class="keyword">typeof</span>(T);</span><br><span class="line">			<span class="keyword">if</span> (expectedType != callerType)</span><br><span class="line">			{</span><br><span class="line">				UnityDebug.LogError(<span class="string">$&quot;Call Method:&lt;<span class="subst">{calleeId}</span>&gt; withType:&lt;<span class="subst">{callerType.FullName}</span>&gt;, expect:&lt;<span class="subst">{expectedType.FullName}</span>&gt;&quot;</span>);</span><br><span class="line">				<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">			}</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> (methods == <span class="literal">null</span> || methods.Length == <span class="number">0</span>) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">			<span class="keyword">var</span> methodList = <span class="keyword">new</span> List&lt;<span class="keyword">string</span>&gt;(methods);</span><br><span class="line">			<span class="keyword">if</span> (!methodList.Contains(callerMethod.Name))</span><br><span class="line">			{</span><br><span class="line">				<span class="keyword">var</span> callerId = <span class="string">$&quot;<span class="subst">{callerType.FullName}</span>.<span class="subst">{callerMethod.Name}</span>()&quot;</span>;</span><br><span class="line">				UnityDebug.LogError(<span class="string">$&quot;Call Method:&lt;<span class="subst">{calleeId}</span>&gt; withMethod:&lt;<span class="subst">{callerId}</span>&gt; is not permitted.&quot;</span>);</span><br><span class="line">				<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">			}</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">		}</span><br></pre></td></tr></table></figure></p>
-<p>&#x8FD9;&#x6837;&#x5BF9;&#x4E8E;&#x4E0A;&#x6587;&#x7684;&#x4F8B;&#x5B50;&#xFF0C;&#x6211;&#x4EEC;&#x5C31;&#x53EF;&#x4EE5;&#x6DFB;&#x52A0;&#x6821;&#x9A8C;</p>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">A</span>{</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">CallingValidFromB</span>(<span class="params"></span>)</span>{</span><br><span class="line">        <span class="comment">//&#x9650;&#x5236;&#x65B9;&#x6CD5;&#x4ECE;B&#x8C03;&#x7528;&#x800C;&#x6765;</span></span><br><span class="line">        <span class="keyword">var</span> callingValid = DevTool.RestrictCaller&lt;B&gt;();</span><br><span class="line">        <span class="keyword">if</span>(!callingValid) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Do something</span></span><br><span class="line">    }</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">CallingValidFromBWithDefinedMethod</span>(<span class="params"></span>)</span>{</span><br><span class="line">        <span class="comment">//&#x9650;&#x5236;&#x65B9;&#x6CD5;&#x53EA;&#x80FD;&#x4ECE; B.TestCall() &#x4E2D;&#x8FDB;&#x884C;&#x8C03;&#x7528;</span></span><br><span class="line">        <span class="keyword">var</span> callingValid = DevTool.RestrictCaller&lt;B&gt;(<span class="keyword">nameof</span>(B.TestCall));</span><br><span class="line">        <span class="keyword">if</span>(!callingValid) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Do something</span></span><br><span class="line">    }</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
-<h2 id="&#x5FEB;&#x901F;&#x83B7;&#x53D6;callingmethod">&#x5FEB;&#x901F;&#x83B7;&#x53D6;CallingMethod</h2>
-<p>&#x5728;<code>.NET 4.0</code>&#x4E4B;&#x540E;<code>System.Runtime.CompilerServices</code>&#x4E2D;&#x63D0;&#x4F9B;&#x4E86; &#x4E09;&#x4E2A;Attribute&#x7528;&#x6237;&#x5FEB;&#x901F;&#x83B7;&#x53D6;<code>Caller</code>&#x4FE1;&#x606F;</p>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">CallerFilePathAttribute</span>]</span><br><span class="line">[<span class="meta">CallerMemberNameAttribute</span>]</span><br><span class="line">[<span class="meta">CallerLineNumberAttribute</span>]</span><br></pre></td></tr></table></figure>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod</span>(<span class="params"><span class="keyword">int</span> val,[CallerMemberName] <span class="keyword">string</span> callerMethod  =<span class="string">&quot;&quot;</span></span>)</span>{</span><br><span class="line">    Console.WriteLine(<span class="string">$&quot;caller method: <span class="subst">{callerMethod}</span>&quot;</span>);</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">AnotherMethod</span>(<span class="params"></span>)</span>{</span><br><span class="line">    TestMethod(<span class="number">1</span>); <span class="comment">// caller method: AnotherMethod</span></span><br><span class="line">}</span><br></pre></td></tr></table></figure>
-<h2 id="&#x4F7F;&#x7528;&#x63A5;&#x53E3;&#x9690;&#x85CF;&#x65B9;&#x6CD5;">&#x4F7F;&#x7528;&#x63A5;&#x53E3;&#x9690;&#x85CF;&#x65B9;&#x6CD5;</h2>
-<p>&#x9664;&#x53BB;&#x8FD0;&#x884C;&#x65F6;&#x8C03;&#x7528;&#x68C0;&#x6D4B;&#x4E4B;&#x5916;&#xFF0C;&#x6211;&#x4EEC;&#x8FD8;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x63A5;&#x53E3;&#x5C06;&#x4E00;&#x4E9B;&#x975E;&#x516C;&#x5F00;&#x7684;&#x65B9;&#x6CD5;&#x9690;&#x85CF;&#x3002;&#x5728;&#x9700;&#x8981;&#x88AB;&#x66B4;&#x9732;&#x7684;&#x7C7B;&#x4E2D;&#x76F4;&#x63A5;&#x5C06;&#x5BF9;&#x8C61;&#x8FDB;&#x884C;&#x7C7B;&#x578B;&#x8F6C;&#x6362;&#xFF0C;&#x518D;&#x8FDB;&#x884C;&#x51FD;&#x6570;&#x8C03;&#x7528;&#x3002;</p>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">A</span>{</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">publicMethod</span>(<span class="params"></span>)</span>;</span><br><span class="line">}</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">AWithInternal</span> : <span class="title">A</span>{</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testMethod</span>(<span class="params"></span>)</span>{}</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+    <p>C#的范围限定符在大部分情况下，能够满足需求。但是考虑这样的情况，我们希望一个类的public方法能够被另外一个类的方法调用，但是又仅限于某些允许的方法来调用。通常的情形是这两个类的调用是单向的，但是又不合适使用嵌套类来定义以及将两个类合并。<br>对于C++来说，有Friend Class的定义来让两个类之间的方法能够相互暴露，而C#并没有类似的实现。<br>在没有语法和语言特性的支持的情况下，我们如果要对方法调用进行限制，可以使用StackFrame对调用进行检测。</p>
+<p>考虑如下情况，我们有三个类<code>A,B,C</code>,我们希望<code>A.CallingValidFromB</code> 只能被<code>B</code>的方法调用，而其他类的方法调用该方法则会报错:</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">A</span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">CallingValidFromB</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">B</span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">TestCall</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        A.CallingValidFromB(); <span class="comment">//OK </span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">C</span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">TestCall</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        C.CallingValidFromB();<span class="comment">// Error throw exception</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
+<p>对此，我们可以<code>StackFrame</code>对方法调用进行分析，来检测caller和callee是否满足要求。<code>StackFrame</code>可以获取到每个call stack中的每一步状态的方法。</p>
+<h2 id="方法调用限制检测"><a href="#方法调用限制检测" class="headerlink" title="方法调用限制检测"></a>方法调用限制检测</h2><p><code>RestrictCaller</code>方法会对caller进行校验</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title">DevTool</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">bool</span> RestrictCaller&lt;T&gt;(<span class="keyword">params</span> <span class="keyword">string</span>[] methods)</span><br><span class="line">		&#123;</span><br><span class="line">			StackFrame frame1 = <span class="keyword">new</span> StackFrame(<span class="number">1</span>);</span><br><span class="line">			StackFrame frame2 = <span class="keyword">new</span> StackFrame(<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">			<span class="keyword">var</span> callerMethod = frame2.GetMethod();</span><br><span class="line">			<span class="keyword">var</span> callerType = callerMethod.DeclaringType;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">var</span> calleeMethod = frame1.GetMethod();</span><br><span class="line">			<span class="keyword">var</span> calleeType = calleeMethod.DeclaringType;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">var</span> calleeId = <span class="string">$"<span class="subst">&#123;calleeType.FullName&#125;</span>.<span class="subst">&#123;calleeMethod.Name&#125;</span>()"</span>;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">var</span> expectedType = <span class="keyword">typeof</span>(T);</span><br><span class="line">			<span class="keyword">if</span> (expectedType != callerType)</span><br><span class="line">			&#123;</span><br><span class="line">				UnityDebug.LogError(<span class="string">$"Call Method:&lt;<span class="subst">&#123;calleeId&#125;</span>&gt; withType:&lt;<span class="subst">&#123;callerType.FullName&#125;</span>&gt;, expect:&lt;<span class="subst">&#123;expectedType.FullName&#125;</span>&gt;"</span>);</span><br><span class="line">				<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> (methods == <span class="literal">null</span> || methods.Length == <span class="number">0</span>) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">			<span class="keyword">var</span> methodList = <span class="keyword">new</span> List&lt;<span class="keyword">string</span>&gt;(methods);</span><br><span class="line">			<span class="keyword">if</span> (!methodList.Contains(callerMethod.Name))</span><br><span class="line">			&#123;</span><br><span class="line">				<span class="keyword">var</span> callerId = <span class="string">$"<span class="subst">&#123;callerType.FullName&#125;</span>.<span class="subst">&#123;callerMethod.Name&#125;</span>()"</span>;</span><br><span class="line">				UnityDebug.LogError(<span class="string">$"Call Method:&lt;<span class="subst">&#123;calleeId&#125;</span>&gt; withMethod:&lt;<span class="subst">&#123;callerId&#125;</span>&gt; is not permitted."</span>);</span><br><span class="line">				<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">		&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样对于上文的例子，我们就可以添加校验</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">A</span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">CallingValidFromB</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="comment">//限制方法从B调用而来</span></span><br><span class="line">        <span class="keyword">var</span> callingValid = DevTool.RestrictCaller&lt;B&gt;();</span><br><span class="line">        <span class="keyword">if</span>(!callingValid) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Do something</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">CallingValidFromBWithDefinedMethod</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="comment">//限制方法只能从 B.TestCall() 中进行调用</span></span><br><span class="line">        <span class="keyword">var</span> callingValid = DevTool.RestrictCaller&lt;B&gt;(<span class="keyword">nameof</span>(B.TestCall));</span><br><span class="line">        <span class="keyword">if</span>(!callingValid) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Do something</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="快速获取CallingMethod"><a href="#快速获取CallingMethod" class="headerlink" title="快速获取CallingMethod"></a>快速获取CallingMethod</h2><p>在<code>.NET 4.0</code>之后<code>System.Runtime.CompilerServices</code>中提供了 三个Attribute用户快速获取<code>Caller</code>信息</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">CallerFilePathAttribute</span>]</span><br><span class="line">[<span class="meta">CallerMemberNameAttribute</span>]</span><br><span class="line">[<span class="meta">CallerLineNumberAttribute</span>]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">TestMethod</span>(<span class="params"><span class="keyword">int</span> val,[CallerMemberName] <span class="keyword">string</span> callerMethod  =<span class="string">""</span></span>)</span>&#123;</span><br><span class="line">    Console.WriteLine(<span class="string">$"caller method: <span class="subst">&#123;callerMethod&#125;</span>"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">AnotherMethod</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    TestMethod(<span class="number">1</span>); <span class="comment">// caller method: AnotherMethod</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="使用接口隐藏方法"><a href="#使用接口隐藏方法" class="headerlink" title="使用接口隐藏方法"></a>使用接口隐藏方法</h2><p>除去运行时调用检测之外，我们还可以使用接口将一些非公开的方法隐藏。在需要被暴露的类中直接将对象进行类型转换，再进行函数调用。</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title">A</span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">publicMethod</span>(<span class="params"></span>)</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">AWithInternal</span> : <span class="title">A</span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testMethod</span>(<span class="params"></span>)</span>&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
   </div>
 </article>
 
@@ -177,7 +185,7 @@
          
           <li><a href="/">Home</a></li>
          
-          <li><a href="https://artwork.yemi.me/">Artworks</a></li>
+          <li><a href="https://artwork.yemi.me/" target="_blank" rel="noopener">Artworks</a></li>
          
           <li><a href="/about/">About</a></li>
          
@@ -191,21 +199,21 @@
     </div>
 
     <div id="toc-footer" style="display: none">
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#方法调用限制检测"><span class="toc-number">1.</span> <span class="toc-text">方法调用限制检测</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#快速获取callingmethod"><span class="toc-number">2.</span> <span class="toc-text">快速获取CallingMethod</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用接口隐藏方法"><span class="toc-number">3.</span> <span class="toc-text">使用接口隐藏方法</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#方法调用限制检测"><span class="toc-number">1.</span> <span class="toc-text">方法调用限制检测</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#快速获取CallingMethod"><span class="toc-number">2.</span> <span class="toc-text">快速获取CallingMethod</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用接口隐藏方法"><span class="toc-number">3.</span> <span class="toc-text">使用接口隐藏方法</span></a></li></ol>
     </div>
 
     <div id="share-footer" style="display: none">
       <ul>
-  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://yemi.me/2019/08/19/method-calling-restriction-csharp/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=http://yemi.me/2019/08/19/method-calling-restriction-csharp/&text=C# 实现友元及方法调用限制"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://yemi.me/2019/08/19/method-calling-restriction-csharp/&title=C# 实现友元及方法调用限制"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://yemi.me/2019/08/19/method-calling-restriction-csharp/&is_video=false&description=C# 实现友元及方法调用限制"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=C# 实现友元及方法调用限制&body=Check out this article: http://yemi.me/2019/08/19/method-calling-restriction-csharp/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=http://yemi.me/2019/08/19/method-calling-restriction-csharp/&title=C# 实现友元及方法调用限制"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=http://yemi.me/2019/08/19/method-calling-restriction-csharp/&title=C# 实现友元及方法调用限制"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://yemi.me/2019/08/19/method-calling-restriction-csharp/&title=C# 实现友元及方法调用限制"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=http://yemi.me/2019/08/19/method-calling-restriction-csharp/&title=C# 实现友元及方法调用限制"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://yemi.me/2019/08/19/method-calling-restriction-csharp/&name=C# 实现友元及方法调用限制&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://yemi.me/2019/08/19/method-calling-restriction-csharp/" target="_blank" rel="noopener"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://yemi.me/2019/08/19/method-calling-restriction-csharp/&text=C# 实现友元及方法调用限制" target="_blank" rel="noopener"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://yemi.me/2019/08/19/method-calling-restriction-csharp/&title=C# 实现友元及方法调用限制" target="_blank" rel="noopener"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://yemi.me/2019/08/19/method-calling-restriction-csharp/&is_video=false&description=C# 实现友元及方法调用限制" target="_blank" rel="noopener"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=C# 实现友元及方法调用限制&body=Check out this article: https://yemi.me/2019/08/19/method-calling-restriction-csharp/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://yemi.me/2019/08/19/method-calling-restriction-csharp/&title=C# 实现友元及方法调用限制" target="_blank" rel="noopener"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://yemi.me/2019/08/19/method-calling-restriction-csharp/&title=C# 实现友元及方法调用限制" target="_blank" rel="noopener"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://yemi.me/2019/08/19/method-calling-restriction-csharp/&title=C# 实现友元及方法调用限制" target="_blank" rel="noopener"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://yemi.me/2019/08/19/method-calling-restriction-csharp/&title=C# 实现友元及方法调用限制" target="_blank" rel="noopener"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://yemi.me/2019/08/19/method-calling-restriction-csharp/&name=C# 实现友元及方法调用限制&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -223,7 +231,7 @@
     
     <footer id="footer">
   <div class="footer-left">
-    Copyright &copy; 2019 yemi
+    Copyright &copy; 2020 yemi
   </div>
   <div class="footer-right">
     <nav>
@@ -231,7 +239,7 @@
          
           <li><a href="/">Home</a></li>
          
-          <li><a href="https://artwork.yemi.me/">Artworks</a></li>
+          <li><a href="https://artwork.yemi.me/" target="_blank" rel="noopener">Artworks</a></li>
          
           <li><a href="/about/">About</a></li>
          
@@ -244,18 +252,28 @@
       </ul>
     </nav>
   </div>
-</footer>
+</footer><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 
 </body>
 </html>
 <!-- styles -->
+
 <link rel="stylesheet" href="/lib/font-awesome/css/fontawesome-all.min.css">
+
+
 <link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
 
+
 <!-- jquery -->
+
 <script src="/lib/jquery/jquery.min.js"></script>
+
+
 <script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+
+
 <script src="/js/main.js"></script>
+
 <!-- search -->
 
 <!-- Google Analytics -->
