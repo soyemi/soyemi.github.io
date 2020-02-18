@@ -6,14 +6,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <meta name="description" content="这篇blog记录下如何将Unity导出的macOS应用提交到Steam和AppStore。通常情况下我们在macOS系统上的开发依赖于Xcode，如果在Unity的PlayerSettings里面没有设置签名和BundleId，那么只能使用相应的命令行工具对二进制的Game.app进行签名和处理。 首先会介绍一些签名相关的基本概念和命令，或者你可以直接跳到:提交到Steam和第三方直接发布提交到m">
+    <meta name="description" content="中文 | English  这篇blog记录下如何将Unity导出的macOS应用提交到Steam和AppStore。通常情况下我们在macOS系统上的开发依赖于Xcode，如果在Unity的PlayerSettings里面没有设置签名和BundleId，那么只能使用相应的命令行工具对二进制的Game.app进行签名和处理。 首先会介绍一些签名相关的基本概念和命令，或者你可以直接跳到:提交到Ste">
 <meta property="og:type" content="article">
 <meta property="og:title" content="发布Unity项目到macOS AppStore和Steam">
-<meta property="og:url" content="https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/index.html">
+<meta property="og:url" content="https://yemi.me/2020/02/17/submit-unity-macos-build-to-steam-appstore/index.html">
 <meta property="og:site_name" content="Yemi&#39;s Blog">
-<meta property="og:description" content="这篇blog记录下如何将Unity导出的macOS应用提交到Steam和AppStore。通常情况下我们在macOS系统上的开发依赖于Xcode，如果在Unity的PlayerSettings里面没有设置签名和BundleId，那么只能使用相应的命令行工具对二进制的Game.app进行签名和处理。 首先会介绍一些签名相关的基本概念和命令，或者你可以直接跳到:提交到Steam和第三方直接发布提交到m">
+<meta property="og:description" content="中文 | English  这篇blog记录下如何将Unity导出的macOS应用提交到Steam和AppStore。通常情况下我们在macOS系统上的开发依赖于Xcode，如果在Unity的PlayerSettings里面没有设置签名和BundleId，那么只能使用相应的命令行工具对二进制的Game.app进行签名和处理。 首先会介绍一些签名相关的基本概念和命令，或者你可以直接跳到:提交到Ste">
+<meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-02-17T09:31:49.000Z">
-<meta property="article:modified_time" content="2020-02-18T09:08:54.219Z">
+<meta property="article:modified_time" content="2020-02-18T11:51:47.055Z">
 <meta property="article:author" content="yemi">
 <meta property="article:tag" content="macOS">
 <meta property="article:tag" content="Steam">
@@ -62,17 +63,17 @@
     <span id="nav">
       <ul>
          
-          <li><a href="/">Home</a></li>
+          <li><a href="/">首页</a></li>
          
           <li><a href="https://artwork.yemi.me/" target="_blank" rel="noopener">Artworks</a></li>
          
-          <li><a href="/about/">About</a></li>
+          <li><a href="/about/">关于</a></li>
          
-          <li><a href="/archives/">Writing</a></li>
+          <li><a href="/archives/">归档</a></li>
          
-          <li><a href="/projects/">Projects</a></li>
+          <li><a href="/projects/">项目</a></li>
          
-          <li><a href="/Search/">Search</a></li>
+          <li><a href="/Search/">搜索</a></li>
         
       </ul>
     </span>
@@ -80,30 +81,32 @@
     <span id="actions">
       <ul>
         
+        <li><a class="icon" href="/2020/02/17/en/submit-unity-macos-build-to-steam-appstore/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
         
         <li><a class="icon" href="/2019/08/19/method-calling-restriction-csharp/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
         <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
       </ul>
-      <span id="i-prev" class="info" style="display:none;">Previous post</span>
-      <span id="i-next" class="info" style="display:none;">Next post</span>
-      <span id="i-top" class="info" style="display:none;">Back to top</span>
-      <span id="i-share" class="info" style="display:none;">Share post</span>
+      <span id="i-prev" class="info" style="display:none;">上一篇</span>
+      <span id="i-next" class="info" style="display:none;">下一篇</span>
+      <span id="i-top" class="info" style="display:none;">返回顶部</span>
+      <span id="i-share" class="info" style="display:none;">分享文章</span>
     </span>
     <br/>
     <div id="share" style="display: none">
       <ul>
-  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/" target="_blank" rel="noopener"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/&text=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/&title=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/&is_video=false&description=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=发布Unity项目到macOS AppStore和Steam&body=Check out this article: https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/&title=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/&title=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/&title=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/&title=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/&name=发布Unity项目到macOS AppStore和Steam&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://yemi.me/2020/02/17/submit-unity-macos-build-to-steam-appstore/" target="_blank" rel="noopener"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-steam-appstore/&text=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-steam-appstore/&title=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-steam-appstore/&is_video=false&description=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=发布Unity项目到macOS AppStore和Steam&body=Check out this article: https://yemi.me/2020/02/17/submit-unity-macos-build-to-steam-appstore/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-steam-appstore/&title=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-steam-appstore/&title=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-steam-appstore/&title=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-steam-appstore/&title=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-steam-appstore/&name=发布Unity项目到macOS AppStore和Steam&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -147,7 +150,9 @@
   
 
   <div class="content" itemprop="articleBody">
-    <p>这篇blog记录下如何将Unity导出的macOS应用提交到Steam和AppStore。通常情况下我们在macOS系统上的开发依赖于Xcode，如果在Unity的<code>PlayerSettings</code>里面没有设置签名和BundleId，那么只能使用相应的命令行工具对二进制的<code>Game.app</code>进行签名和处理。</p>
+    <p><a href="/2020/02/17/submit-unity-macos-build-to-steam-appstore/">中文</a> | <a href="/2020/02/17/en/submit-unity-macos-build-to-steam-appstore/">English</a></p>
+<hr>
+<p>这篇blog记录下如何将Unity导出的macOS应用提交到Steam和AppStore。通常情况下我们在macOS系统上的开发依赖于Xcode，如果在Unity的<code>PlayerSettings</code>里面没有设置签名和BundleId，那么只能使用相应的命令行工具对二进制的<code>Game.app</code>进行签名和处理。</p>
 <p>首先会介绍一些签名相关的基本概念和命令，或者你可以直接跳到:<br><a href="#提交到Steam和第三方直接发布">提交到Steam和第三方直接发布</a><br><a href="#提交到macOS-App-Store">提交到macOS-App-Store</a></p>
 <h2 id="包体配置和签名"><a href="#包体配置和签名" class="headerlink" title="包体配置和签名"></a>包体配置和签名</h2><h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><p>Apple提供了签名工具用于给应用文件进行签名，通常macOS系统的应用都是一个<code>.app</code>的Bundle，不像Windows系统中是一个<code>.exe</code>的文件。所以macOS的codesign 是对于整个bundle的所有文件的。</p>
 <p><strong>Designated Requirement(DR)</strong></p>
@@ -298,7 +303,7 @@
 
     <div class="blog-post-comments">
         <div id="disqus_thread">
-            <noscript>Please enable JavaScript to view the comments.</noscript>
+            <noscript>加载评论需要在浏览器启用 JavaScript 脚本支持。</noscript>
         </div>
     </div>
 
@@ -312,17 +317,17 @@
     <div id="nav-footer" style="display: none">
       <ul>
          
-          <li><a href="/">Home</a></li>
+          <li><a href="/">首页</a></li>
          
           <li><a href="https://artwork.yemi.me/" target="_blank" rel="noopener">Artworks</a></li>
          
-          <li><a href="/about/">About</a></li>
+          <li><a href="/about/">关于</a></li>
          
-          <li><a href="/archives/">Writing</a></li>
+          <li><a href="/archives/">归档</a></li>
          
-          <li><a href="/projects/">Projects</a></li>
+          <li><a href="/projects/">项目</a></li>
          
-          <li><a href="/Search/">Search</a></li>
+          <li><a href="/Search/">搜索</a></li>
         
       </ul>
     </div>
@@ -333,25 +338,25 @@
 
     <div id="share-footer" style="display: none">
       <ul>
-  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/" target="_blank" rel="noopener"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/&text=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/&title=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/&is_video=false&description=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=发布Unity项目到macOS AppStore和Steam&body=Check out this article: https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/&title=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/&title=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/&title=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/&title=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-stream-appstore/&name=发布Unity项目到macOS AppStore和Steam&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://yemi.me/2020/02/17/submit-unity-macos-build-to-steam-appstore/" target="_blank" rel="noopener"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-steam-appstore/&text=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-steam-appstore/&title=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-steam-appstore/&is_video=false&description=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=发布Unity项目到macOS AppStore和Steam&body=Check out this article: https://yemi.me/2020/02/17/submit-unity-macos-build-to-steam-appstore/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-steam-appstore/&title=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-steam-appstore/&title=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-steam-appstore/&title=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-steam-appstore/&title=发布Unity项目到macOS AppStore和Steam" target="_blank" rel="noopener"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://yemi.me/2020/02/17/submit-unity-macos-build-to-steam-appstore/&name=发布Unity项目到macOS AppStore和Steam&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
 
     <div id="actions-footer">
-        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
-        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
-        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
-        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> 菜单</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> 目录</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> 分享</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> 返回顶部</a>
     </div>
 
   </div>
@@ -366,17 +371,17 @@
     <nav>
       <ul>
          
-          <li><a href="/">Home</a></li>
+          <li><a href="/">首页</a></li>
          
           <li><a href="https://artwork.yemi.me/" target="_blank" rel="noopener">Artworks</a></li>
          
-          <li><a href="/about/">About</a></li>
+          <li><a href="/about/">关于</a></li>
          
-          <li><a href="/archives/">Writing</a></li>
+          <li><a href="/archives/">归档</a></li>
          
-          <li><a href="/projects/">Projects</a></li>
+          <li><a href="/projects/">项目</a></li>
          
-          <li><a href="/Search/">Search</a></li>
+          <li><a href="/Search/">搜索</a></li>
         
       </ul>
     </nav>

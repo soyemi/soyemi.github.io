@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="description" content="中文 | English  This blog records how to setup and config the application bundle which will be submitted to the AppStore or Steam by using the CLI tools. Mostly, we use XCode for developing iOS and macO">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Delivering Unity macOS build to Steam and AppStore">
+<meta property="og:url" content="https://yemi.me/2020/02/17/en/submit-unity-macos-build-to-steam-appstore/index.html">
+<meta property="og:site_name" content="Yemi&#39;s Blog">
+<meta property="og:description" content="中文 | English  This blog records how to setup and config the application bundle which will be submitted to the AppStore or Steam by using the CLI tools. Mostly, we use XCode for developing iOS and macO">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-02-17T09:31:49.000Z">
+<meta property="article:modified_time" content="2020-02-18T11:52:26.732Z">
+<meta property="article:author" content="yemi">
+<meta property="article:tag" content="macOS">
+<meta property="article:tag" content="Steam">
+<meta property="article:tag" content="CodeSign">
+<meta property="article:tag" content="AppStore">
+<meta property="article:tag" content="dev">
+<meta name="twitter:card" content="summary">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.png">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+          
+        
+    
+    <!-- title -->
+    <title>Delivering Unity macOS build to Steam and AppStore</title>
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    <!-- rss -->
+
+    <link href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.css" rel="stylesheet">
+    
+    
+<meta name="generator" content="Hexo 4.2.0"><!-- hexo-inject:begin --><!-- hexo-inject:end --></head>
+
+<body class="max-width mx-auto px3">
+    
+      <!-- hexo-inject:begin --><!-- hexo-inject:end --><div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="https://artwork.yemi.me/" target="_blank" rel="noopener">Artworks</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+         
+          <li><a href="/Search/">Search</a></li>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" href="/2020/02/17/submit-unity-macos-build-to-steam-appstore/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://yemi.me/2020/02/17/en/submit-unity-macos-build-to-steam-appstore/" target="_blank" rel="noopener"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://yemi.me/2020/02/17/en/submit-unity-macos-build-to-steam-appstore/&text=Delivering Unity macOS build to Steam and AppStore" target="_blank" rel="noopener"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://yemi.me/2020/02/17/en/submit-unity-macos-build-to-steam-appstore/&title=Delivering Unity macOS build to Steam and AppStore" target="_blank" rel="noopener"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://yemi.me/2020/02/17/en/submit-unity-macos-build-to-steam-appstore/&is_video=false&description=Delivering Unity macOS build to Steam and AppStore" target="_blank" rel="noopener"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Delivering Unity macOS build to Steam and AppStore&body=Check out this article: https://yemi.me/2020/02/17/en/submit-unity-macos-build-to-steam-appstore/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://yemi.me/2020/02/17/en/submit-unity-macos-build-to-steam-appstore/&title=Delivering Unity macOS build to Steam and AppStore" target="_blank" rel="noopener"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://yemi.me/2020/02/17/en/submit-unity-macos-build-to-steam-appstore/&title=Delivering Unity macOS build to Steam and AppStore" target="_blank" rel="noopener"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://yemi.me/2020/02/17/en/submit-unity-macos-build-to-steam-appstore/&title=Delivering Unity macOS build to Steam and AppStore" target="_blank" rel="noopener"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://yemi.me/2020/02/17/en/submit-unity-macos-build-to-steam-appstore/&title=Delivering Unity macOS build to Steam and AppStore" target="_blank" rel="noopener"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://yemi.me/2020/02/17/en/submit-unity-macos-build-to-steam-appstore/&name=Delivering Unity macOS build to Steam and AppStore&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Bundle-Config-and-Code-Signing"><span class="toc-number">1.</span> <span class="toc-text">Bundle Config and Code Signing</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Basic-Concepts"><span class="toc-number">1.1.</span> <span class="toc-text">Basic Concepts</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Process-application-bundle"><span class="toc-number">1.2.</span> <span class="toc-text">Process application bundle</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CodeSigning"><span class="toc-number">1.3.</span> <span class="toc-text">CodeSigning</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Submit-to-SteamStore-and-non-AppStore-distribution"><span class="toc-number">2.</span> <span class="toc-text">Submit to SteamStore and non AppStore distribution</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Generate-Certificate"><span class="toc-number">2.1.</span> <span class="toc-text">Generate Certificate</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Bundle-preparation"><span class="toc-number">2.2.</span> <span class="toc-text">Bundle preparation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Fix-SteamLib"><span class="toc-number">2.3.</span> <span class="toc-text">Fix SteamLib</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CodeSigning-1"><span class="toc-number">2.4.</span> <span class="toc-text">CodeSigning</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Submit-to-Notarization"><span class="toc-number">2.5.</span> <span class="toc-text">Submit to Notarization</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Submit-to-macOS-App-Store"><span class="toc-number">3.</span> <span class="toc-text">Submit to macOS App Store</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Certificate-Creation"><span class="toc-number">3.1.</span> <span class="toc-text">Certificate Creation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Bundle-Configuration"><span class="toc-number">3.2.</span> <span class="toc-text">Bundle Configuration</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Generate-pkg-file"><span class="toc-number">3.3.</span> <span class="toc-text">Generate .pkg file</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Use-AppLoader-for-uploading"><span class="toc-number">3.4.</span> <span class="toc-text">Use AppLoader for uploading</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#FAQ"><span class="toc-number">4.</span> <span class="toc-text">FAQ</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index my4">
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Delivering Unity macOS build to Steam and AppStore
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span itemprop="name">Yemi's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2020-02-17T09:31:49.000Z" itemprop="datePublished">2020-02-17</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/AppStore/" rel="tag">AppStore</a>, <a class="tag-link" href="/tags/CodeSign/" rel="tag">CodeSign</a>, <a class="tag-link" href="/tags/Steam/" rel="tag">Steam</a>, <a class="tag-link" href="/tags/dev/" rel="tag">dev</a>, <a class="tag-link" href="/tags/macOS/" rel="tag">macOS</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p><a href="/2020/02/17/submit-unity-macos-build-to-steam-appstore/">中文</a> | <a href="/2020/02/17/en/submit-unity-macos-build-to-steam-appstore/">English</a></p>
+<hr>
+<p>This blog records how to setup and config the application bundle which will be submitted to the AppStore or Steam by using the CLI tools. Mostly, we use XCode for developing iOS and macOS applications, which automatically handles the code signing and configurations. But when exporting an app bundle from Unity Editor, we have to do this work by using command line tools that are provided by Apple.</p>
+<p>In the begining, let’s get some preliminary knowledege about the <code>CodeSign</code> and <code>Distributions</code>. Or you can just skip this part then jump into the process parts.</p>
+<p><a href="#Submit-to-SteamStore-and-non-AppStore-distribution">Submit to Steam store or third-party distribution</a><br><a href="#Submit-to-macOS-App-Store">Submit to macOS AppStore</a></p>
+<h2 id="Bundle-Config-and-Code-Signing"><a href="#Bundle-Config-and-Code-Signing" class="headerlink" title="Bundle Config and Code Signing"></a>Bundle Config and Code Signing</h2><h3 id="Basic-Concepts"><a href="#Basic-Concepts" class="headerlink" title="Basic Concepts"></a>Basic Concepts</h3><p>Apple provides code signing tool which is called <code>codesign</code>. In general, the execuatable application in macOS system presents as a folder that has name with <code>.app</code> suffix. It’s different from windows. So for signing the app become more complicated, because we are facing a bunch of files not just a single <code>.exe</code> file.</p>
+<p><strong>Designated Requirement(DR)</strong></p>
+<p>Every application requires a Designated Requirement(DR) when code signing. The DR is identified by the bundle’s BundleID.</p>
+<p><strong>Resource envelope</strong></p>
+<p>CodeSign tool will process all sourcefile and non-sourcefile. Every file calculates a hash string, then combined these hashes into a final hash value which will be attched to the application bundle.</p>
+<p>Any modification apply to the signed files will change the hash that belonging to this files, and obviously affects final hash. By using this method, other security programs can verify the identity and integrality.</p>
+<p>The concept for files signature data is call <code>Resource envelope</code>.</p>
+<p><code>Resource envelope has two versions, the latest v2 version will check all the files inside the bundle. After OSX Mavericks 10.9, all app use the v2 version.</code></p>
+<p>Even if we didn’t touch the bundle file, any extra file added to the <code>Game.app</code> bundle folder, will casue the bundle codesign verification failed.</p>
+<h3 id="Process-application-bundle"><a href="#Process-application-bundle" class="headerlink" title="Process application bundle"></a>Process application bundle</h3><p><strong>Modifiy the BundleId</strong></p>
+<p>Directly open the Plist file <code>Game.app/Contents/Info.plist</code> change the value of key <code>CFBundleIdentifier</code>。</p>
+<p><strong>Remove useless files</strong></p>
+<p>Unity Edtiro always genereate <code>.meta</code> files for all the imported macOS library. These .meta file were placed at illegal path for application bundle. And causing the codesign process failed. We must delete them.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#remove all remove meta files</span></span><br><span class="line">find <span class="string">"./Game.app"</span> -name <span class="string">"*.meta"</span> -<span class="built_in">type</span> f -<span class="built_in">exec</span> rm &#123;&#125; \;</span><br></pre></td></tr></table></figure>
+
+<h3 id="CodeSigning"><a href="#CodeSigning" class="headerlink" title="CodeSigning"></a>CodeSigning</h3><p><strong>Signing Third-party libs</strong></p>
+<p>Apple requires all the libraries must be signed before submiting to AppStore or Notarization.</p>
+<p>All libraries include <code>.dylib</code> <code>.framework</code> and <code>.bundle</code>.</p>
+<p>When submiting to AppStore, the third-party libs must be signed by current <code>Apple Developer</code>, even if them were codesigned or not. Which means that we also need to codesign the common shared libs such as <code>libssl.dylib</code>.</p>
+<p><strong>Entitlements Files</strong></p>
+<p>Before use codesign tool, we need to create <code>.entitlements</code> file. Xcode usually create them for us, but now we are using CLI tools and tackling with exported binary file, don’t we? The entitlements file which used for AppStore submission differ from the Steam one.</p>
+<p>The minimal configurations are provided below, other key/value pairs must be added if there have other capabilities.</p>
+<p><strong>For macOS AppStore</strong><br>        <figure class="highlight plist"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">plist</span> <span class="meta-keyword">PUBLIC</span> <span class="meta-string">"-//Apple//DTD PLIST 1.0//EN"</span> <span class="meta-string">"http://www.apple.com/DTDs/PropertyList-1.0.dtd"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">plist</span> <span class="attr">version</span>=<span class="string">"1.0"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dict</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>com.apple.security.app-sandbox<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">true</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>com.apple.security.files.user-selected.read-only<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">true</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dict</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">plist</span></span></span><br></pre></td></tr></table></figure></p>
+<p><strong>For Steam</strong></p>
+<figure class="highlight plist"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">plist</span> <span class="meta-keyword">PUBLIC</span> <span class="meta-string">"-//Apple//DTD PLIST 1.0//EN"</span> <span class="meta-string">"http://www.apple.com/DTDs/PropertyList-1.0.dtd"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">plist</span> <span class="attr">version</span>=<span class="string">"1.0"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dict</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">key</span>&gt;</span>com.apple.security.cs.disable-library-validation<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">true</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">key</span>&gt;</span>com.apple.security.cs.disable-executable-page-protection<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">true</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dict</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>CodeSign Tool</strong></p>
+<p>codesign command for signing a single file</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">codesign --deep --force --verify --verbose=4 --timestamp --options runtime --entitlements  <span class="variable">$EntitlementsFile</span> --sign <span class="string">"<span class="variable">$CertName</span>"</span> <span class="variable">$FileName</span></span><br></pre></td></tr></table></figure>
+
+<p>Parameter sign should be filled with the name of certificate. Like <code>Mac Developer:XXXXX(TEAMID)</code>. Codesign tool will search all the certs in user’s keychain, find the correct one. Throwing error when found multiple certs match the inputs.</p>
+<p>Command for verification the codesign status.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">codesign --verify --deep --strict --verbose=4 Game.app</span><br></pre></td></tr></table></figure>
+
+<p>Success with these outputs.</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="module-access"><span class="module"><span class="identifier">Game</span>.</span></span>app: valid on disk</span><br><span class="line"><span class="module-access"><span class="module"><span class="identifier">Game</span>.</span></span>app: satisfies its Designated Requirement</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="Submit-to-SteamStore-and-non-AppStore-distribution"><a href="#Submit-to-SteamStore-and-non-AppStore-distribution" class="headerlink" title="Submit to SteamStore and non AppStore distribution"></a>Submit to SteamStore and non AppStore distribution</h2><p>The binary app which submitted to SteamStore must be notarized by Apple, otherwise the program will be blocked by GateKeeper when user try to launch the app.</p>
+<p>The specified notarizing docs from Apple <a href="https://developer.apple.com/documentation/xcode/notarizing_macos_software_before_distribution" target="_blank" rel="noopener">Notarizing macOS Software Before Distribution</a></p>
+<h3 id="Generate-Certificate"><a href="#Generate-Certificate" class="headerlink" title="Generate Certificate"></a>Generate Certificate</h3><p>First step is creating a certificate. Signin to the <a href="https://developer.apple.com/" target="_blank" rel="noopener">Apple Developer</a> website then generate a <code>Developer ID Application</code> cert.</p>
+<p>Only the <strong>account holder</strong> of the developer team can create this <code>Developer ID Application Certificate</code> ，even if the user have admin permission role. Just like any other developer cert, export a CSR file from keychain tool, then upload for swapping a .cert file.</p>
+<h3 id="Bundle-preparation"><a href="#Bundle-preparation" class="headerlink" title="Bundle preparation"></a>Bundle preparation</h3><p>Now we have a <code>Game.app</code> binary bundle, and a <code>Developer ID Application Certificate</code>. But before signing, bundle needs to be preprocessed.</p>
+<p>Following the instruction of first part <a href="#Process-application-bundle">Process-application-bundle</a>.</p>
+<ol>
+<li>delete all <code>.meta</code> file recursivly inside the <code>Game.app</code> folder.</li>
+<li>Create <code>Game.entitlements</code> file as informed.</li>
+<li>Modify <code>Game.app/Contents/Info.plist</code> if needed.</li>
+</ol>
+<h3 id="Fix-SteamLib"><a href="#Fix-SteamLib" class="headerlink" title="Fix SteamLib"></a>Fix SteamLib</h3><p>Most of developer use third-party Steamworks Lib<a href="https://github.com/rlabrecque/Steamworks.NET" target="_blank" rel="noopener">rlabrecque/Steamworks.NET</a> with Unity, because the VALVE didn’t provide the C# version SDK。Before codesign we needs some patches。</p>
+<p>The lib file of <code>rlabrecque/Steamworks.NET</code> is <code>Steam_api.bundle</code>.</p>
+<ol>
+<li>Steam_api.bundle contains an invalid CFBundleIdentifier: <code>com.rileylabrecque.steam_api</code>. Change it to <code>com.rileylabrecque.steamapi</code> in the file<br><code>steam_api.bundle/Contents/Info.plist</code>。</li>
+<li><code>libsteam_api.dylib</code> contains 32bit symbols. We only use 64bit symbols, delete it with command <code>lipo -remove x86_64 libsteam_api.dylib -o libsteam_api.dylib</code>.</li>
+</ol>
+<p>No we have successfully processing the Steamwork library. These rules are also demanded with the other libraries. You should apply the patches if there exist.</p>
+<h3 id="CodeSigning-1"><a href="#CodeSigning-1" class="headerlink" title="CodeSigning"></a>CodeSigning</h3><p>The instruction of apple developer doc recommands that codesign all libs before signing the final bundle. Using <code>--deep</code> parameter does not guarantee the correctness with nested libraries. It’s just for codesign patching after file modification.</p>
+<p>I just write a simple bash script for codesign command execution.</p>
+<ol>
+<li>Sign all libraries</li>
+</ol>
+<p>$BINARY = ‘Game.app’</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">libfile=`find ./<span class="variable">$BINARY</span> -name <span class="string">'*.dylib'</span>`</span><br><span class="line"><span class="keyword">while</span> <span class="built_in">read</span> -r libname; <span class="keyword">do</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"Sign:"</span> <span class="variable">$libname</span></span><br><span class="line">        codesign --deep --force --verify -vvvv --timestamp --options runtime --entitlements  <span class="variable">$ENTITLEMENTS</span> --sign <span class="string">"<span class="variable">$SIGNCERT</span>"</span> <span class="variable">$libname</span></span><br><span class="line"><span class="keyword">done</span> &lt;&lt;&lt; <span class="string">"<span class="variable">$libfile</span>"</span></span><br><span class="line"></span><br><span class="line">bundlefile=`find ./<span class="variable">$BINARY</span> -name <span class="string">'*.bundle'</span>`</span><br><span class="line"><span class="keyword">while</span> <span class="built_in">read</span> -r bundlename; <span class="keyword">do</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"Sign:"</span> <span class="variable">$bundlename</span></span><br><span class="line">        codesign --deep --force --verify -vvvv --timestamp --options runtime --entitlements  <span class="variable">$ENTITLEMENTS</span> --sign <span class="string">"<span class="variable">$SIGNCERT</span>"</span> <span class="variable">$bundlename</span></span><br><span class="line"><span class="keyword">done</span> &lt;&lt;&lt; <span class="string">"<span class="variable">$bundlefile</span>"</span></span><br><span class="line"></span><br><span class="line">frameworkfile=`find ./<span class="variable">$BINARY</span> -name <span class="string">'*.framework'</span>`</span><br><span class="line"><span class="keyword">while</span> <span class="built_in">read</span> -r frameworkname; <span class="keyword">do</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"Sign:"</span> <span class="variable">$frameworkname</span></span><br><span class="line">        codesign --deep --force --verify -vvvv --timestamp --options runtime --entitlements  <span class="variable">$ENTITLEMENTS</span> --sign <span class="string">"<span class="variable">$SIGNCERT</span>"</span> <span class="variable">$frameworkname</span></span><br><span class="line"><span class="keyword">done</span> &lt;&lt;&lt; <span class="string">"<span class="variable">$frameworkfile</span>"</span></span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>CodeSign final application bundle</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">codesign --deep --force --verify --verbose --timestamp --options runtime --entitlements  <span class="variable">$ENTITLEMENTS</span> --sign <span class="string">"<span class="variable">$SIGNCERT</span>"</span> <span class="variable">$BINARY</span> -i <span class="variable">$BUNDLE_ID</span></span><br><span class="line"><span class="comment"># verification</span></span><br><span class="line">codesign --verify --deep -vvvv --strict Game.app</span><br></pre></td></tr></table></figure>
+
+<p>Emphasis:  <code>--sign</code> parameter will automatically match, just input “Developer ID Application:”.</p>
+<h3 id="Submit-to-Notarization"><a href="#Submit-to-Notarization" class="headerlink" title="Submit to Notarization"></a>Submit to Notarization</h3><ol>
+<li>Zip archive the bundle before notarization</li>
+</ol>
+<p><strong>Warning: We should use the command <code>ditto</code> for archive the budnle, use <code>zip</code> cause the missing of signature infomation</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ditto -c -k --sequesterRsrc --keepParent <span class="string">"Game.app"</span> <span class="string">"Game.app.zip"</span></span><br></pre></td></tr></table></figure>
+
+<p>2.Submission</p>
+<p>Now we have the ziped bundle. It’s time for notarization.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">xcrun altool --notarize-app --primary-bundle-id <span class="string">"<span class="variable">$&#123;Bundle_Identifier&#125;</span>"</span> --username <span class="string">"<span class="variable">$&#123;APPLE_ID_ACCOUNT&#125;</span>"</span> --password <span class="string">"<span class="variable">$&#123;APPLE_ID_PWD&#125;</span>"</span> --file Game.app.zip --asc-provider <span class="string">"<span class="variable">$&#123;ASC_PROVIDER&#125;</span>"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#sample</span></span><br><span class="line">xcrun altool --notarize-app --primary-bundle-id <span class="string">"com.xxxx.game"</span> --username <span class="string">"yourid@gmail.com"</span> --password <span class="string">"password"</span> --file Game.app.zip --asc-provider <span class="string">"ABCDEFGH"</span></span><br></pre></td></tr></table></figure>
+
+<p>Parameter <code>asc-provider</code> requires <code>ProviderShortname</code>.</p>
+<p>It’s commonly equals <code>Team ID</code> which can be found at<br>‘Apple Developer/Membership/Team ID’.</p>
+<p>But unfortunately, my apple developer account is pretty old. These are not equal.<br>Don’t worry, apple provide the tools for quering the <code>ProviderShortName</code>.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ xcrun altool --list-providers -u <span class="string">"AC_USERNAME"</span> -p <span class="string">"PWD"</span></span><br></pre></td></tr></table></figure>
+
+<p>If everything gose well, we may get a <code>RequestId</code> like ‘1809fca2-XXXX-XXXX-XXXX-14aa62f6XXXX’.</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">altool[<span class="number">16765</span>:<span class="number">378423</span>] No errors uploading <span class="string">'Game.app.zip'</span>.</span><br><span class="line">RequestUUID = <span class="number">1809f</span>ca2-XXXX-XXXX-XXXX<span class="number">-14</span>aa62f6XXXX</span><br></pre></td></tr></table></figure>
+
+<p>With this ReqId, we can query the result of notarization. It needs about 5mins for apple server processing the notarization. Maybe longer depends on the file size.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#查询结果</span></span><br><span class="line">$ xcrun altool --notarization-info <span class="string">"1809fca2-XXXX-XXXX-XXXX-14aa62f6XXXX"</span> --username <span class="string">"<span class="variable">$&#123;APPLE_ID_ACCOUNT&#125;</span>"</span> --password <span class="string">"<span class="variable">$&#123;APPLE_ID_PWD&#125;</span>"</span></span><br></pre></td></tr></table></figure>
+
+<p>When processing finish, Apple will send an email to your developer ID.<br>If the notarization failed, all erros can be find by check the log file.</p>
+<ol start="3">
+<li>Staple App bundle after notarization</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ xcrun stapler staple <span class="string">"Game.app"</span></span><br><span class="line">$ zip -r -q Game.dist.app Game.app</span><br></pre></td></tr></table></figure>
+<p>Please keep in mind that we can’t staple with <code>Game.app.zip</code> file.<br>Staple only apple to app bundle. When staples successfully, zip the <code>Game.app</code> again, then we can submit it to the user or SteamStore.</p>
+<h2 id="Submit-to-macOS-App-Store"><a href="#Submit-to-macOS-App-Store" class="headerlink" title="Submit to macOS App Store"></a>Submit to macOS App Store</h2><h3 id="Certificate-Creation"><a href="#Certificate-Creation" class="headerlink" title="Certificate Creation"></a>Certificate Creation</h3><p>Two different certificate are required when submit to macOS AppStore</p>
+<ol>
+<li>Mac App Distribution Certificate</li>
+<li>Mac Installer Distribution Certificate</li>
+</ol>
+<p><code>Mac App Distribution Certificate</code> is used for bundle <code>CodeSign</code>.</p>
+<p><code>Mac Installer Distribution Certificate</code> is used for pack bundle then uploading to itunes server for review.</p>
+<h3 id="Bundle-Configuration"><a href="#Bundle-Configuration" class="headerlink" title="Bundle Configuration"></a>Bundle Configuration</h3><p>Same as <a href="#Submit-to-SteamStore-and-non-AppStore-distribution">Submit-to-SteamStore-and-non-AppStore-distribution</a></p>
+<ol>
+<li>delete all <code>.meta</code> file recursivly inside the <code>Game.app</code> folder.</li>
+<li>Create <code>Game.entitlements</code> file as informed.</li>
+<li>Modify <code>Game.app/Contents/Info.plist</code> if needed.</li>
+<li>Process third-party libs</li>
+<li>CodeSign all libs. (use <code>Mac App Distribution</code>)</li>
+<li>CodeSign Game.app. (use <code>Mac App Distribution</code>)</li>
+</ol>
+<h3 id="Generate-pkg-file"><a href="#Generate-pkg-file" class="headerlink" title="Generate .pkg file"></a>Generate .pkg file</h3><p>After codesign, we need to pack <code>Game.app</code> into <code>Game.app.pkg</code>.</p>
+<p>Use <code>productbuild</code> tool</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">productbuild --component <span class="variable">$&#123;BINARY&#125;</span> /Applications --sign <span class="string">"3rd Party Mac Developer Installer:"</span> <span class="string">"<span class="variable">$&#123;PKG_FILE&#125;</span>"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#sample</span></span><br><span class="line">productbuild --component Game.app /Applications --sign <span class="string">"3rd Party Mac Developer Installer:"</span> Game.app.pkg</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="Use-AppLoader-for-uploading"><a href="#Use-AppLoader-for-uploading" class="headerlink" title="Use AppLoader for uploading"></a>Use AppLoader for uploading</h3><p>Now we have <code>Game.app.pkg</code> bundle which is permitted for uploading.</p>
+<p>It same process like iOS developement. use application loader tool for uploading to itunes server. Due to the removal of GUI version ApplcaitionLoader with Xcode11,<br>we can only submit with command line use <code>xcrun altool</code>.</p>
+<ol>
+<li>Verification before submission</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xcrun altool --validate-app -f Game.app.pkg -u <span class="string">"<span class="variable">$&#123;USER&#125;</span>"</span> -p <span class="string">"<span class="variable">$&#123;PWD&#125;</span>"</span></span><br></pre></td></tr></table></figure>
+
+
+<p>Tips: <code>xcrun altool --validate-app</code><strong>will not found all the erros</strong>, because apple itunes server will do the more stricter validation.</p>
+<ol start="2">
+<li>Uploading</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ xcrun altool --upload-app -f Game.app.pkg -u <span class="string">"<span class="variable">$&#123;USER&#125;</span>"</span> -p <span class="string">"<span class="variable">$&#123;PWD&#125;</span>"</span></span><br></pre></td></tr></table></figure>
+
+<p>If get some output like <code>no error uploading package</code>，means upload successfully.</p>
+<p>Apple will also send an email when validation failed. Like this:<br><code>App Store Connect: Your app &quot;XXXXX&quot; (Apple ID: 123456789 Version: 1.0 Build: 0) has one or more issues</code></p>
+<p>But if the validation got through, no email sent. Remember to check the itunes connect dashboard.</p>
+<p>Fix all the errors that apple email mentions. After solve the errors, the process steps of codesign-&gt;pkg-&gt;upload must be executed completely. Do not forget to increse the build version number.<br>Every uploading task requires different build version number.</p>
+<hr>
+<h2 id="FAQ"><a href="#FAQ" class="headerlink" title="FAQ"></a>FAQ</h2><p>I just list some common errors.</p>
+<ul>
+<li><strong>ITMS-90303: Unable to Sign</strong></li>
+</ul>
+<p>code object is not signed at all In subcomponent:  PATH_TO_THE_FILE.<br>Delete these files before codesign.</p>
+<ul>
+<li><strong>ITMS-90238: Invalid Signature</strong></li>
+</ul>
+<p>Some libs are not signed, or signed with incorrect cert.</p>
+<ul>
+<li><strong>codesign throw error: CSSMERR_TP_CERT_REVOKED</strong></li>
+</ul>
+<p>The certificate is out-of-date, download the new one.</p>
+<ul>
+<li><strong>codesign 提示 errSecInternalComponent</strong></li>
+</ul>
+<p>If you do the <code>codesign</code> or <code>productbuild</code> via ssh, you should unlock the keychain with CLI. Because some process require user password to unlock the keychain. There is no password dialog pop up when these program request an access to the keychain.</p>
+<hr>
+<p>Reference</p>
+<p><a href="https://docs.unity3d.com/Manual/HOWTO-PortToAppleMacStore.html" target="_blank" rel="noopener">Unity Manual: Delivering your application to the Mac App Store</a><br><a href="https://gist.github.com/dpid/270bdb6c1011fe07211edf431b2d0fe4" target="_blank" rel="noopener">gist:how-to-notarize-unity-for-macos.md</a><br><a href="https://developer.apple.com/documentation/xcode/notarizing_macos_software_before_distribution" target="_blank" rel="noopener">Notarizing macOS Software Before Distribution</a><br><a href="https://developer.apple.com/library/archive/technotes/tn2206/_index.html" target="_blank" rel="noopener">Technical Note TN2206:macOS Code Signing In Depth</a></p>
+<hr>
+<p>Thanks for reading, If there are any mistake or question, feel free to leave a comment below.</p>
+
+  </div>
+</article>
+
+    <div class="blog-post-comments">
+        <div id="disqus_thread">
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+        </div>
+    </div>
+
+
+
+    </div>
+    
+      <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="https://artwork.yemi.me/" target="_blank" rel="noopener">Artworks</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+         
+          <li><a href="/Search/">Search</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Bundle-Config-and-Code-Signing"><span class="toc-number">1.</span> <span class="toc-text">Bundle Config and Code Signing</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Basic-Concepts"><span class="toc-number">1.1.</span> <span class="toc-text">Basic Concepts</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Process-application-bundle"><span class="toc-number">1.2.</span> <span class="toc-text">Process application bundle</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CodeSigning"><span class="toc-number">1.3.</span> <span class="toc-text">CodeSigning</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Submit-to-SteamStore-and-non-AppStore-distribution"><span class="toc-number">2.</span> <span class="toc-text">Submit to SteamStore and non AppStore distribution</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Generate-Certificate"><span class="toc-number">2.1.</span> <span class="toc-text">Generate Certificate</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Bundle-preparation"><span class="toc-number">2.2.</span> <span class="toc-text">Bundle preparation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Fix-SteamLib"><span class="toc-number">2.3.</span> <span class="toc-text">Fix SteamLib</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CodeSigning-1"><span class="toc-number">2.4.</span> <span class="toc-text">CodeSigning</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Submit-to-Notarization"><span class="toc-number">2.5.</span> <span class="toc-text">Submit to Notarization</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Submit-to-macOS-App-Store"><span class="toc-number">3.</span> <span class="toc-text">Submit to macOS App Store</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Certificate-Creation"><span class="toc-number">3.1.</span> <span class="toc-text">Certificate Creation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Bundle-Configuration"><span class="toc-number">3.2.</span> <span class="toc-text">Bundle Configuration</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Generate-pkg-file"><span class="toc-number">3.3.</span> <span class="toc-text">Generate .pkg file</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Use-AppLoader-for-uploading"><span class="toc-number">3.4.</span> <span class="toc-text">Use AppLoader for uploading</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#FAQ"><span class="toc-number">4.</span> <span class="toc-text">FAQ</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=https://yemi.me/2020/02/17/en/submit-unity-macos-build-to-steam-appstore/" target="_blank" rel="noopener"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=https://yemi.me/2020/02/17/en/submit-unity-macos-build-to-steam-appstore/&text=Delivering Unity macOS build to Steam and AppStore" target="_blank" rel="noopener"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=https://yemi.me/2020/02/17/en/submit-unity-macos-build-to-steam-appstore/&title=Delivering Unity macOS build to Steam and AppStore" target="_blank" rel="noopener"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https://yemi.me/2020/02/17/en/submit-unity-macos-build-to-steam-appstore/&is_video=false&description=Delivering Unity macOS build to Steam and AppStore" target="_blank" rel="noopener"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Delivering Unity macOS build to Steam and AppStore&body=Check out this article: https://yemi.me/2020/02/17/en/submit-unity-macos-build-to-steam-appstore/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=https://yemi.me/2020/02/17/en/submit-unity-macos-build-to-steam-appstore/&title=Delivering Unity macOS build to Steam and AppStore" target="_blank" rel="noopener"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=https://yemi.me/2020/02/17/en/submit-unity-macos-build-to-steam-appstore/&title=Delivering Unity macOS build to Steam and AppStore" target="_blank" rel="noopener"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=https://yemi.me/2020/02/17/en/submit-unity-macos-build-to-steam-appstore/&title=Delivering Unity macOS build to Steam and AppStore" target="_blank" rel="noopener"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=https://yemi.me/2020/02/17/en/submit-unity-macos-build-to-steam-appstore/&title=Delivering Unity macOS build to Steam and AppStore" target="_blank" rel="noopener"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=https://yemi.me/2020/02/17/en/submit-unity-macos-build-to-steam-appstore/&name=Delivering Unity macOS build to Steam and AppStore&description=" target="_blank" rel="noopener"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+    
+    <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2020 yemi
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="https://artwork.yemi.me/" target="_blank" rel="noopener">Artworks</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="/projects/">Projects</a></li>
+         
+          <li><a href="/Search/">Search</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+</body>
+</html>
+<!-- styles -->
+
+<link rel="stylesheet" href="/lib/font-awesome/css/fontawesome-all.min.css">
+
+
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+
+<!-- jquery -->
+
+<script src="/lib/jquery/jquery.min.js"></script>
+
+
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Google Analytics -->
+
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m) {i['GoogleAnalyticsObject']=r;i[r]=i[r]||function() {
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-117987782-1', 'auto');
+        ga('send', 'pageview');
+    </script>
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+    <script type="text/javascript">
+        var disqus_shortname = 'yemiblog';
+
+        (function(){
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        }());
+    </script>
+
+
