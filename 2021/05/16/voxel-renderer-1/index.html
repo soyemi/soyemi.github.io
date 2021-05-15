@@ -12,24 +12,24 @@
 <meta property="og:url" content="https://yemi.me/2021/05/16/voxel-renderer-1/index.html">
 <meta property="og:site_name" content="Yemi&#39;s Blog">
 <meta property="og:description" content="大概没有游戏玩家不知道Minecraft这款游戏。 在如今似乎一个游戏只要用了大量的方块就常常用类Minecraft游戏指代，方块元素有着极高的辨识度。但今天来聊聊虽然也是方块但还是有些不大一样的体素游戏。 什么是体素?用一句话概括：体素(Voxel)是3D版本的像素(Pixel)。 狭义上定义的体素风格渲染：每个Voxel应该和pixel一样都是相同的颜色，而不是Minecraft中的方块有对应">
-<meta property="og:image" content="https://yemi.me/images/voxel/1/Clipboard_2021-05-11-08-56-34.png">
-<meta property="og:image" content="https://yemi.me/images/voxel/1/Clipboard_2021-05-11-08-59-22.png">
-<meta property="og:image" content="https://yemi.me/images/voxel/1/Clipboard_2021-05-13-21-48-18.png">
-<meta property="og:image" content="https://yemi.me/images/voxel/1/Clipboard_2021-05-13-21-49-10.png">
-<meta property="og:image" content="https://yemi.me/images/voxel/1/vxgi.png">
-<meta property="og:image" content="https://yemi.me/images/voxel/1/Clipboard_2021-05-15-23-13-47.png">
+<meta property="og:image" content="https://yemi.me/images/voxel/1/Clipboard_2021-05-11-08-56-34.jpg">
+<meta property="og:image" content="https://yemi.me/images/voxel/1/Clipboard_2021-05-11-08-59-22.jpg">
+<meta property="og:image" content="https://yemi.me/images/voxel/1/Clipboard_2021-05-13-21-48-18.jpg">
+<meta property="og:image" content="https://yemi.me/images/voxel/1/Clipboard_2021-05-13-21-49-10.jpg">
+<meta property="og:image" content="https://yemi.me/images/voxel/1/vxgi.jpg">
+<meta property="og:image" content="https://yemi.me/images/voxel/1/Clipboard_2021-05-15-23-13-47.jpg">
 <meta property="og:image" content="https://yemi.me/images/voxel/1/Clipboard_2021-05-15-23-09-04.png">
 <meta property="og:image" content="https://yemi.me/images/voxel/1/Clipboard_2021-05-15-22-55-28.png">
 <meta property="og:image" content="https://yemi.me/images/voxel/1/Clipboard_2021-05-15-18-43-10.png">
 <meta property="og:image" content="https://yemi.me/images/voxel/1/Clipboard_2021-05-15-18-51-51.png">
 <meta property="og:image" content="https://yemi.me/images/voxel/1/Clipboard_2021-05-15-23-56-14.png">
 <meta property="article:published_time" content="2021-05-15T17:44:23.000Z">
-<meta property="article:modified_time" content="2021-05-15T17:52:42.490Z">
+<meta property="article:modified_time" content="2021-05-15T17:59:01.460Z">
 <meta property="article:author" content="yemi">
 <meta property="article:tag" content="Voxel">
 <meta property="article:tag" content="Rendering">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://yemi.me/images/voxel/1/Clipboard_2021-05-11-08-56-34.png">
+<meta name="twitter:image" content="https://yemi.me/images/voxel/1/Clipboard_2021-05-11-08-56-34.jpg">
     
     
         
@@ -161,16 +161,16 @@
 <h2 id="什么是体素"><a href="#什么是体素" class="headerlink" title="什么是体素?"></a>什么是体素?</h2><p>用一句话概括：体素(Voxel)是3D版本的像素(Pixel)。</p>
 <p>狭义上定义的体素风格渲染：每个Voxel应该和pixel一样都是相同的颜色，而不是Minecraft中的方块有对应的Texture。所以严格意义上来讲MC并不是一个体素游戏，但似乎体素游戏也没法区分得特别严格。像很多低多边形(LowPoly)模型建模的游戏也都使用了体素这样形式的3D模型，而其他的部分和普通3D游戏并没有太大区别。从我个人的角度来看，除了所有体素使用单一颜色的标准之外，大部分的游戏模型以及地形、建筑、物体都要是在体素网格上对齐，而没有旋转和缩放的才能称作是体素游戏。</p>
 <p>最早接触的体素游戏大概就是CubeWorld了。CubeWorld在2013年刚刚发布测试版本的时候，就被这种比MC更细致颗粒度的Voxel渲染惊艳到了。</p>
-<p><img src="/images/voxel/1/Clipboard_2021-05-11-08-56-34.png" alt="CubeWorld"></p>
+<p><img src="/images/voxel/1/Clipboard_2021-05-11-08-56-34.jpg" alt="CubeWorld"></p>
 <p>当然后来的模拟经营游戏StoneHearth也很吸引人，不过开发者半路弃坑了。</p>
-<p><img src="/images/voxel/1/Clipboard_2021-05-11-08-59-22.png" alt="StoneHearth"></p>
+<p><img src="/images/voxel/1/Clipboard_2021-05-11-08-59-22.jpg" alt="StoneHearth"></p>
 <p>似乎体素风格的游戏都能自带热度。2020年底的爆款游戏Teardown，大量的模型细节和巨大的体素场景，可以自由交互的体素物理系统，简直满足了破坏类沙盒玩家无尽的幻想。游戏不应该都是可破坏的吗(这里赞一下EA的战地建筑破坏效果)。当然构建这样一个Voxel World并不是一件简单的事情，随意破坏后的大规模体素对象的碰撞，刚体、软体模拟有着巨大的开发工作量。</p>
-<p><img src="/images/voxel/1/Clipboard_2021-05-13-21-48-18.png" alt=""></p>
+<p><img src="/images/voxel/1/Clipboard_2021-05-13-21-48-18.jpg" alt=""></p>
 <h2 id="体素游戏的渲染方式"><a href="#体素游戏的渲染方式" class="headerlink" title="体素游戏的渲染方式"></a>体素游戏的渲染方式</h2><p>如果要说渲染优化的话，Teardown还是传统的PolygonMesh的方式。即将体素模型和信息先转化为polygon mesh再进行传统渲染管线渲染。所以Teardown的技术难点更多的是在于其物理引擎的实现而不是渲染，当然这次我们只来聊体素的渲染。</p>
 <p>Teardown的开发过程中使用的体素建模工具是MagicaVoxel,也是目前市面上几乎唯一可以用于商业化游戏的体素编辑软件了。</p>
 <p>MagicaVoxel由独立开发者ephtracy从2015年发布一直维护更新到现在。对于这种软件应用来说，体素由于其简单的立方体结构和排列方式比起三角面来说更适合进行光线追踪，可以做影视级别的真实渲染。所以在支持实时渲染的动态编辑同时它还支持光线追踪渲染高质量的画面。这次我们就尝试复刻下MagicaVoxel的光线追踪渲染器。是的，Flag立下了!</p>
 <p>不过随着光追显卡的不断普及和技术发展，我们可能会在未来的几年内看到全局RayTracing的体素游戏。但体素风格始终是个小众的游戏美术风格，对独立游戏开发者来说，不需要太大的美术制作成本，体素风格始终是一个可选美术方案。</p>
-<p><img src="/images/voxel/1/Clipboard_2021-05-13-21-49-10.png" alt=""></p>
+<p><img src="/images/voxel/1/Clipboard_2021-05-13-21-49-10.jpg" alt=""></p>
 <p>这里总结一下Voxel的渲染方式</p>
 <ul>
 <li>传统PolygonMesh：游戏常见做法</li>
@@ -178,7 +178,7 @@
 </ul>
 <p>除去体素本身作为模型数据替代Mesh进行绘制，在游戏渲染中体素化方案也可以用来实现全局光照。体素化场景提供了简化的3D spacial info，基于这个信息进行粗糙的光照传播和计算。例如 LPV(Light Propagation Volumes) 和Nvidia的VXGI(Voxel Global Illumination)。</p>
 <p>和Voxel Rendering 不同，全局光照中的Voxel信息通常存储在3D texture，贴图分辨率低。同时体素化是对于相机视锥体（Frustum）的，这里的voxel是广义的体素，是个长方体。在投影变换之前是个四棱台(Four Prism)，在图形学中有个专有的名称Froxel(Frustum+Voxel)。后续有机会我们再来讲VXGI。</p>
-<p><img src="/images/voxel/1/vxgi.png" alt=""></p>
+<p><img src="/images/voxel/1/vxgi.jpg" alt=""></p>
 <p>这两种渲染方式各有优劣同时还决定了体素数据的储存。</p>
 <p>三种体素数据的存储方式</p>
 <ul>
@@ -189,7 +189,7 @@
 <p>多边形网格的储存就不用多说了，不过相对于常见的Mesh，体素Mesh的顶点数量相对庞大，同时不需要UV数据和贴图采样，每个体素的颜色可以存储在顶点颜色中。在实际渲染里通常会有优化算法将相同材质的顶点合并。</p>
 <p>光线追踪的渲染方式，体素数据的存储就有多种方案了。我们可以直接储存在3D贴图中采样，和每个体素的包围盒进行光线的相交判定。也可以使用空间划分加速结构，储存在八叉树结构中，更快速找到体素模型和光线最近的交点。</p>
 <h2 id="稀疏体素八叉树-Sparse-Voxel-Octree"><a href="#稀疏体素八叉树-Sparse-Voxel-Octree" class="headerlink" title="稀疏体素八叉树(Sparse Voxel Octree)"></a>稀疏体素八叉树(Sparse Voxel Octree)</h2><p>将一个三维空间划分为八个子空间，不断细分下去直到每一个空间对应一个体素单元，存储上填充信息。当一个空间中没有填充的变化即全部填充或全部不填充时，不再细分存储数据，就可以得到一个稀疏的体素八叉树，将这些八叉树细分的Box绘制出来大概就长这样。</p>
-<p><img src="/images/voxel/1/Clipboard_2021-05-15-23-13-47.png" alt=""></p>
+<p><img src="/images/voxel/1/Clipboard_2021-05-15-23-13-47.jpg" alt=""></p>
 <p>八叉树结构对比3D贴图的优势在于，对于空间中的空洞区域，八叉树结构是稀疏的不占用内存的空间。而3D贴图即使是大范围的空洞我们也需要预先分配存储空间。</p>
 <p><img src="/images/voxel/1/Clipboard_2021-05-15-23-09-04.png" alt=""></p>
 <p>从不同的角度对比稀疏体素八叉树和其他的数据模型。体素这种细节粒度细致的模型，就特别需要LOD系统来减少渲染的绘制开销。多边形网格的LOD实现要维护多套不同层级的Mesh。3D Texture采样的数据，LOD自然就是采样不同层级的Mipmap。而对于八叉树结构来说LOD采样同样直观，我们只需要减少Octree遍历的层级就可以实现八叉树的LOD。</p>
